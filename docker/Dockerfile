@@ -54,5 +54,7 @@ RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 10 && \
     git clone --recursive https://github.com/gpuocelot/gpuocelot.git && \
     cd gpuocelot && ./build.py --thread 4 --install && \
     ldconfig && \ 
+    cd trace-generators && scons install && \
+    ldconfig && \
     update-alternatives --set gcc "/usr/bin/gcc-4.4" && \
     update-alternatives --set g++ "/usr/bin/g++-4.4"
