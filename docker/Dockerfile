@@ -51,7 +51,7 @@ RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 10 && \
     update-alternatives --set gcc "/usr/bin/gcc-4.6" && \
     update-alternatives --set g++ "/usr/bin/g++-4.6"&& \
     cd /usr/local/src && \
-    git clone --recursive https://github.com/gthparch/macsim_devel.git && \
+    git clone --recursive https://github.com/gpuocelot/gpuocelot.git && \
     cd gpuocelot && ./build.py --thread 4 --install && \
     ldconfig && \ 
     update-alternatives --set gcc "/usr/bin/gcc-4.4" && \
