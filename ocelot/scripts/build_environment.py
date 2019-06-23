@@ -10,14 +10,14 @@ from SCons import SConf
 
 def getDebianArchitecture():
 	"""Determines the debian architecture
-	
+
 	return {deb_arch}
 	"""
 
 	# check for supported OS
 	if os.name != 'posix':
 		raise ValueError, 'Error: unknown OS.  Can only build .deb on linux.'
-	
+
 	try:
 		dpkg_arch_path = which('dpkg-architecture')
 	except:
@@ -35,7 +35,7 @@ def getDebianArchitecture():
 
 def getCudaPaths():
 	"""Determines CUDA {bin,lib,include} paths
-	
+
 	returns (bin_path,lib_path,inc_path)
 	"""
 
@@ -50,7 +50,7 @@ def getCudaPaths():
 		inc_path = '/usr/local/cuda/include'
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is nvcc installed?'
-	 
+
 	if platform.machine()[-2:] == '64':
 		lib_path += '64'
 
@@ -66,7 +66,7 @@ def getCudaPaths():
 
 def getBoost(env):
 	"""Determines BOOST {bin_path,lib_path,include_path,libs}
-	
+
 	returns (bin_path,lib_path,inc_path,libs)
 	"""
 
@@ -110,12 +110,12 @@ def getBoost(env):
 				'libboost_thread-vc100-mt-s' + debug_str + '-*'))])
 			for f in lib_files:
 				libs.append(os.path.basename(f.abspath))
-			
+
 	elif os.name == 'posix':
 		ext = ""
-		if os.path.exists(os.path.join(lib_path, 'libboost_system-mt.so')):
+		if os.path.exists(os.path.join(lib_path, 'libboost_system.so')):
 			ext = "-mt"
-			
+
 		libs = ['-lboost_system' + ext, '-lboost_filesystem' + ext,
 			'-lboost_thread' + ext]
 	else:
@@ -148,10 +148,10 @@ def getGLEW(env, enabled):
 
 	returns (have_glew,bin_path,lib_path,inc_path,libs)
 	"""
-	
+
 	configure = Configure(env)
-	glew = configure.CheckLib('GLEW')		
-	
+	glew = configure.CheckLib('GLEW')
+
 	if not enabled:
 		print "Glew disabled by user"
 		return (False, [], [], [], [])
@@ -188,14 +188,14 @@ def getGLEW(env, enabled):
 		if platform.system() == 'Darwin':
 			libs.append('-lGL')
 			lib_path.append('/usr/X11/lib')
- 
+
 	return (glew,bin_path,lib_path,inc_path,libs)
 
 def getLLVMPaths(enabled):
 	"""Determines LLVM {have,bin,lib,include,cflags,lflags,libs} paths
-	
+
 	from user specified variables
-	
+
 	returns (have,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	"""
 
@@ -214,7 +214,7 @@ def getLLVMPaths(enabled):
 	            '-lLLVMScalarOpts', '-lLLVMInstCombine', '-lLLVMTransformUtils',
 	            '-lLLVMipa', '-lLLVMAnalysis', '-lLLVMTarget', '-lLLVMMC',
 	            '-lLLVMObject', '-lLLVMCore', '-lLLVMSupport']
-	
+
 	if os.name == 'nt':
 		lflags =  []
 		cflags =  []
@@ -237,18 +237,18 @@ def getLLVMPaths(enabled):
 		lflags   = os.environ['LLVM_LFLAGS'].split()
 	if 'LLVM_LIBS' in os.environ:
 		libs     = os.environ['LLVM_LIBS'].split()
-	
+
 	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
 
 def getLLVMPaths(enabled):
 	"""Determines LLVM {have,bin,lib,include,cflags,lflags,libs} paths
-	
+
 	returns (have,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	"""
-	
+
 	if not enabled:
 		return (False, [], [], [], [], [], [])
-	
+
 	if 'USER_SPECIFIED_LLVM_PATHS' in os.environ:
 		return getUserSpecifiedLLVMPaths()
 	else:
@@ -257,7 +257,7 @@ def getLLVMPaths(enabled):
 		except:
 			print 'Failed to find llvm-config'
 			return (False, [], [], [], [], [], [])
-	
+
 	# determine defaults
 	bin_path = os.popen('llvm-config --bindir').read().split()
 	lib_path = os.popen('llvm-config --libdir').read().split()
@@ -266,7 +266,7 @@ def getLLVMPaths(enabled):
 	lflags   = os.popen('llvm-config --ldflags').read().split()
 	libs     = os.popen('llvm-config --libs core jit native \
 		asmparser instcombine').read().split()
-	
+
 	# remove -DNDEBUG
 	if '-DNDEBUG' in cflags:
 		cflags.remove('-DNDEBUG')
@@ -282,13 +282,14 @@ def getLLVMPaths(enabled):
 			cflags.remove(flag)
 
 	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
-	
+
 def getTools():
 	result = []
 	if os.name == 'nt':
 		result = ['default', 'msvc']
 	elif os.name == 'posix':
-		result = ['default', 'c++', 'g++']
+                result = ['default', 'c++', 'clang++']
+		#result = ['default', 'c++', 'g++']
 	else:
 		result = ['default']
 
@@ -300,20 +301,25 @@ OldEnvironment = Environment;
 
 # this dictionary maps the name of a compiler program to a dictionary mapping the name of
 # a compiler switch of interest to the specific switch implementing the feature
+
 gCompilerOptions = {
 		'gcc' : {'warn_all' : '-Wall',
 			'warn_errors' : '-Werror',
-			'optimization' : '-O2', 'debug' : '-g', 
+			'optimization' : '-O2', 'debug' : '-g',
 			'exception_handling' : '', 'standard': ''},
 		'g++' : {'warn_all' : '-Wall',
-			'warn_errors' : '-Werror',
-			'optimization' : '-O2', 'debug' : '-g', 
-			'exception_handling' : '', 'standard': '-std=c++0x'},
+			 'warn_errors' : '-Werror',
+			'optimization' : '-O2', 'debug' : '-g',
+			'exception_handling' : '', 'standard': '-std=c++11'},
+                'clang++' : {'warn_all' : '-Wall',
+			 'warn_errors' : '-Werror',
+			'optimization' : '-O2', 'debug' : '-g',
+			'exception_handling' : '', 'standard': '-std=c++11'},
 		'c++' : {'warn_all' : '-Wall',
 			'warn_errors' : '-Werror',
 			'optimization' : '-O2', 'debug' : '-g',
 			'exception_handling' : '',
-			'standard': ['-stdlib=libc++', '-std=c++0x', '-pthread']},
+			'standard': ['-stdlib=libc++', '-std=c++11', '-pthread']},
 		'cl'  : {'warn_all' : '/Wall',
 			'warn_errors' : '/WX',
 			'optimization' : ['/Zi', '/Ox', '/DNDEBUG'],
@@ -334,6 +340,7 @@ def updateCompilerOptionsFromEnv(env):
 gLinkerOptions = {
 		'gcc'  : {'debug' : ''},
 		'g++'  : {'debug' : ''},
+                'clang++'  : {'debug' : ''},
 		'c++'  : {'debug' : ''},
 		'link' : {'debug' : '/debug'}
 	}
@@ -385,7 +392,7 @@ def getLibCXXPaths():
 def getCXXFLAGS(mode, warn, warnings_as_errors, CXX):
 	if not CXX in gCompilerOptions:
 		raise ValueError, 'Error: No support for compiler \'' + CXX + '\''
-	
+
 	result = []
 	if mode == 'release':
 		# turn on optimization
@@ -400,9 +407,9 @@ def getCXXFLAGS(mode, warn, warnings_as_errors, CXX):
 		# turn on all warnings
 		result.append(gCompilerOptions[CXX]['warn_all'])
 
-	if warnings_as_errors:
-		# treat warnings as errors
-		result.append(gCompilerOptions[CXX]['warn_errors'])
+	#if warnings_as_errors:
+	#        # treat warnings as errors
+	#        result.append(gCompilerOptions[CXX]['warn_errors'])
 
 	result.append(gCompilerOptions[CXX]['standard'])
 
@@ -430,7 +437,7 @@ def getVersion(base):
 		stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 	(svn_info, std_err_data) = process.communicate()
-	
+
 	match = re.search('Revision: ', svn_info)
 	revision = 'unknown'
 	if match:
@@ -459,12 +466,12 @@ def flatten(l):
 			yield el
 
 def defineConfigFlags(env):
-	
+
 	include_path = os.path.join(env['INSTALL_PATH'], "include")
 	library_path = os.path.join(env['INSTALL_PATH'], "lib")
 	bin_path     = os.path.join(env['INSTALL_PATH'], "bin")
 
-	configFlags = env['CXXFLAGS'] + " ".join( 
+	configFlags = env['CXXFLAGS'] + " ".join(
 		["%s\"\\\"%s\\\"\"" % x for x in (
 			('-DOCELOT_CXXFLAGS=', " ".join(flatten(env['CXXFLAGS']))),
 			('-DPACKAGE=', 'ocelot'),
@@ -481,19 +488,19 @@ def defineConfigFlags(env):
 
 def importEnvironment():
 	env = {  }
-	
+
 	if 'PATH' in os.environ:
 		env['PATH'] = os.environ['PATH']
-	
+
 	if 'CXX' in os.environ:
 		env['CXX'] = os.environ['CXX']
-	
+
 	if 'CC' in os.environ:
 		env['CC'] = os.environ['CC']
-	
+
 	if 'TMP' in os.environ:
 		env['TMP'] = os.environ['TMP']
-	
+
 	if 'LD_LIBRARY_PATH' in os.environ:
 		env['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH']
 
@@ -523,21 +530,21 @@ def Environment():
 
 	# add a variable to handle warnings
 	vars.Add(BoolVariable('Wall', 'Enable all compilation warnings', 1))
-	
+
 	# shared or static libraries
 	libraryDefault = 'shared'
 	if os.name == 'nt':
 		libraryDefault = 'static'
-	
+
 	vars.Add(EnumVariable('library', 'Build shared or static library',
 		libraryDefault, allowed_values = ('shared', 'static')))
-	
+
 	vars.Add(BoolVariable('enable_llvm',
 		'Compile in support for LLVM if available', 1))
-	
+
 	vars.Add(BoolVariable('enable_opengl',
 		'Compile in support for OpenGL if available', 1))
-	
+
 	vars.Add(BoolVariable('enable_cuda_runtime',
 		'Export cuda runtime symbols (prevents linking Ocelot '
 		'against another version of the CUDA runtime)', 1))
@@ -559,13 +566,13 @@ def Environment():
 	else:
 		raise ValueError, 'Error: unknown OS.  " \
 			"Where is Ocelot installed by default?'
-	
+
 	if 'OCELOT_INSTALL_PATH' in os.environ:
 		default_install_path = os.environ['OCELOT_INSTALL_PATH']
-		
+
 	vars.Add(PathVariable('install_path', 'The ocelot install path',
 		default_install_path, PathVariable.PathIsDirCreate))
- 
+
 	vars.Add(BoolVariable('install', 'Include ocelot install path in default '
 		'targets that will be built and configure to install in the '
 		'install_path (defaults to false unless one of the targets is '
@@ -588,10 +595,10 @@ def Environment():
 	# always link with the c++ compiler
 	if os.name != 'nt':
 		env['LINK'] = env['CXX']
-	
+
 	# set the version
 	env.Replace(VERSION = getVersion("2.1"))
-	
+
 	# get the absolute path to the directory containing
 	# this source file
 	thisFile = inspect.getabsfile(Environment)
@@ -610,7 +617,7 @@ def Environment():
 
 	# get bison switches
 	env.AppendUnique(YACCFLAGS = "-d")
-	
+
 	# Install paths
 	if env['install']:
 		env.Replace(INSTALL_PATH = os.path.abspath(env['install_path']))
@@ -622,10 +629,10 @@ def Environment():
 		env.Replace(deb_arch = getDebianArchitecture())
 	else:
 		env.Replace(deb_arch = 'unknown')
-		
+
 	# get CUDA paths
 	(cuda_exe_path, cuda_lib_path, cuda_inc_path)  = getCudaPaths()
-	
+
 	# CUDA builder
 	env.Append(BUILDERS = {'Cuda': Builder(
 		action=cuda_exe_path + '/nvcc -arch=sm_20 $SOURCE -c -o $TARGET',
@@ -640,12 +647,12 @@ def Environment():
 		suffix = '.o',
 		src_suffix = '.cu'
 	)})
-	
+
 	# append the default VC++ paths
 	if os.name == 'nt':
 		env.Append(LIBPATH = str.split(os.environ['LIB'], ';'))
 		env.Append(CPPPATH = str.split(os.environ['INCLUDE'], ';'))
-	
+
 	# set the build path
 	env.Replace(BUILD_ROOT = str(env.Dir('.')))
 
@@ -653,8 +660,8 @@ def Environment():
 	(boost_exe_path,boost_lib_path,boost_inc_path,boost_libs) = getBoost(env)
 	env.AppendUnique(LIBPATH = [boost_lib_path])
 	env.AppendUnique(CPPPATH = [boost_inc_path])
-	env.AppendUnique(EXTRA_LIBS = boost_libs) 
-	
+	env.AppendUnique(EXTRA_LIBS = boost_libs)
+
 
 	# get GLEW information
 	(glew,glew_exe_path,glew_lib_path,glew_inc_path,
@@ -662,7 +669,7 @@ def Environment():
 	if glew:
 		env.AppendUnique(LIBPATH = glew_lib_path)
 		env.AppendUnique(CPPPATH = glew_inc_path)
-		env.AppendUnique(EXTRA_LIBS = glew_libs) 
+		env.AppendUnique(EXTRA_LIBS = glew_libs)
 	env.Replace(HAVE_GLEW = glew)
 
 	# get Flex paths
@@ -690,18 +697,18 @@ def Environment():
 	if env['install']:
 		env.AppendUnique(LIBPATH = os.path.abspath(
 			os.path.join(env['install_path'], 'lib')))
-	
-	if os.name == 'nt':      
+
+	if os.name == 'nt':
                env.AppendUnique(CFLAGS   = "-DYY_NO_UNISTD_H")
                env.AppendUnique(CXXFLAGS = "-DYY_NO_UNISTD_H")
 
 
 	# we need libdl on linux, and librt
 	if os.name == 'posix':
-		env.AppendUnique(EXTRA_LIBS = ['-ldl']) 
+		env.AppendUnique(EXTRA_LIBS = ['-ldl'])
 		if platform.system() != 'Darwin':
 			env.AppendUnique(EXTRA_LIBS = ['-lrt', '-lpthread'])
-	
+
 	# set ocelot libs
 	ocelot_libs = '-locelot'
 	env.Replace(OCELOT_LDFLAGS=ocelot_libs)
@@ -713,4 +720,3 @@ def Environment():
 	Help(vars.GenerateHelpText(env))
 
 	return env
-

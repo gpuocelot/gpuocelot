@@ -27,7 +27,7 @@ def config_h_build(target, source, env):
 		config_h_in.close()
 		config_h.close()
 
-# 
+#
 # Applies build rules to CUDA sources
 #
 def MapSource(env, source):
@@ -48,7 +48,7 @@ except:
 	prefix = '../'
 	exec open(prefix + "scripts/build_environment.py")
 	env = Environment()
-  
+
 # on mac we have to tell the linker to link against the C++ library
 if env['PLATFORM'] == "darwin":
 	env.Append(LINKFLAGS = "-lstdc++")
@@ -66,7 +66,7 @@ env.AlwaysBuild(env.Command('configure.h', 'configure.h.in', config_h_build))
 # find all source files in the source tree
 sources = []
 intermediate_headers = []
-directories = ['ocelot/ir/implementation', 
+directories = ['ocelot/ir/implementation',
 	'ocelot/analysis/implementation',
 	'ocelot/api/implementation',
 	'ocelot/cal/implementation',
@@ -76,9 +76,9 @@ directories = ['ocelot/ir/implementation',
 	'ocelot/parser/implementation',
 	'ocelot/trace/implementation',
 	'ocelot/transforms/implementation',
-	'ocelot/translator/implementation', 
-	'ocelot/util/implementation', 
-	'hydrazine/hydrazine/implementation', 
+	'ocelot/translator/implementation',
+	'ocelot/util/implementation',
+	'hydrazine/hydrazine/implementation',
 	'hydrazine/hydrazine/interface' ]
 extensions = ['*.cpp']
 
@@ -101,7 +101,7 @@ for dir in directories:
 	for ext in bison_extensions:
 		regexp = os.path.join(dir, ext)
 		bison_sources.extend(env.Glob(regexp))
-	
+
 # Generate the flex/bison .c/.cpp files
 for source in flex_sources:
 	lex = env.CXXFile(os.path.splitext(os.path.basename(str(source)))[0] \
@@ -162,11 +162,11 @@ OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
 env.Depends(OcelotHarness, libocelot)
 
-LoadPtx = env.Program('LoadPtx', ['ocelot/tools/LoadPtx.cpp'], 
+LoadPtx = env.Program('LoadPtx', ['ocelot/tools/LoadPtx.cpp'],
 	LIBS=ocelot_libs)
 env.Depends(LoadPtx, libocelot)
 
-if enableKernelExtractor and os.name != 'nt':		
+if enableKernelExtractor and os.name != 'nt':
 	kernelExtractorSources = [
 		'ocelot/tools/KernelExtractor.cpp',
 		'ocelot/util/implementation/ExtractedDeviceState.cpp',
@@ -195,7 +195,7 @@ Default(OcelotConfig)
 
 # Create the ocelot unit tests
 
-test_libs = ['-lboost_system-mt', '-lboost_filesystem-mt']
+test_libs = ['-lboost_system', '-lboost_filesystem']
 
 level_map = { 'none' : 0, 'basic' : 1, 'full' : 2 }
 enabled_tests = []
@@ -269,19 +269,19 @@ if enabled_tests:
 		env.Alias('tests', test[1])
 
 # find all header files in the source tree
-directories = ['ocelot/ir/interface', 
+directories = ['ocelot/ir/interface',
 	'ocelot/analysis/interface',
-	'ocelot/api/interface', 
-	'ocelot/cal/interface', 
-	'ocelot/cuda/interface', 
-	'ocelot/executive/interface', 
-	'ocelot/tools/interface', 
-	'ocelot/parser/interface', 
-	'ocelot/trace/interface', 
+	'ocelot/api/interface',
+	'ocelot/cal/interface',
+	'ocelot/cuda/interface',
+	'ocelot/executive/interface',
+	'ocelot/tools/interface',
+	'ocelot/parser/interface',
+	'ocelot/trace/interface',
 	'ocelot/transforms/interface',
 	'ocelot/translator/interface',
-	'ocelot/util/interface', 
-	'hydrazine/hydrazine/implementation', 
+	'ocelot/util/interface',
+	'hydrazine/hydrazine/implementation',
 	'hydrazine/hydrazine/interface' ]
 extensions = ['*.h', '*.hpp']
 
@@ -308,7 +308,7 @@ if env['install']:
 		env['install_path'], "bin"), LoadPtx))
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), OcelotLinker))
-		
+
 	if enableKernelExtractor and os.name != 'nt':
 		installed.append(env.Install(os.path.join(
 			env['install_path'], "lib"), KernelExtractorLib))
@@ -327,7 +327,7 @@ if env['install']:
 			os.path.relpath(str(header), '.'))
 		installed.append(env.Install(os.path.join( \
 			env['install_path'], "include", directoryPath), header))
-	
+
 
 	for i in installed:
 		env.AddPostAction(str(i), Chmod(str(i), 0644))
