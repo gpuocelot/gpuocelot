@@ -7,6 +7,10 @@ Ocelot is a modular dynamic compilation framework for heterogeneous system, prov
 # Installation
 Please check the installation guide [here](https://github.com/gtcasl/gpuocelot/wiki/Installation).
 
+```
+apt install libboost-all-dev  flex bison g++ scons clang libgl1-mesa-dev
+```
+
 # Resources
 * Source code documentation
 [http://gpuocelot.gatech.edu/doxygen](http://gpuocelot.gatech.edu/doxygen)
