@@ -14,9 +14,9 @@ import time
 from optparse import OptionParser
 import sys
 
-import StringIO
+from io import StringIO
 
-	
+
 ################################################################################
 ## A classes representing a configuration file
 class TraceConfig:
@@ -124,7 +124,7 @@ class OptimizationsConfig:
 		openFile.write("\t\thoistSpecialValues:       " + str(self.hoistSpecialValues) + ",\n")
 		openFile.write("\t\tenforceLockStepExecution: " + str(self.enforceLockStepExecution) + "\n")
 		openFile.write("\t}")
-	
+
 class CheckpointConfig:
 	def __init__(self):
 		self.enabled = False
@@ -132,7 +132,7 @@ class CheckpointConfig:
 		self.prefix  = "kernel_trace_"
 		self.suffix  = ".trace"
 		self.verify  = False
-		
+
 	def write(self, openFile):
 		openFile.write("\tcheckpoint: {\n")
 		openFile.write("\t\tenabled:  " + str(self.enabled) + ",\n")
@@ -179,9 +179,8 @@ class ConfigFile:
 	def __str__(self):
 		output = StringIO.StringIO()
 		self.write(output)
-		
+
 		return output.getvalue()
 
 
 ################################################################################
-
