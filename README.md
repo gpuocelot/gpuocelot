@@ -11,6 +11,15 @@ Please check the installation guide [here](https://github.com/gtcasl/gpuocelot/w
 apt install libboost-all-dev  flex bison g++ scons clang libgl1-mesa-dev
 ```
 
+```
+git submodule init
+git submodule update
+```
+
+```
+python3 build.py --install
+```
+
 # Resources
 * Source code documentation
 [http://gpuocelot.gatech.edu/doxygen](http://gpuocelot.gatech.edu/doxygen)
