@@ -696,7 +696,7 @@ void DivergenceAnalysis::_findBranches(branch_set& branches)
 				ptxInstruction =
 					static_cast<ir::PTXInstruction*>(lastInstruction.i);
 
-				if ((ptxInstruction->opcode == ir::PTXInstruction::Bra)) {
+				if (ptxInstruction->opcode == ir::PTXInstruction::Bra) {
 					report("  examining " << ptxInstruction->toString());
 					
 					if(ptxInstruction->uni == true) { 

@@ -288,7 +288,7 @@ def getTools():
 	if os.name == 'nt':
 		result = ['default', 'msvc']
 	elif os.name == 'posix':
-                result = ['default', 'c++', 'clang++']
+		result = ['default', 'c++'] #, 'clang++']
 		#result = ['default', 'c++', 'g++']
 	else:
 		result = ['default']
@@ -377,7 +377,7 @@ def getLibCXXPaths():
 	# determine defaults
 	if os.name == 'posix':
 		inc_path = '/usr/include'
-		lib_path = '/usr/lib/libc++.so'
+		lib_path = '/usr/lib/x86_64-linux-gnu/libc++.so'
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is libc++ installed?'
 
@@ -635,7 +635,7 @@ def Environment():
 
 	# CUDA builder
 	env.Append(BUILDERS = {'Cuda': Builder(
-		action=cuda_exe_path + '/nvcc -arch=sm_61 $SOURCE -c -o $TARGET',
+		action=cuda_exe_path + '/nvcc -ccbin=g++-4.7 -std=c++11 -arch=sm_20 $SOURCE -c -o $TARGET',
 		suffix = '.o',
 		src_suffix = '.cu'
 	)})
@@ -643,7 +643,7 @@ def Environment():
 	# CUDA builder
 	nvccPath = cuda_exe_path + ('/' if cuda_exe_path != '' else '')
 	env.Append(BUILDERS = {'Cuda': Builder(
-		action= nvccPath + 'nvcc -arch=sm_61 $SOURCE -c -o $TARGET',
+		action= nvccPath + 'nvcc -ccbin=g++-4.7 -std=c++11 -arch=sm_20 $SOURCE -c -o $TARGET',
 		suffix = '.o',
 		src_suffix = '.cu'
 	)})

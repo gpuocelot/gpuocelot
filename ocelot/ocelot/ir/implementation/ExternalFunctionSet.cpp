@@ -4,7 +4,7 @@
 	\brief  The source file for the ExternalFunctionSet class.
 */
 
-#ifndef EXTERNAL_FUCNTION_SET_CPP_INCLUDED
+#ifndef EXTERNAL_FUNCTION_SET_CPP_INCLUDED
 #define EXTERNAL_FUNCTION_SET_CPP_INCLUDED
 
 // Ocelot Includes
