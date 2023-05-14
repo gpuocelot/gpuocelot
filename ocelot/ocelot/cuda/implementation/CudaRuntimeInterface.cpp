@@ -896,4 +896,12 @@ void cuda::CudaRuntimeInterface::cudaTextureFetch(const void* tex,
 
 }
 
+cudaError_t cuda::CudaRuntimeInterface::cudaDeviceGetSharedMemConfig(enum cudaSharedMemConfig *pConfig) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
 
+cudaError_t cuda::CudaRuntimeInterface::cudaDeviceSetSharedMemConfig(enum cudaSharedMemConfig config) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}

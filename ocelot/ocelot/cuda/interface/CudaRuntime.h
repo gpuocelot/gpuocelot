@@ -610,7 +610,14 @@ namespace cuda {
 		virtual cudaError_t cudaGraphicsSubResourceGetMappedArray(
 			struct cudaArray **arrayPtr, struct cudaGraphicsResource *resource, 
 			unsigned int arrayIndex, unsigned int mipLevel);
-		
+
+	public:
+		//
+		// Shared memory configuration
+		//
+		virtual cudaError_t cudaDeviceGetSharedMemConfig(enum cudaSharedMemConfig *pConfig);
+		virtual cudaError_t cudaDeviceSetSharedMemConfig(enum cudaSharedMemConfig config);
+
 	public:
 
 		virtual void addTraceGenerator( trace::TraceGenerator& gen, 

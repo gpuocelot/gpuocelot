@@ -396,6 +396,12 @@ namespace cuda {
 		/*	Texture emulation */
 		virtual void cudaTextureFetch(const void* tex, void* index, 
 			int integer, void* val);
+
+		/*
+			Shared memory configuration
+		*/
+		virtual cudaError_t cudaDeviceGetSharedMemConfig(enum cudaSharedMemConfig *pConfig);
+		virtual cudaError_t cudaDeviceSetSharedMemConfig(enum cudaSharedMemConfig config);
 	public:
 	
 		/*! \brief Adds a trace generator for the next kernel invocation 

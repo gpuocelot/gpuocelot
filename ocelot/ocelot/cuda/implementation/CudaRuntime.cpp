@@ -3487,6 +3487,16 @@ cudaError_t cuda::CudaRuntime::cudaGraphicsSubResourceGetMappedArray(
 	return cudaSuccess;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+cudaError_t cuda::CudaRuntime::cudaDeviceGetSharedMemConfig(enum cudaSharedMemConfig *pConfig) {
+	*pConfig = cudaSharedMemBankSizeDefault;
+	return cudaSuccess;
+}
+
+cudaError_t cuda::CudaRuntime::cudaDeviceSetSharedMemConfig(enum cudaSharedMemConfig config) {
+	return cudaSuccess;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

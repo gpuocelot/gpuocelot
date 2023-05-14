@@ -714,6 +714,19 @@ cudaError_t cudaGetExportTable(const void **ppExportTable,
 		pExportTableId);
 }
 
+/*******************************************************************************
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*******************************************************************************/
+
+cudaError_t cudaDeviceGetSharedMemConfig(enum cudaSharedMemConfig *pConfig) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceGetSharedMemConfig(pConfig);
+}
+
+cudaError_t cudaDeviceSetSharedMemConfig(enum cudaSharedMemConfig config) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceSetSharedMemConfig(config);
+}
 
 /*******************************************************************************
 *                                                                              *

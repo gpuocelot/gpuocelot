@@ -355,6 +355,12 @@ struct textureReference {
 
 typedef struct CUuuid_st cudaUUID_t;
 
+enum cudaSharedMemConfig {
+  cudaSharedMemBankSizeDefault   = 0,
+  cudaSharedMemBankSizeFourByte  = 1,
+  cudaSharedMemBankSizeEightByte = 2
+};
+
 /*
  * Function        : Select a load image from the __cudaFat binary
  *                   that will run on the specified GPU.
@@ -749,6 +755,15 @@ extern cudaError_t cudaDriverGetVersion(int *driverVersion);
 extern cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
 extern cudaError_t cudaGetExportTable(const void **ppExportTable,
 	const cudaUUID_t *pExportTableId);
+
+/*******************************************************************************
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*******************************************************************************/
+
+extern cudaError_t cudaDeviceGetSharedMemConfig(enum cudaSharedMemConfig *pConfig);
+extern cudaError_t cudaDeviceSetSharedMemConfig(enum cudaSharedMemConfig config);
 
 #ifdef __cplusplus
 }
