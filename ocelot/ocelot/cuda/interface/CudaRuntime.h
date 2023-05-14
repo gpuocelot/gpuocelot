@@ -354,6 +354,10 @@ namespace cuda {
 			dim3 *gDim,
 			int *wSize
 		);
+
+		virtual char cudaInitModule(
+			void **fatCubinHandle
+		);
 		
 		virtual cudaError_t cudaGetExportTable(const void **ppExportTable,
 			const cudaUUID_t *pExportTableId);

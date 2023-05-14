@@ -319,7 +319,7 @@ gCompilerOptions = {
 			'warn_errors' : '-Werror',
 			'optimization' : '-O2', 'debug' : '-g',
 			'exception_handling' : '',
-			'standard': ['-stdlib=libc++', '-std=c++11', '-pthread']},
+			'standard': ['-std=c++11', '-pthread']},
 		'cl'  : {'warn_all' : '/Wall',
 			'warn_errors' : '/WX',
 			'optimization' : ['/Zi', '/Ox', '/DNDEBUG'],

@@ -89,6 +89,10 @@ namespace cuda {
 			dim3 *gDim,
 			int *wSize
 		);
+
+		virtual char cudaInitModule(
+			void **fatCubinHandle
+		);
 	
 		/*
 			Memory - 3D

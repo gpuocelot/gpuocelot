@@ -37,6 +37,7 @@ except:
 # libsdk
 #
 
+env.Append(CPPFLAGS = '-std=c++11')
 env.Append(CPPFLAGS=['-I' + env['TEST_PATH'] + '/common/include'])
 
 

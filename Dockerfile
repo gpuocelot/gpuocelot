@@ -26,9 +26,9 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
 
 RUN mkdir /tmp/cuda_toolkit && \
     cd /tmp/cuda_toolkit && \
-    wget http://developer.download.nvidia.com/compute/cuda/5_0/rel-update-1/installers/cuda_5.0.35_linux_64_ubuntu11.10-1.run && \
-    chmod +x cuda_5.0.35_linux_64_ubuntu11.10-1.run && \
-    ./cuda_5.0.35_linux_64_ubuntu11.10-1.run --tar mxvf
+    wget http://developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.18_linux.run && \
+    chmod +x cuda_7.5.18_linux.run && \
+    ./cuda_7.5.18_linux.run --tar mxvf
 
 RUN cd /tmp/cuda_toolkit && \
     ./cuda-installer.pl -silent -toolkit && \
@@ -37,15 +37,15 @@ RUN cd /tmp/cuda_toolkit && \
     sed -i "s|#error -- unsupported GNU version|#warning -- unsupported GNU version|g" /usr/local/cuda/include/host_config.h && \
     ldconfig
 
-#ENV PATH /usr/local/cuda/bin:$PATH
+ENV PATH /usr/local/cuda/bin:$PATH
 
-#RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 40 && \
-#    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 40
+RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-4.7 40 && \
+    update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-4.7 40
 
-#WORKDIR /usr/local/src
-#COPY . /usr/local/src/gpuocelot
+WORKDIR /usr/local/src
+COPY . /usr/local/src/gpuocelot
 
-#RUN cd gpuocelot && ./build.py --thread 4 --install && \
-#    ldconfig && \ 
-#    cd trace-generators && scons install && \
-#    ldconfig
+RUN cd gpuocelot && ./build.py --thread 4 --install && \
+    ldconfig && \ 
+    cd trace-generators && scons install && \
+    ldconfig

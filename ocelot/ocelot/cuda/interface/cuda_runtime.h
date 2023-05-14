@@ -449,6 +449,10 @@ extern void __cudaRegisterFunction(
         int *wSize
 );
 
+extern char __cudaInitModule(
+	void **fatCubinHandle
+);
+
 /*******************************************************************************
 *                                                                              *
 *                                                                              *

@@ -741,6 +741,11 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	_unlock();
 }
 
+char cuda::CudaRuntime::cudaInitModule(
+	void **fatCubinHandle) {
+	return 0;
+}
+
 cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
 	const cudaUUID_t *pExportTableId) {
 

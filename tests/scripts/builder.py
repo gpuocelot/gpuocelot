@@ -47,7 +47,10 @@ def InitializeEnvironment(env, builder):
 	# get CUDA paths
 	(cuda_exe_path, cuda_lib_path, cuda_inc_path)  = getCudaPaths()
 
-	env.Append(CPPFLAGS=['-Wall', '-O2', '-g', '-I.', '-I' + cuda_inc_path, '-std=c++0x'])
+	env['CC'] = 'cc'
+	env['CXX'] = 'c++'
+	env.Append(CCFLAGS=['-Wall', '-O2', '-g', '-I.'])
+	env.Append(CXXFLAGS=['-Wall', '-O2', '-g', '-I.', '-I' + cuda_inc_path, '-std=c++11'])
 
 	env.Replace(CUDA_PATHS=getCudaPaths())
 

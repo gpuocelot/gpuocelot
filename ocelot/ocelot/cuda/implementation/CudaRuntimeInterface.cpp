@@ -206,6 +206,11 @@ void cuda::CudaRuntimeInterface::cudaRegisterFunction(
 	assert(0 && "unimplemented");
 }
 
+char cuda::CudaRuntimeInterface::cudaInitModule(
+	void **fatCubinHandle) {
+	assert(0 && "unimplemented");
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntimeInterface::cudaMalloc3D(

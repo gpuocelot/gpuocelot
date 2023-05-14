@@ -90,6 +90,11 @@ void __cudaRegisterFunction(
 		deviceName, thread_limit, tid, bid, bDim, gDim, wSize);
 }
 
+char __cudaInitModule(
+        void **fatCubinHandle) {
+	return cuda::CudaRuntimeInterface::get()->cudaInitModule(fatCubinHandle);
+}
+
 /*******************************************************************************
 *                                                                              *
 *                                                                              *
