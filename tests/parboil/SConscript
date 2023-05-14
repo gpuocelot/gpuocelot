@@ -37,9 +37,8 @@ except:
 # libsdk
 #
 
-env.Append(CPPFLAGS = '-std=c++11')
 env.Append(CPPFLAGS=['-I' + env['TEST_PATH'] + '/common/include'])
-
+env.Append(CPPFLAGS=['-I/usr/local/cuda/include'])
 
 sources = [	
 	'common/src/parboil.c','common/src/parboil_cuda.c'
