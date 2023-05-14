@@ -53,9 +53,6 @@
 #define CUPRINTF_CU
 
 #include "cuPrintf.cuh"
-#if __CUDA_ARCH__ > 100      // Atomics only used with > sm_10 architecture
-#include <sm_11_atomic_functions.h>
-#endif
 
 // This is the smallest amount of memory, per-thread, which is allowed.
 // It is also the largest amount of space a single printf() can take up
