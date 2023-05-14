@@ -7,11 +7,11 @@
  ***************************************************************************/
 
 #include <cuda.h>
+#include <climits>
 #include <stdio.h>
 
 #include "scanLargeArray.h"
 
-#define UINT32_MAX 4294967295
 #define BITS 4
 #define LNB 4
 
@@ -97,7 +97,7 @@ __global__ static void splitSort(int numElems, int iter, unsigned int* keys, uns
     const unsigned int gid = blockIdx.x*4*SORT_BS+4*threadIdx.x;
 
     // Copy input to shared mem. Assumes input is always even numbered
-    uint4 lkey = { UINT32_MAX, UINT32_MAX, UINT32_MAX, UINT32_MAX};
+    uint4 lkey = { UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX};
     uint4 lvalue;
     if (gid < numElems){
       lkey = *((uint4*)(keys+gid));
@@ -171,10 +171,10 @@ __global__ void splitRearrange (int numElems, int iter, unsigned int* keys_i, un
     mine = *((uint4*)(keys_i+index));
     value = *((uint4*)(values_i+index));
   } else {
-    mine.x = UINT32_MAX;
-    mine.y = UINT32_MAX;
-    mine.z = UINT32_MAX;
-    mine.w = UINT32_MAX;
+    mine.x = UINT_MAX;
+    mine.y = UINT_MAX;
+    mine.z = UINT_MAX;
+    mine.w = UINT_MAX;
   }
   uint4 masks = {(mine.x&((1<<(BITS*(iter+1)))-1))>>(BITS*iter),
                  (mine.y&((1<<(BITS*(iter+1)))-1))>>(BITS*iter),

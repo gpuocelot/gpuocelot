@@ -136,7 +136,7 @@ int main(int argc, char* argv[]) {
   pb_SwitchToTimer(&timers, pb_TimerID_GPU);
 
   for (int iter = 0; iter < numIterations; iter++) {
-    unsigned int ranges_h[2] = {UINT32_MAX, 0};
+    unsigned int ranges_h[2] = {UINT_MAX, 0};
 
     cudaMemcpy(ranges,ranges_h, 2*sizeof(unsigned int), cudaMemcpyHostToDevice);
 
