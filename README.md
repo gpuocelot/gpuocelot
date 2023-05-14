@@ -13,6 +13,8 @@ docker build -t gpuocelot .
 ## Testing
 
 ```
+docker run --rm -it gpuocelot bash
+cd gpuocelot
 ./build.py  -t full
 ```
 
