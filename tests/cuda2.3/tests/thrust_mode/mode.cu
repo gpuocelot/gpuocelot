@@ -6,11 +6,12 @@
 #undef _GLIBCXX_ATOMIC_BUILTINS
 #endif
 
-	#include <thrust/device_vector.h>
+#include <thrust/device_vector.h>
 #include <thrust/host_vector.h>
 #include <thrust/sort.h>
 #include <thrust/scan.h>
 #include <thrust/iterator/zip_iterator.h>
+#include <thrust/extrema.h>
 
 #include <iostream>
 #include <iterator>
