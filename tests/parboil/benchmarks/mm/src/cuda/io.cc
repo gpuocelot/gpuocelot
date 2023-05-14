@@ -33,7 +33,7 @@ bool readColMajorMatrixFile(const char *fn, int &nr_row, int &nr_col, std::vecto
     v.push_back(data);
   }
   v.pop_back(); // remove the duplicated last element
-
+  return true;
 }
 
 bool writeColMajorMatrixFile(const char *fn, int nr_row, int nr_col, std::vector<float>&v)
