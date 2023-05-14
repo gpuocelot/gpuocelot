@@ -26,7 +26,7 @@ class StopWatchInterface
 {
 public:
 	StopWatchInterface() {};
-	~StopWatchInterface() {};
+	virtual ~StopWatchInterface() {};
 
 public:
     //! Start time measurement
