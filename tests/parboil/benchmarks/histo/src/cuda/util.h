@@ -22,7 +22,7 @@
 #endif
 
 #define UNROLL 16
-#define UINT8_MAX 255
-#define UINT32_MAX 4294967295
+
+#include <climits>
 
 void dump_histo_img(unsigned char* histo, unsigned int height, unsigned int width, const char *filename);
