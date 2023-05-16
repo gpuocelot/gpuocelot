@@ -11,8 +11,8 @@
 #include <ocelot/transforms/interface/AffineRegister.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/SystemCompatibility.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/SystemCompatibility.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

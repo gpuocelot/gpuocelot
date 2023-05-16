@@ -12,10 +12,9 @@
 #include <ocelot/translator/interface/Translator.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/json.h>
-#include <hydrazine/interface/Version.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/json.h>
+#include <hydrazine/Exception.h>
+#include <hydrazine/debug.h>
 
 // C stdlib includes
 #include <cassert>
@@ -431,8 +430,7 @@ void *api::OcelotConfiguration::initialize(std::istream &stream, bool preserve) 
 			optimizations.enforceLockStepExecution = true;
 		}
 		
-		version = main.parse<std::string>("version", 
-			hydrazine::Version().toString());
+		version = main.parse<std::string>("version", "TODO"); 
 		ocelot = main.parse<std::string>("ocelot", "ocelot");
 	}
 	catch (hydrazine::Exception exp) {

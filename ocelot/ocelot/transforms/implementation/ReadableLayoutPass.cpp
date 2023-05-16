@@ -11,7 +11,7 @@
 
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 // Standard Library Includes
 #include <queue>

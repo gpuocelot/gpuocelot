@@ -17,7 +17,7 @@
 #include <ocelot/executive/interface/TextureOperations.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/math.h>
+#include <hydrazine/math.h>
 
 // Boost Includes
 #include <boost/thread/mutex.hpp>

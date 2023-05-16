@@ -7,7 +7,7 @@
 #ifndef TEST_DEVICE_SWITCHING_H_INCLUDED
 #define TEST_DEVICE_SWITCHING_H_INCLUDED
 
-#include <hydrazine/interface/Test.h>
+#include <hydrazine/Test.h>
 
 namespace test
 {

@@ -11,7 +11,7 @@
 #include <ocelot/ir/interface/IRKernel.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 // Preprocessor Defines
 #ifdef REPORT_BASE

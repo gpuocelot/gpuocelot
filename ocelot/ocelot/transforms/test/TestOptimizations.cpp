@@ -13,8 +13,8 @@
 #include <ocelot/ir/interface/Module.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/string.h>
+#include <hydrazine/ArgumentParser.h>
+#include <hydrazine/string.h>
 
 // Boost Includes
 #include <boost/filesystem.hpp>

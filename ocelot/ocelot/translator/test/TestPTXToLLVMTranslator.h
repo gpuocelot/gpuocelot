@@ -8,7 +8,7 @@
 #ifndef TEST_PTX_TO_LLVM_TRANSLATOR_H_INCLUDED
 #define TEST_PTX_TO_LLVM_TRANSLATOR_H_INCLUDED
 
-#include <hydrazine/interface/Test.h>
+#include <hydrazine/Test.h>
 
 namespace test
 {

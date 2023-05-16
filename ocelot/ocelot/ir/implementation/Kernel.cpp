@@ -6,7 +6,7 @@
 
 #include <ocelot/ir/interface/Kernel.h>
 
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

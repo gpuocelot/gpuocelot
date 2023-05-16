@@ -11,8 +11,8 @@
 #include <ocelot/parser/interface/PTXParser.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/string.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/string.h>
 
 // Standard Library Includes
 #include <cassert>

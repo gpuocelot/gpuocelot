@@ -7,7 +7,7 @@
 #ifndef TEST_INSTRUCTION_THROUGHPUT_H_INCLUDED
 #define TEST_INSTRUCTION_THROUGHPUT_H_INCLUDED
 
-#include <hydrazine/interface/Test.h>
+#include <hydrazine/Test.h>
 
 namespace test
 {

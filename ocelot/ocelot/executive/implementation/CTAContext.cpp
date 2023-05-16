@@ -7,7 +7,7 @@
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

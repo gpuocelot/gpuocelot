@@ -78,8 +78,8 @@ directories = ['ocelot/ir/implementation',
 	'ocelot/transforms/implementation',
 	'ocelot/translator/implementation',
 	'ocelot/util/implementation',
-	'hydrazine/hydrazine/implementation',
-	'hydrazine/hydrazine/interface' ]
+	'hydrazine/src',
+    'hydrazine/include' ]
 extensions = ['*.cpp']
 
 for dir in directories:
@@ -176,17 +176,16 @@ if enableKernelExtractor and os.name != 'nt':
 		'ocelot/ir/implementation/Texture.cpp',
 		'ocelot/ir/implementation/Dim3.cpp',
 		'ocelot/cuda/implementation/FatBinaryContext.cpp',
-		"hydrazine/hydrazine/implementation/ArgumentParser.cpp",
-		"hydrazine/hydrazine/implementation/json.cpp",
-		"hydrazine/hydrazine/implementation/debug.cpp",
-		"hydrazine/hydrazine/implementation/Timer.cpp",
-		"hydrazine/hydrazine/implementation/LowLevelTimer.cpp",
-		"hydrazine/hydrazine/implementation/XmlLexer.cpp",
-		"hydrazine/hydrazine/implementation/Exception.cpp",
-		"hydrazine/hydrazine/implementation/string.cpp",
-		"hydrazine/hydrazine/implementation/FloatingPoint.cpp",
-		"hydrazine/hydrazine/implementation/SystemCompatibility.cpp",
-		"hydrazine/hydrazine/interface/Stringable.cpp",
+		"hydrazine/src/ArgumentParser.cpp",
+		"hydrazine/src/json.cpp",
+		"hydrazine/src/debug.cpp",
+		"hydrazine/src/Timer.cpp",
+		"hydrazine/src/LowLevelTimer.cpp",
+		"hydrazine/src/XmlLexer.cpp",
+		"hydrazine/src/Exception.cpp",
+		"hydrazine/src/string.cpp",
+		"hydrazine/src/FloatingPoint.cpp",
+		"hydrazine/src/SystemCompatibility.cpp",
 		]
 	KernelExtractorLib = env.SharedLibrary('kernelExtractor',
 		kernelExtractorSources, LIBS=ocelot_dep_libs)
@@ -281,8 +280,8 @@ directories = ['ocelot/ir/interface',
 	'ocelot/transforms/interface',
 	'ocelot/translator/interface',
 	'ocelot/util/interface',
-	'hydrazine/hydrazine/implementation',
-	'hydrazine/hydrazine/interface' ]
+	'hydrazine/src',
+	'hydrazine/include' ]
 extensions = ['*.h', '*.hpp']
 
 headers = []

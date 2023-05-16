@@ -25,10 +25,10 @@
 #include <ocelot/executive/interface/ExecutableKernel.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/string.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/Casts.h>
+#include <hydrazine/Exception.h>
+#include <hydrazine/string.h>
+#include <hydrazine/debug.h>
 
 // GL includes
 //#include <GL/glew.h>

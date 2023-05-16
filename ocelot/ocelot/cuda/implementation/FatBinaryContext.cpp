@@ -9,9 +9,9 @@
 #include <ocelot/cuda/interface/FatBinaryContext.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/compression.h>
-#include <hydrazine/interface/ELFFile.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/compression.h>
+#include <hydrazine/ELFFile.h>
 
 // Standard Library Includes
 #include <cstring>

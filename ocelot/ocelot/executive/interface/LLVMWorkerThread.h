@@ -11,7 +11,7 @@
 #include <ocelot/executive/interface/LLVMModuleManager.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/Thread.h>
+#include <hydrazine/Thread.h>
 
 // Forward Declarations
 namespace executive

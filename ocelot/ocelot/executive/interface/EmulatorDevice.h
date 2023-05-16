@@ -11,7 +11,7 @@
 #include <ocelot/executive/interface/Device.h>
 
 // hydrazine includes
-#include <hydrazine/interface/Timer.h>
+#include <hydrazine/Timer.h>
 
 // stdnard library includes
 #include <unordered_set>

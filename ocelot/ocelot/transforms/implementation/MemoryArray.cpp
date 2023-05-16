@@ -7,7 +7,7 @@
 
 #include <ocelot/transforms/interface/MemoryArray.h>
 
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 #include <iostream>
 #include <string>

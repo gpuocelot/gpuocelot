@@ -14,7 +14,7 @@
 #include <ocelot/ir/interface/Module.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/Thread.h>
+#include <hydrazine/Thread.h>
 
 // Standard Library Includes
 #include <vector>

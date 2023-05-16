@@ -8,7 +8,7 @@
 #include <ocelot/transforms/interface/DivergenceRegister.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/SystemCompatibility.h>
+#include <hydrazine/SystemCompatibility.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

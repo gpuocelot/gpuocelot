@@ -10,8 +10,8 @@
 #include <ocelot/ir/interface/IRKernel.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/string.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/string.h>
+#include <hydrazine/debug.h>
 
 // STL includes
 #include <functional>

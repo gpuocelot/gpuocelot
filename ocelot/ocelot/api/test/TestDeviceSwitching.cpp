@@ -12,9 +12,9 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
-#include <hydrazine/interface/Thread.h>
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/Thread.h>
+#include <hydrazine/ArgumentParser.h>
+#include <hydrazine/debug.h>
 
 #include <vector>
 

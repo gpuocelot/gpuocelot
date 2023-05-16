@@ -9,7 +9,7 @@
 
 #include <ocelot/api/interface/ocelot.h>
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
-#include <hydrazine/interface/Exception.h>
+#include <hydrazine/Exception.h>
 
 namespace ocelot
 {

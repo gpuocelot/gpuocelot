@@ -9,8 +9,8 @@
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/ir/interface/Module.h>
 
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/Exception.h>
+#include <hydrazine/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

@@ -12,8 +12,8 @@
 #include <ocelot/ir/interface/Instruction.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/string.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/string.h>
+#include <hydrazine/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

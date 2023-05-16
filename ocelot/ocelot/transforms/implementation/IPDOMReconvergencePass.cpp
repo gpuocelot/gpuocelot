@@ -17,7 +17,7 @@
 #include <ocelot/analysis/interface/DominatorTree.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 // Standard Library Includes
 #include <unordered_map>

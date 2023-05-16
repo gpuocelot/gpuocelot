@@ -16,7 +16,7 @@
 #include <algorithm>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE

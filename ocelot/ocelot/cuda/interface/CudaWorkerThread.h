@@ -12,7 +12,7 @@
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/Thread.h>
+#include <hydrazine/Thread.h>
 
 // Standard Library Includes
 #include <string>

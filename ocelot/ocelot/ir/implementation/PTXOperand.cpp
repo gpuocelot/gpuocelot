@@ -6,7 +6,7 @@
 
 #include <ocelot/ir/interface/PTXOperand.h>
 
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 #include <cassert>
 #include <sstream>

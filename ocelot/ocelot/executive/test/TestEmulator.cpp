@@ -9,12 +9,12 @@
 #include <sstream>
 #include <fstream>
 
-#include <hydrazine/interface/Test.h>
+#include <hydrazine/Test.h>
 
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/macros.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/Exception.h>
+#include <hydrazine/ArgumentParser.h>
+#include <hydrazine/macros.h>
+#include <hydrazine/debug.h>
 
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>

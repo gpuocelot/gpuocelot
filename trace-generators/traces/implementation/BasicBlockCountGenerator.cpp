@@ -21,8 +21,8 @@
 #include <traces/interface/BasicBlockCountGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/string.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/string.h>
 
 // Debugging messages
 #ifdef REPORT_BASE

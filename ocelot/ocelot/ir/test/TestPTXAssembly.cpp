@@ -13,12 +13,12 @@
 
 #include <ocelot/api/interface/ocelot.h>
 
-#include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/string.h>
-#include <hydrazine/interface/math.h>
-#include <hydrazine/interface/FloatingPoint.h>
+#include <hydrazine/Casts.h>
+#include <hydrazine/ArgumentParser.h>
+#include <hydrazine/Exception.h>
+#include <hydrazine/string.h>
+#include <hydrazine/math.h>
+#include <hydrazine/FloatingPoint.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 

@@ -11,8 +11,8 @@
 #include <ocelot/ir/interface/PTXStatement.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/Casts.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/Casts.h>
 
 // Standard Library Includes
 #include <cstring>

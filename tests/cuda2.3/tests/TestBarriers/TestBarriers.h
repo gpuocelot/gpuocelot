@@ -7,7 +7,7 @@
 #ifndef TEST_BARRIERS_H_INCLUDED
 #define TEST_BARRIERS_H_INCLUDED
 
-#include <hydrazine/interface/Test.h>
+#include <hydrazine/Test.h>
 
 namespace test
 {

@@ -14,8 +14,8 @@
 #include <ocelot/ir/interface/IRKernel.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/string.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/string.h>
+#include <hydrazine/debug.h>
 
 // Standard Library Includes
 #include <unordered_set>

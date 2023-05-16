@@ -4,9 +4,8 @@
  *  \brief The implementation file for the PtxToIlTranslator class.
  */
 
-#include <hydrazine/interface/Version.h>
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/ArgumentParser.h>
+#include <hydrazine/debug.h>
 #include <ocelot/translator/test/PtxToIlTranslator.h>
 #include <ocelot/translator/interface/PTXToILTranslator.h>
 #include <ocelot/ir/interface/Module.h>
@@ -42,11 +41,8 @@ void PtxToIlTranslator::translate()
 		translatedKernel->assemble();
 		std::ofstream ilFile( il.c_str() );
 		
-		hydrazine::Version version;
-		
 		ilFile << "; Kernel: " << kernel->name << "\n";
-		ilFile << "; Translated from PTX to IL by Ocelot " 
-			<< version.toString() << " \n";		
+		ilFile << "; Translated from PTX to IL by Ocelot TODO\n"; 
 		ilFile << translatedKernel->code();
 	}	
 }

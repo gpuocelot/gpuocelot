@@ -11,8 +11,8 @@
 #define PARALLELISM_TRACE_ANALYZER_CPP_INCLUDED
 
 #include <traces/interface/ParallelismTraceAnalyzer.h>
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/Exception.h>
+#include <hydrazine/ArgumentParser.h>
+#include <hydrazine/Exception.h>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/string.hpp>
 #include <fstream>

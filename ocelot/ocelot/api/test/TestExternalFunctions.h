@@ -8,7 +8,7 @@
 #define TEST_EXTERNAL_FUNCTIONS_H_INCLUDED
 
 // Hydrazine Includes
-#include <hydrazine/interface/Test.h>
+#include <hydrazine/Test.h>
 
 namespace test
 {

@@ -11,7 +11,7 @@
 #include <ocelot/executive/interface/EmulatedKernel.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 

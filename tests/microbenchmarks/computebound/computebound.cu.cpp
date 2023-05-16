@@ -26860,17 +26860,17 @@ extern template class basic_ostringstream< wchar_t, char_traits< wchar_t> , allo
 extern template class basic_stringstream< wchar_t, char_traits< wchar_t> , allocator< wchar_t> > ;
 # 271 "/usr/include/c++/4.4/bits/sstream.tcc" 3
 }
-# 23 "/usr/local/include/hydrazine/interface/Stringable.h" 3
+# 23 "/usr/local/include/hydrazine/Stringable.h" 3
 namespace hydrazine {
-# 31 "/usr/local/include/hydrazine/interface/Stringable.h" 3
+# 31 "/usr/local/include/hydrazine/Stringable.h" 3
 class Stringable {
-# 41 "/usr/local/include/hydrazine/interface/Stringable.h" 3
+# 41 "/usr/local/include/hydrazine/Stringable.h" 3
 public: virtual ~Stringable();
-# 53 "/usr/local/include/hydrazine/interface/Stringable.h" 3
+# 53 "/usr/local/include/hydrazine/Stringable.h" 3
 virtual std::string toString() const;
-# 55 "/usr/local/include/hydrazine/interface/Stringable.h" 3
+# 55 "/usr/local/include/hydrazine/Stringable.h" 3
 };
-# 58 "/usr/local/include/hydrazine/interface/Stringable.h" 3
+# 58 "/usr/local/include/hydrazine/Stringable.h" 3
 }
 # 20 "/usr/local/include/hydrazine/implementation/Timer.h" 3
 namespace hydrazine {

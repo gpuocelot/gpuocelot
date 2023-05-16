@@ -8,8 +8,8 @@
 #include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 
-#include <hydrazine/interface/string.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/string.h>
+#include <hydrazine/debug.h>
 
 #include <set>
 #include <unordered_set>

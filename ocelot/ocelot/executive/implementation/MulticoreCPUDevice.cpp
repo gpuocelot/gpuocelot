@@ -14,9 +14,9 @@
 #include <ocelot/executive/interface/LLVMExecutionManager.h>
 
 // hydrazine includes
-#include <hydrazine/interface/SystemCompatibility.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/Casts.h>
+#include <hydrazine/SystemCompatibility.h>
+#include <hydrazine/Exception.h>
+#include <hydrazine/Casts.h>
 
 // Standard Library Includes
 #include <cstring>

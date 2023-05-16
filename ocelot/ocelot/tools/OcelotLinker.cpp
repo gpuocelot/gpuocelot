@@ -13,10 +13,10 @@
 #include <ocelot/ir/interface/Module.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/string.h>
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/SystemCompatibility.h>
+#include <hydrazine/ArgumentParser.h>
+#include <hydrazine/string.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/SystemCompatibility.h>
 
 // Standard Library Includes
 #include <fstream>

@@ -8,9 +8,8 @@
 #define LLVM_KERNEL_CPP_INCLUDED
 
 #include <ocelot/ir/interface/LLVMKernel.h>
-#include <hydrazine/interface/Version.h>
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/string.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/string.h>
 
 #include <configure.h>
 
@@ -40,10 +39,7 @@ namespace ir
 	{
 		_code.clear();
 		
-		hydrazine::Version version;
-		
-		_code += "; Code assembled by Ocelot LLVMKernel " + version.toString() 
-			+ "\n\n";
+		_code += "; Code assembled by Ocelot LLVMKernel TODO\n\n";
 		
 		for( LLVMStatementVector::const_iterator 
 			statement = llvmStatements().begin(); 

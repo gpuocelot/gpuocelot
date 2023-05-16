@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <hydrazine/interface/Test.h>
+#include <hydrazine/Test.h>
 
 namespace test
 {

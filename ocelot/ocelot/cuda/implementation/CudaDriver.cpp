@@ -10,8 +10,8 @@
 #include <ocelot/cuda/interface/CudaDriver.h>
 
 // hydrazine includes
-#include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/Casts.h>
+#include <hydrazine/debug.h>
 
 // Linux system headers
 #if __GNUC__

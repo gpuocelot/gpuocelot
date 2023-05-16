@@ -14,8 +14,8 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/Casts.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/Casts.h>
 
 // Confguration
 #include <configure.h>

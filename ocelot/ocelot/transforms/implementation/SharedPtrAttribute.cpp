@@ -13,8 +13,7 @@
 #include <ocelot/transforms/interface/SharedPtrAttribute.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/Version.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 

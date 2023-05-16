@@ -20,10 +20,10 @@
 #include <boost/asio.hpp>
 
 // hydrazine includes
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/string.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/ArgumentParser.h>
+#include <hydrazine/Exception.h>
+#include <hydrazine/string.h>
+#include <hydrazine/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

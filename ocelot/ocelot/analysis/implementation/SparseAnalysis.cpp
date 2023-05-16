@@ -11,7 +11,7 @@
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/AffineAnalysis.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 namespace analysis {
 

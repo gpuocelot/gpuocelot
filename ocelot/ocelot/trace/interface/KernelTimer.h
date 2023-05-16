@@ -12,7 +12,7 @@
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/Timer.h>
+#include <hydrazine/Timer.h>
 
 namespace trace {
 

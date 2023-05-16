@@ -18,7 +18,7 @@
 #include <traces/interface/KernelDimensionsGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/Exception.h>
 
 // Boost includes
 #include <boost/filesystem.hpp>

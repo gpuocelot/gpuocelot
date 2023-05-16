@@ -19,8 +19,7 @@
 #include <ocelot/transforms/interface/ReadableLayoutPass.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/Version.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 

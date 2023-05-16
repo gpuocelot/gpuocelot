@@ -8,7 +8,7 @@
 #ifndef TEST_PARSER_H_INCLUDED
 #define TEST_PARSER_H_INCLUDED
 
-#include <hydrazine/interface/Test.h>
+#include <hydrazine/Test.h>
 #include <deque>
 
 namespace test

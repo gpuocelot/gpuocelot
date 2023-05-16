@@ -7,7 +7,7 @@
 #ifndef ATOMICS_H_INCLUDED
 #define ATOMICS_H_INCLUDED
 
-#include <hydrazine/interface/Test.h>
+#include <hydrazine/Test.h>
 
 namespace test
 {

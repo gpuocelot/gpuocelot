@@ -12,9 +12,9 @@
 #include <fstream>
 #include <string>
 
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/macros.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/ArgumentParser.h>
+#include <hydrazine/macros.h>
+#include <hydrazine/debug.h>
 
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/Kernel.h>

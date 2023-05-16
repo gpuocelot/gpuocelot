@@ -24,7 +24,7 @@ ocelotIncludePath, ocelotLibPath, ocelotBinPath = getOcelotPaths()
 #
 
 env = Environment()
-env.Append(CPPPATH = [ocelotIncludePath, '.', os.path.join(ocelotIncludePath, 'hydrazine')])
+env.Append(CPPPATH = [ocelotIncludePath, '.', os.path.join('..', os.path.join('ocelot', os.path.join('hydrazine', 'include')))])
 env.Append(CXXFLAGS = ['-std=c++0x'])
 env.Append(LIBPATH = [ocelotLibPath])
 

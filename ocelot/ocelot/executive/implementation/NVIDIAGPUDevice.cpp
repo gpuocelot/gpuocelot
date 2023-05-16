@@ -19,11 +19,11 @@
 #include <ocelot/transforms/interface/SharedPtrAttribute.h>
 
 // hydrazine includes
-#include <hydrazine/interface/SystemCompatibility.h>
-#include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/string.h>
+#include <hydrazine/SystemCompatibility.h>
+#include <hydrazine/Casts.h>
+#include <hydrazine/Exception.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/string.h>
 
 // standard library includes
 #include <cstring>

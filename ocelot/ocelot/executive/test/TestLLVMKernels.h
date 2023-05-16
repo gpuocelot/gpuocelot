@@ -8,7 +8,7 @@
 #ifndef TEST_LLVM_KERNELS_H_INCLUDED
 #define TEST_LLVM_KERNELS_H_INCLUDED
 
-#include <hydrazine/interface/Test.h>
+#include <hydrazine/Test.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/ir/interface/Module.h>
 

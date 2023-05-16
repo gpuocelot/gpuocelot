@@ -19,8 +19,8 @@
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/Casts.h>
+#include <hydrazine/debug.h>
 
 // Standard Library Includes
 #include <climits>

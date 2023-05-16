@@ -17,9 +17,9 @@
 #include <ocelot/parser/interface/PTXParser.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/ArgumentParser.h>
+#include <hydrazine/Exception.h>
+#include <hydrazine/debug.h>
 
 // Boost Includes
 #include <boost/filesystem.hpp>

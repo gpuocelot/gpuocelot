@@ -7,7 +7,7 @@
 #ifndef ATOMICS_CPP_INCLUDED
 #define ATOMICS_CPP_INCLUDED
 
-#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/ArgumentParser.h>
 #include <cuda_runtime_api.h>
 
 #include "atomics.h"

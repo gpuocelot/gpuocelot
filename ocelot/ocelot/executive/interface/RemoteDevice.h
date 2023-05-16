@@ -15,7 +15,7 @@
 #include <ocelot/util/interface/RemoteDeviceMessage.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/Timer.h>
+#include <hydrazine/Timer.h>
 
 // Boost includes
 #include <boost/thread/thread.hpp>

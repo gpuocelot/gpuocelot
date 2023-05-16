@@ -12,7 +12,7 @@
 #include <ocelot/executive/test/TestLLVMKernels.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/api/interface/OcelotConfiguration.h>
-#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/ArgumentParser.h>
 
 #include <configure.h>
 

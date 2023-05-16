@@ -12,7 +12,7 @@
 #include <ocelot/analysis/interface/PostdominatorTree.h>
 #include <ocelot/analysis/interface/DivergenceGraph.h>
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 // Standard Library Includes
 #include <stack>

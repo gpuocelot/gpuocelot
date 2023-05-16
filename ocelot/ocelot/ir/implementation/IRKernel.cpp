@@ -12,8 +12,7 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 
-#include <hydrazine/interface/Version.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

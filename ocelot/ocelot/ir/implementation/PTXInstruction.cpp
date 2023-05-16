@@ -6,7 +6,7 @@
 */
 
 #include <ocelot/ir/interface/PTXInstruction.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 #include <sstream>
 
 std::string ir::PTXInstruction::toString( Level l ) {

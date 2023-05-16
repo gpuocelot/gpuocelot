@@ -8,7 +8,7 @@
 #define TEST_PTX_ASSEMBLY_H_INCLUDED
 
 #include <ocelot/ir/interface/Instruction.h>
-#include <hydrazine/interface/Test.h>
+#include <hydrazine/Test.h>
 #include <vector>
 
 namespace test

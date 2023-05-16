@@ -6,9 +6,9 @@
 
 #include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
 
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/macros.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/Exception.h>
+#include <hydrazine/macros.h>
 
 
 #ifdef REPORT_BASE

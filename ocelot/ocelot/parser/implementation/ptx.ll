@@ -22,8 +22,8 @@
 	#include <ocelot/parser/interface/PTXLexer.h>
 
 	// Hydrazine Includes
-	#include <hydrazine/interface/macros.h>
-	#include <hydrazine/interface/string.h>
+	#include <hydrazine/macros.h>
+	#include <hydrazine/string.h>
 
 	// Standard Library Includes
 	#include <cassert>

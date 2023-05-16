@@ -9,7 +9,7 @@
 #include <ocelot/analysis/interface/PostdominatorTree.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 // Standard Library Includes
 #include <cassert>

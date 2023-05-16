@@ -9,9 +9,8 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/parser/interface/PTXParser.h>
 
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/Version.h>
-#include <hydrazine/interface/Exception.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/Exception.h>
 
 #include <fstream>
 #include <cassert>
@@ -317,8 +316,7 @@ void ir::Module::writeIR( std::ostream& stream, PTXEmitter::Target emitterTarget
 	assert( loaded() );
 	report("Writing module (IR) - " << _modulePath << " - to output stream.");
 
-	stream << "/*\n* Ocelot Version : " 
-		<< hydrazine::Version().toString() << "\n*/\n\n";
+	stream << "/*\n* Ocelot Version : TODO\n*/\n\n";
 		
 	stream << _version.toString() << "\n";
 	stream << _target.toString()  << "\n";

@@ -20,10 +20,10 @@
 #include <ocelot/api/interface/OcelotConfiguration.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/FloatingPoint.h>
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/math.h>
+#include <hydrazine/Casts.h>
+#include <hydrazine/FloatingPoint.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/math.h>
 
 // Standard Library Includes
 #include <cassert>

@@ -13,7 +13,7 @@
 #include <ocelot/transforms/interface/Pass.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/Exception.h>
+#include <hydrazine/Exception.h>
 
 namespace ir { class Kernel; }
 

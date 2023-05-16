@@ -16,9 +16,9 @@
 #include <configure.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/Exception.h>
+#include <hydrazine/Casts.h>
+#include <hydrazine/debug.h>
+#include <hydrazine/Exception.h>
 
 // LLVM Includes
 #if HAVE_LLVM

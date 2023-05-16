@@ -9,7 +9,7 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/debug.h>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE

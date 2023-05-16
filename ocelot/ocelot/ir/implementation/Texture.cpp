@@ -12,7 +12,7 @@
 
 #include <ocelot/ir/interface/Texture.h>
 
-#include <hydrazine/interface/SystemCompatibility.h>
+#include <hydrazine/SystemCompatibility.h>
 
 namespace ir
 {

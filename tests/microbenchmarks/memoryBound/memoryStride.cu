@@ -7,7 +7,7 @@
 #define LINESIZE 64
 #define BlockSize 4096
 
-#include <hydrazine/implementation/Timer.h>
+#include <hydrazine/Timer.h>
 #include <stdio.h>
 #include <assert.h>
 

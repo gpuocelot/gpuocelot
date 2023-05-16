@@ -13,9 +13,9 @@
 #include <ocelot/transforms/interface/PassManager.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/Casts.h>
+#include <hydrazine/Exception.h>
+#include <hydrazine/debug.h>
 
 // TODO Temporarily. Shouldn't be here
 #include <ocelot/cuda/interface/cuda_runtime.h>
