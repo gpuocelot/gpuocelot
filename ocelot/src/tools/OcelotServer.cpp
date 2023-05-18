@@ -7,7 +7,7 @@
 
 // Ocelot Includes
 #include <ocelot/api/interface/ocelot.h>
-#include <ocelot/tools/OcelotServer.h>
+#include "OcelotServer.h"
 
 // Hydrazine Includes
 #include <hydrazine/ArgumentParser.h>

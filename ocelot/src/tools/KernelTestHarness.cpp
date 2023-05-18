@@ -29,7 +29,7 @@
 // Ocelot includes
 #include <ocelot/util/interface/ExtractedDeviceState.h>
 #include <ocelot/api/interface/ocelot.h>
-#include <ocelot/tools/KernelTestHarness.h>
+#include "KernelTestHarness.h"
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

@@ -4,9 +4,11 @@ project(gpuocelot CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+find_package(Boost COMPONENTS system REQUIRED)
 find_package(LLVM 3.4 REQUIRED)
 find_package(FLEX 2.5 REQUIRED)
 find_package(BISON 2.5 REQUIRED)
+find_package(GLEW REQUIRED)
 
 add_subdirectory(ThirdParty/hydrazine)
 
@@ -34,6 +36,7 @@ endforeach()
 
 set(${PROJECT_NAME}_INCLUDE_DIRS
 	${LLVM_INCLUDE_DIRS}
+	${GLEW_INCLUDE_DIRS}
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_SOURCE_DIR}/include/analysis
 	${CMAKE_CURRENT_SOURCE_DIR}/include/api
@@ -50,7 +53,11 @@ set(${PROJECT_NAME}_INCLUDE_DIRS
 
 set(${PROJECT_NAME}_LIBRARIES
 	${LLVM_LIBRARIES}
-	hydrazine)
+	${GLEW_LIBRARIES}	
+	hydrazine
+	Boost::system
+	tinfo
+	dl)
 	
 set(${PROJECT_NAME}_LIBRARY_DIRS
 	${LLVM_LIBRARY_DIRS})
@@ -324,13 +331,33 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	${PROJECT_NAME}_translator
 	${PROJECT_NAME}_util
 	"-Wl,--no-whole-archive")
+target_link_libraries(${PROJECT_NAME} PUBLIC
+	Boost::system)
 
-#++ -o .release_build/ocelot/LoadPtx
-#++ -o .release_build/ocelot/OcelotConfig
-#++ -o .release_build/ocelot/OcelotKernelTestHarness
-#++ -o .release_build/ocelot/OcelotLinker
-#++ -o .release_build/ocelot/OcelotServer
-#++ -o .release_build/ocelot/PTXOptimizer
+add_executable(LoadPtx src/tools/LoadPtx.cpp)
+set_property(TARGET LoadPtx PROPERTY CXX_STANDARD 11)
+target_link_libraries(LoadPtx ${PROJECT_NAME} hydrazine)
+
+#add_executable(OcelotConfig src/tools/OcelotConfig.cpp)
+#set_property(TARGET OcelotConfig PROPERTY CXX_STANDARD 11)
+#target_link_libraries(OcelotConfig ${PROJECT_NAME} hydrazine)
+
+add_executable(OcelotKernelTestHarness src/tools/KernelTestHarness.cpp)
+set_property(TARGET OcelotKernelTestHarness PROPERTY CXX_STANDARD 11)
+target_link_libraries(OcelotKernelTestHarness ${PROJECT_NAME} hydrazine)
+
+add_executable(OcelotLinker src/tools/OcelotLinker.cpp)
+set_property(TARGET OcelotLinker PROPERTY CXX_STANDARD 11)
+target_link_libraries(OcelotLinker ${PROJECT_NAME} hydrazine)
+
+add_executable(OcelotServer src/tools/OcelotServer.cpp)
+set_property(TARGET OcelotServer PROPERTY CXX_STANDARD 11)
+target_link_libraries(OcelotServer ${PROJECT_NAME} hydrazine)
+
+add_executable(PTXOptimizer src/tools/PTXOptimizer.cpp)
+set_property(TARGET PTXOptimizer PROPERTY CXX_STANDARD 11)
+target_link_libraries(PTXOptimizer ${PROJECT_NAME} hydrazine)
+
 #++ -o .release_build/ocelot/TestCudaGenericMemory
 #++ -o .release_build/ocelot/TestCudaGlobals
 #++ -o .release_build/ocelot/TestCudaMalloc
