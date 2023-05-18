@@ -9,7 +9,7 @@
 
 // Ocelot includes
 #include <ocelot/api/interface/ocelot.h>
-#include <ocelot/util/interface/OcelotServer.h>
+#include "OcelotServer.h"
 #include <ocelot/util/interface/RemoteDeviceMessage.h>
 
 // Boost includes

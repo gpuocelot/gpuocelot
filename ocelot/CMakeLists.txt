@@ -4,7 +4,7 @@ project(gpuocelot CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-find_package(Boost COMPONENTS system REQUIRED)
+find_package(Boost COMPONENTS system filesystem REQUIRED)
 find_package(LLVM 3.4 REQUIRED)
 find_package(FLEX 2.5 REQUIRED)
 find_package(BISON 2.5 REQUIRED)
@@ -61,6 +61,26 @@ set(${PROJECT_NAME}_LIBRARIES
 	
 set(${PROJECT_NAME}_LIBRARY_DIRS
 	${LLVM_LIBRARY_DIRS})
+
+include(CTest)
+
+function(ocelot_add_tests name)
+	file(GLOB TESTS "src/${name}/test/Test*.cpp")
+	foreach(TEST ${TESTS})
+		    get_filename_component(TEST_WE ${TEST} NAME_WE)
+		    set(TEST_NAME ${PROJECT_NAME}_${name}_${TEST_WE})
+		    add_executable(${TEST_NAME} ${TEST})
+		    set_property(TARGET ${TEST_NAME} PROPERTY CXX_STANDARD 11)
+		    target_compile_definitions(${TEST_NAME} PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
+			target_compile_options(${TEST_NAME} PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
+			target_include_directories(${TEST_NAME} PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
+			target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/${name})
+			target_link_libraries(${TEST_NAME} PRIVATE ${${PROJECT_NAME}_LIBRARIES})
+		    target_link_libraries(${TEST_NAME} PRIVATE ${PROJECT_NAME})
+			target_link_directories(${TEST_NAME} PRIVATE ${${PROJECT_NAME}_LIBRARY_DIRS})
+		    add_test(NAME ${TEST_NAME} COMMAND $<TARGET_FILE:${TEST_NAME}> -v)
+	endforeach()
+endfunction()
 
 add_library(${PROJECT_NAME}_ir STATIC
 	src/ir/ControlFlowGraph.cpp
@@ -332,7 +352,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	${PROJECT_NAME}_util
 	"-Wl,--no-whole-archive")
 target_link_libraries(${PROJECT_NAME} PUBLIC
-	Boost::system)
+	Boost::system Boost::filesystem)
 
 add_executable(LoadPtx src/tools/LoadPtx.cpp)
 set_property(TARGET LoadPtx PROPERTY CXX_STANDARD 11)
@@ -357,6 +377,18 @@ target_link_libraries(OcelotServer ${PROJECT_NAME} hydrazine)
 add_executable(PTXOptimizer src/tools/PTXOptimizer.cpp)
 set_property(TARGET PTXOptimizer PROPERTY CXX_STANDARD 11)
 target_link_libraries(PTXOptimizer ${PROJECT_NAME} hydrazine)
+
+ocelot_add_tests(analysis)
+ocelot_add_tests(api)
+ocelot_add_tests(cal)
+ocelot_add_tests(cuda)
+ocelot_add_tests(executive)
+ocelot_add_tests(ir)
+ocelot_add_tests(parser)
+ocelot_add_tests(trace)
+ocelot_add_tests(transforms)
+ocelot_add_tests(translator)
+ocelot_add_tests(util)
 
 #++ -o .release_build/ocelot/TestCudaGenericMemory
 #++ -o .release_build/ocelot/TestCudaGlobals

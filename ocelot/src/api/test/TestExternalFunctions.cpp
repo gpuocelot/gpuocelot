@@ -8,7 +8,7 @@
 #define TEST_EXTERNAL_FUNCTIONS_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/api/test/TestExternalFunctions.h>
+#include "TestExternalFunctions.h"
 #include <ocelot/api/interface/ocelot.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>

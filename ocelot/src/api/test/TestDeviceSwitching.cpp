@@ -7,7 +7,7 @@
 #ifndef TEST_DEVICE_SWITCHING_CPP_INCLUDED
 #define TEST_DEVICE_SWITCHING_CPP_INCLUDED
 
-#include <ocelot/api/test/TestDeviceSwitching.h>
+#include "TestDeviceSwitching.h"
 #include <ocelot/api/interface/ocelot.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>

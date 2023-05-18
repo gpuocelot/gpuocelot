@@ -13,7 +13,7 @@
 #include <fstream>
 
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
-#include <ocelot/translator/test/TestPTXToLLVMTranslator.h>
+#include "TestPTXToLLVMTranslator.h"
 
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/LLVMKernel.h>

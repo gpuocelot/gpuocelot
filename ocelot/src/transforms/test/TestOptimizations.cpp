@@ -5,7 +5,7 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/test/TestOptimizations.h>
+#include "TestOptimizations.h"
 
 #include <ocelot/transforms/interface/PassFactory.h>
 #include <ocelot/transforms/interface/PassManager.h>

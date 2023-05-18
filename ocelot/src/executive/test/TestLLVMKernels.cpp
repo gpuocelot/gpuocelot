@@ -9,7 +9,7 @@
 #define TEST_LLVM_KERNELS_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/executive/test/TestLLVMKernels.h>
+#include "TestLLVMKernels.h"
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <hydrazine/ArgumentParser.h>

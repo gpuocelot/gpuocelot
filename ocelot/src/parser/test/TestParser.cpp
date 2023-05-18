@@ -14,7 +14,7 @@
 #include <fstream>
 
 #include <ocelot/parser/interface/PTXParser.h>
-#include <ocelot/parser/test/TestParser.h>
+#include "TestParser.h"
 
 #include <hydrazine/ArgumentParser.h>
 #include <hydrazine/macros.h>

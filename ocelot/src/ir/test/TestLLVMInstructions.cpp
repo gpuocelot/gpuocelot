@@ -8,7 +8,7 @@
 #ifndef TEST_LLVM_INSTRUCTIONS_CPP_INCLUDED
 #define TEST_LLVM_INSTRUCTIONS_CPP_INCLUDED
 
-#include <ocelot/ir/test/TestLLVMInstructions.h>
+#include "TestLLVMInstructions.h"
 #include <hydrazine/ArgumentParser.h>
 
 namespace test

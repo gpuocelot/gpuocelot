@@ -7,9 +7,9 @@
 #ifndef TEST_PTX_ASSEMBLY_CPP_INCLUDED
 #define TEST_PTX_ASSEMBLY_CPP_INCLUDED
 
-#include <ocelot/ir/test/TestPTXAssembly.h>
-#include <ocelot/ir/interface/PTXInstruction.h>
-#include <ocelot/executive/interface/TextureOperations.h>
+#include "TestPTXAssembly.h"
+#include "ir/PTXInstruction.h"
+#include "executive/TextureOperations.h"
 
 #include <ocelot/api/interface/ocelot.h>
 

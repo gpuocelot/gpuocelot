@@ -9,7 +9,7 @@
 #define TEST_DATAFLOW_GRAPH_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/analysis/test/TestDataflowGraph.h>
+#include "TestDataflowGraph.h"
 
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Module.h>
