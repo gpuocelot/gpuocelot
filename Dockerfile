@@ -80,7 +80,5 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-4.7 40 && \
 WORKDIR /usr/local/src
 COPY . /usr/local/src/gpuocelot
 
-RUN cd gpuocelot && ./build.py --thread 4 --install && \
-    ldconfig && \ 
-    cd trace-generators && scons install && \
-    ldconfig
+RUN cd gpuocelot/ocelot && mkdir build && cd build && cmake .. && make -j8
+

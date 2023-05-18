@@ -40,7 +40,8 @@ endforeach()
 set(${PROJECT_NAME}_INCLUDE_DIRS
 	${LLVM_INCLUDE_DIRS}
 	${GLEW_INCLUDE_DIRS}
-	${CMAKE_CURRENT_SOURCE_DIR}/include)
+	${CMAKE_CURRENT_SOURCE_DIR}/include
+	${CMAKE_CURRENT_BINARY_DIR})
 
 set(${PROJECT_NAME}_LIBRARIES
 	${LLVM_LIBRARIES}
@@ -221,8 +222,8 @@ target_link_directories(${PROJECT_NAME}_executive PUBLIC ${${PROJECT_NAME}_LIBRA
 set(LEXER_OUT "${CMAKE_CURRENT_BINARY_DIR}/ptx.cpp")
 set(PARSER_OUT "${CMAKE_CURRENT_BINARY_DIR}/ptxgrammar.cpp")
 
-flex_target(LEXER "src/parser/ptx.ll" "${LEXER_OUT}" DEFINES_FILE "${CMAKE_CURRENT_BINARY_DIR}/ptx.h")
-bison_target(PARSER "src/parser/ptxgrammar.yy" "${PARSER_OUT}" DEFINES_FILE "${CMAKE_CURRENT_BINARY_DIR}/ptxgrammar.h")
+flex_target(LEXER "src/parser/ptx.ll" "${LEXER_OUT}" DEFINES_FILE "${CMAKE_CURRENT_BINARY_DIR}/ptx.hpp")
+bison_target(PARSER "src/parser/ptxgrammar.yy" "${PARSER_OUT}" DEFINES_FILE "${CMAKE_CURRENT_BINARY_DIR}/ptxgrammar.hpp")
 add_flex_bison_dependency(LEXER PARSER)
 
 add_library(${PROJECT_NAME}_parser STATIC
