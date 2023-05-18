@@ -1,6 +1,9 @@
-cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
-project(gpuocelot CXX)
+project(gpuocelot CXX CUDA)
+
+set(CMAKE_CUDA_ARCHITECTURES 35)
+set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -53,7 +56,7 @@ set(${PROJECT_NAME}_LIBRARY_DIRS
 include(CTest)
 
 function(ocelot_add_tests name)
-	file(GLOB TESTS "src/${name}/test/Test*.cpp")
+	file(GLOB TESTS "src/${name}/test/Test*.cpp" "src/${name}/test/Test*.cu")
 	foreach(TEST ${TESTS})
 		    get_filename_component(TEST_WE ${TEST} NAME_WE)
 		    set(TEST_NAME ${PROJECT_NAME}_${name}_${TEST_WE})

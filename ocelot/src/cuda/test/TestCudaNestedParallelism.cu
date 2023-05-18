@@ -1,4 +1,3 @@
-#include <cnp_runtime_api.h>
 #include <iostream>
 
 __global__ void nestedCall(int count, int* array)
