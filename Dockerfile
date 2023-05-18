@@ -47,9 +47,9 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
         flex \
         freeglut3-dev \
         git \
-        g++-4.7 clang++-3.4 libc++-dev \
+        g++-4.7 llvm-3.4-dev \
         libbison-dev=1:2.5.dfsg-2.1ubuntu1 \
-        libboost1.49-all-dev libboost1.49-dev libboost-mpi-python1.49-dev libboost-mpi-python1.49.0 \
+        libboost1.49-all-dev libboost1.49-dev \
         libglew-dev \
         libxi-dev \
         libXmu-dev \
