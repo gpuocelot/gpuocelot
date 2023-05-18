@@ -5,8 +5,8 @@
 	\brief implements the base TraceGenerator class
 */
 
-#include <ocelot/trace/interface/TraceGenerator.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/trace/TraceGenerator.h>
+#include <ocelot/executive/EmulatedKernel.h>
 #include <hydrazine/debug.h>
 
 #ifdef REPORT_BASE

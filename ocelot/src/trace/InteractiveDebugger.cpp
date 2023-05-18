@@ -14,9 +14,9 @@
 #include <boost/tokenizer.hpp>
 
 // Ocelot Includes
-#include <ocelot/trace/interface/InteractiveDebugger.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/Device.h>
+#include <ocelot/trace/InteractiveDebugger.h>
+#include <ocelot/executive/EmulatedKernel.h>
+#include <ocelot/executive/Device.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

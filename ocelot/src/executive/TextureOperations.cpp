@@ -8,7 +8,7 @@
 #ifndef TEXTURE_OPERATIONS_CPP_INCLUDED
 #define TEXTURE_OPERATIONS_CPP_INCLUDED
 
-#include <ocelot/executive/interface/TextureOperations.h>
+#include <ocelot/executive/TextureOperations.h>
 
 namespace executive
 {

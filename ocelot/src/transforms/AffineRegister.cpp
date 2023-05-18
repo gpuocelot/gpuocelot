@@ -8,7 +8,7 @@
 #define AFFINE_REGISTER_CPP_
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/AffineRegister.h>
+#include <ocelot/transforms/AffineRegister.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

@@ -4,10 +4,10 @@
 	\file The source file for the DataflowGraph class.
 */
 
-#include <ocelot/analysis/interface/DataflowGraph.h>
-#include <ocelot/analysis/interface/SSAGraph.h>
+#include <ocelot/analysis/DataflowGraph.h>
+#include <ocelot/analysis/SSAGraph.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
 #include <hydrazine/string.h>
 

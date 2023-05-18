@@ -8,10 +8,10 @@
 #define MEMORY_RACE_DETECTOR_CPP_INCLUDED
 
 // Ocelot includes
-#include <ocelot/trace/interface/MemoryRaceDetector.h>
-#include <ocelot/trace/interface/TraceEvent.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/Device.h>
+#include <ocelot/trace/MemoryRaceDetector.h>
+#include <ocelot/trace/TraceEvent.h>
+#include <ocelot/executive/EmulatedKernel.h>
+#include <ocelot/executive/Device.h>
 
 // hydrazine includes
 #include <hydrazine/Exception.h>

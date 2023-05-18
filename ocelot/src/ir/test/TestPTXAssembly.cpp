@@ -8,10 +8,10 @@
 #define TEST_PTX_ASSEMBLY_CPP_INCLUDED
 
 #include "TestPTXAssembly.h"
-#include "ir/PTXInstruction.h"
-#include "executive/TextureOperations.h"
+#include <ocelot/ir/PTXInstruction.h>
+#include <ocelot/executive/TextureOperations.h>
 
-#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/api/ocelot.h>
 
 #include <hydrazine/Casts.h>
 #include <hydrazine/ArgumentParser.h>
@@ -20,7 +20,7 @@
 #include <hydrazine/math.h>
 #include <hydrazine/FloatingPoint.h>
 
-#include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/cuda/cuda_runtime.h>
 
 #include <limits>
 #include <climits>

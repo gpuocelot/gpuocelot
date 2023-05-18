@@ -5,11 +5,11 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/ModuleLinkerPass.h>
+#include <ocelot/transforms/ModuleLinkerPass.h>
 
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/Module.h>
 
-#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/api/ocelot.h>
 
 // Standard Library Includes
 #include <stdexcept>

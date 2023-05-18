@@ -8,15 +8,15 @@
 #define LLVM_COOPERATIVE_THREAD_ARRAY_CPP_INCLUDED
 
 // Ocelot Includes
-#include <executive/LLVMCooperativeThreadArray.h>
-#include <executive/LLVMModuleManager.h>
-#include <executive/LLVMExecutableKernel.h>
+#include <ocelot/executive/LLVMCooperativeThreadArray.h>
+#include <ocelot/executive/LLVMModuleManager.h>
+#include <ocelot/executive/LLVMExecutableKernel.h>
 
 #include "LLVMRuntimeLibrary.inl"
 
-#include <api/OcelotConfiguration.h>
+#include <ocelot/api/OcelotConfiguration.h>
 
-#include <ir/Module.h>
+#include <ocelot/ir/Module.h>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE

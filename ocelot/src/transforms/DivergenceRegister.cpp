@@ -5,7 +5,7 @@
  */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/DivergenceRegister.h>
+#include <ocelot/transforms/DivergenceRegister.h>
 
 // Hydrazine Includes
 #include <hydrazine/SystemCompatibility.h>

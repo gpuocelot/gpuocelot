@@ -5,12 +5,12 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/PriorityLayoutPass.h>
+#include <ocelot/transforms/PriorityLayoutPass.h>
 
-#include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
+#include <ocelot/analysis/ThreadFrontierAnalysis.h>
 
-#include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/ControlFlowGraph.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

@@ -8,22 +8,22 @@
 #define LLVM_MODULE_MANAGER_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/executive/interface/LLVMModuleManager.h>
-#include <ocelot/executive/interface/LLVMState.h>
-#include <ocelot/executive/interface/Device.h>
+#include <ocelot/executive/LLVMModuleManager.h>
+#include <ocelot/executive/LLVMState.h>
+#include <ocelot/executive/Device.h>
 
-#include <ocelot/translator/interface/PTXToLLVMTranslator.h>
+#include <ocelot/translator/PTXToLLVMTranslator.h>
 
-#include <ocelot/transforms/interface/SubkernelFormationPass.h>
-#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
-#include <ocelot/transforms/interface/RemoveBarrierPass.h>
-#include <ocelot/transforms/interface/SimplifyExternalCallsPass.h>
-#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/SubkernelFormationPass.h>
+#include <ocelot/transforms/ConvertPredicationToSelectPass.h>
+#include <ocelot/transforms/RemoveBarrierPass.h>
+#include <ocelot/transforms/SimplifyExternalCallsPass.h>
+#include <ocelot/transforms/PassManager.h>
 
-#include <ocelot/ir/interface/LLVMKernel.h>
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/LLVMKernel.h>
+#include <ocelot/ir/Module.h>
 
-#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/api/OcelotConfiguration.h>
 
 // Hydrazine Includes
 #include <hydrazine/Casts.h>

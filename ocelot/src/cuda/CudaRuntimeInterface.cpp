@@ -11,8 +11,8 @@
 // C++ std lib includes
 
 // Ocelot includes
-#include <ocelot/cuda/interface/CudaRuntimeInterface.h>
-#include <ocelot/cuda/interface/CudaRuntime.h>
+#include <ocelot/cuda/CudaRuntimeInterface.h>
+#include <ocelot/cuda/CudaRuntime.h>
 
 // Hydrazine includes
 #include <hydrazine/debug.h>

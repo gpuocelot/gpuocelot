@@ -8,9 +8,9 @@
 #define SSA_GRAPH_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/SSAGraph.h>
-#include <ocelot/analysis/interface/PostdominatorTree.h>
-#include <ocelot/analysis/interface/DivergenceGraph.h>
+#include <ocelot/analysis/SSAGraph.h>
+#include <ocelot/analysis/PostdominatorTree.h>
+#include <ocelot/analysis/DivergenceGraph.h>
 // Hydrazine Includes
 #include <hydrazine/debug.h>
 

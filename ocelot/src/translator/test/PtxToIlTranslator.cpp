@@ -7,11 +7,11 @@
 #include <hydrazine/ArgumentParser.h>
 #include <hydrazine/debug.h>
 #include <ocelot/translator/test/PtxToIlTranslator.h>
-#include <ocelot/translator/interface/PTXToILTranslator.h>
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/ILKernel.h>
-#include <ocelot/executive/interface/ATIExecutableKernel.h>
+#include <ocelot/translator/PTXToILTranslator.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/ir/PTXKernel.h>
+#include <ocelot/ir/ILKernel.h>
+#include <ocelot/executive/ATIExecutableKernel.h>
 #include <fstream>
 
 void PtxToIlTranslator::translate()

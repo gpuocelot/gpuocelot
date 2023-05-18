@@ -19,12 +19,12 @@
 #include <hydrazine/macros.h>
 #include <hydrazine/debug.h>
 
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/RuntimeException.h>
-#include <ocelot/executive/interface/CooperativeThreadArray.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/executive/EmulatedKernel.h>
+#include <ocelot/executive/RuntimeException.h>
+#include <ocelot/executive/CooperativeThreadArray.h>
 
-#include <ocelot/trace/interface/TraceGenerator.h>
+#include <ocelot/trace/TraceGenerator.h>
 #include <hydrazine/Timer.h>
 
 #include <iostream>

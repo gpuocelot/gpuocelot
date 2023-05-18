@@ -9,16 +9,16 @@
 
 // Ocelot Includes
 #include "PTXOptimizer.h"
-#include <ocelot/transforms/interface/PassManager.h>
-#include <ocelot/transforms/interface/PassFactory.h>
+#include <ocelot/transforms/PassManager.h>
+#include <ocelot/transforms/PassFactory.h>
 
-#include <ocelot/transforms/interface/LinearScanRegisterAllocationPass.h>
-#include <ocelot/transforms/interface/SubkernelFormationPass.h>
-#include <ocelot/transforms/interface/SplitBasicBlockPass.h>
-#include <ocelot/transforms/interface/FunctionInliningPass.h>
-#include <ocelot/transforms/interface/ConstantPropagationPass.h>
+#include <ocelot/transforms/LinearScanRegisterAllocationPass.h>
+#include <ocelot/transforms/SubkernelFormationPass.h>
+#include <ocelot/transforms/SplitBasicBlockPass.h>
+#include <ocelot/transforms/FunctionInliningPass.h>
+#include <ocelot/transforms/ConstantPropagationPass.h>
 
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/Module.h>
 
 // Hydrazine Includes
 #include <hydrazine/ArgumentParser.h>

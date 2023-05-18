@@ -8,7 +8,7 @@
 #define PTX_PARSER_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/parser/interface/PTXParser.h>
+#include <ocelot/parser/PTXParser.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

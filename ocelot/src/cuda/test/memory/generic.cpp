@@ -3,8 +3,8 @@
 	\brief CUDA Driver API version of the sequence program
 */
 
-#include <ocelot/cuda/interface/cuda_runtime.h>
-#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/cuda/cuda_runtime.h>
+#include <ocelot/api/ocelot.h>
 #include <iostream>
 #include <fstream>
 

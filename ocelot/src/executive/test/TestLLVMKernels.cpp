@@ -10,8 +10,8 @@
 
 // Ocelot Includes
 #include "TestLLVMKernels.h"
-#include <ocelot/executive/interface/Device.h>
-#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/executive/Device.h>
+#include <ocelot/api/OcelotConfiguration.h>
 #include <hydrazine/ArgumentParser.h>
 
 // Standard Library Includes

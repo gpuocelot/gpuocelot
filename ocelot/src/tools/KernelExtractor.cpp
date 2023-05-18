@@ -28,9 +28,9 @@
 #include <iomanip>
 
 // Ocelot includes
-#include <ocelot/cuda/interface/cuda_internal.h>
-#include <ocelot/cuda/interface/FatBinaryContext.h>
-#include <ocelot/util/interface/KernelExtractor.h>
+#include <ocelot/cuda/cuda_internal.h>
+#include <ocelot/cuda/FatBinaryContext.h>
+#include <ocelot/util/KernelExtractor.h>
 
 // Hydrazine includes
 #include <hydrazine/debug.h>

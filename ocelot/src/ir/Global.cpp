@@ -10,7 +10,7 @@
 #ifndef GLOBAL_CPP_INCLUDED
 #define GLOBAL_CPP_INCLUDED
 
-#include <ocelot/ir/interface/Global.h>
+#include <ocelot/ir/Global.h>
 #include <cassert>
 #include <cstring>
 

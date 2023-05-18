@@ -7,9 +7,9 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/DominatorTree.h>
-#include <ocelot/ir/interface/IRKernel.h>
-#include <ocelot/ir/interface/Instruction.h>
+#include <ocelot/analysis/DominatorTree.h>
+#include <ocelot/ir/IRKernel.h>
+#include <ocelot/ir/Instruction.h>
 
 // Hydrazine Includes
 #include <hydrazine/string.h>

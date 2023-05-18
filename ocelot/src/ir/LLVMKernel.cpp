@@ -7,7 +7,7 @@
 #ifndef LLVM_KERNEL_CPP_INCLUDED
 #define LLVM_KERNEL_CPP_INCLUDED
 
-#include <ocelot/ir/interface/LLVMKernel.h>
+#include <ocelot/ir/LLVMKernel.h>
 #include <hydrazine/debug.h>
 #include <hydrazine/string.h>
 

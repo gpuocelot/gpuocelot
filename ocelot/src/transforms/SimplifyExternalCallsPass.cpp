@@ -5,12 +5,12 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/SimplifyExternalCallsPass.h>
+#include <ocelot/transforms/SimplifyExternalCallsPass.h>
 
-#include <ocelot/analysis/interface/DataflowGraph.h>
+#include <ocelot/analysis/DataflowGraph.h>
 
-#include <ocelot/ir/interface/ExternalFunctionSet.h>
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/ExternalFunctionSet.h>
+#include <ocelot/ir/Module.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

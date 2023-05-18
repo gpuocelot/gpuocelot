@@ -5,14 +5,14 @@
 */
 
 // Ocelot Incudes
-#include <ocelot/analysis/interface/SafeRegionAnalysis.h>
+#include <ocelot/analysis/SafeRegionAnalysis.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
-#include <ocelot/analysis/interface/CycleAnalysis.h>
-#include <ocelot/analysis/interface/DependenceAnalysis.h>
-#include <ocelot/analysis/interface/ControlDependenceAnalysis.h>
-#include <ocelot/analysis/interface/HammockGraphAnalysis.h>
+#include <ocelot/analysis/CycleAnalysis.h>
+#include <ocelot/analysis/DependenceAnalysis.h>
+#include <ocelot/analysis/ControlDependenceAnalysis.h>
+#include <ocelot/analysis/HammockGraphAnalysis.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

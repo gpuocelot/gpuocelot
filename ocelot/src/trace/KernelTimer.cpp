@@ -6,12 +6,12 @@
 */
 
 // Ocelot includes
-#include <ocelot/trace/interface/KernelTimer.h>
+#include <ocelot/trace/KernelTimer.h>
 
-#include <ocelot/executive/interface/Device.h>
-#include <ocelot/executive/interface/ExecutableKernel.h>
+#include <ocelot/executive/Device.h>
+#include <ocelot/executive/ExecutableKernel.h>
 
-#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/api/OcelotConfiguration.h>
 
 // Boost includes
 #include <boost/lexical_cast.hpp>

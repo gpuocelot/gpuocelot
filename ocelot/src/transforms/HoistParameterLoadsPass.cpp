@@ -5,14 +5,14 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/HoistParameterLoadsPass.h>
+#include <ocelot/transforms/HoistParameterLoadsPass.h>
 
-#include <ocelot/analysis/interface/DominatorTree.h>
-#include <ocelot/analysis/interface/DataflowGraph.h>
-#include <ocelot/analysis/interface/LoopAnalysis.h>
-#include <ocelot/analysis/interface/SimpleAliasAnalysis.h>
+#include <ocelot/analysis/DominatorTree.h>
+#include <ocelot/analysis/DataflowGraph.h>
+#include <ocelot/analysis/LoopAnalysis.h>
+#include <ocelot/analysis/SimpleAliasAnalysis.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE

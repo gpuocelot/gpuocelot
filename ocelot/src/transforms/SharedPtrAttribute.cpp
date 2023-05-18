@@ -9,8 +9,8 @@
 #include <set>
 
 // Ocelot includes
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/transforms/interface/SharedPtrAttribute.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/transforms/SharedPtrAttribute.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

@@ -6,11 +6,11 @@
 
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/MoveEliminationPass.h>
+#include <ocelot/transforms/MoveEliminationPass.h>
 
-#include <ocelot/analysis/interface/DataflowGraph.h>
+#include <ocelot/analysis/DataflowGraph.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

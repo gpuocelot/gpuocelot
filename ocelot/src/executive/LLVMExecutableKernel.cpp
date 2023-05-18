@@ -8,10 +8,10 @@
 #define LLVM_EXECUTABLE_KERNEL_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/executive/interface/LLVMExecutableKernel.h>
-#include <ocelot/executive/interface/LLVMExecutionManager.h>
-#include <ocelot/executive/interface/LLVMModuleManager.h>
-#include <ocelot/executive/interface/Device.h>
+#include <ocelot/executive/LLVMExecutableKernel.h>
+#include <ocelot/executive/LLVMExecutionManager.h>
+#include <ocelot/executive/LLVMModuleManager.h>
+#include <ocelot/executive/Device.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

@@ -9,7 +9,7 @@
 #define TEST_DATAFLOW_GRAPH_H_INCLUDED
 
 #include <hydrazine/Test.h>
-#include <ocelot/analysis/interface/DataflowGraph.h>
+#include <ocelot/analysis/DataflowGraph.h>
 #include <deque>
 
 namespace test

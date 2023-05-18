@@ -5,13 +5,13 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/GlobalValueNumberingPass.h>
+#include <ocelot/transforms/GlobalValueNumberingPass.h>
 
-#include <ocelot/analysis/interface/DataflowGraph.h>
-#include <ocelot/analysis/interface/DominatorTree.h>
-#include <ocelot/analysis/interface/SimpleAliasAnalysis.h>
+#include <ocelot/analysis/DataflowGraph.h>
+#include <ocelot/analysis/DominatorTree.h>
+#include <ocelot/analysis/SimpleAliasAnalysis.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

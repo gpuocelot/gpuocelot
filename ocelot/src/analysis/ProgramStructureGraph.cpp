@@ -5,7 +5,7 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/ProgramStructureGraph.h>
+#include <ocelot/analysis/ProgramStructureGraph.h>
 
 namespace analysis
 {

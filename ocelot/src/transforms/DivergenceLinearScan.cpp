@@ -8,9 +8,9 @@
 #ifndef DIVERGENCELINEARSCAN_CPP_
 #define DIVERGENCELINEARSCAN_CPP_
 
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/transforms/interface/DivergenceRegister.h>
-#include <ocelot/transforms/interface/DivergenceLinearScan.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/transforms/DivergenceRegister.h>
+#include <ocelot/transforms/DivergenceLinearScan.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

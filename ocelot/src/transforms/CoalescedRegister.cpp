@@ -11,7 +11,7 @@
 
 #define REPORT_BASE 0
 
-#include <ocelot/transforms/interface/CoalescedRegister.h>
+#include <ocelot/transforms/CoalescedRegister.h>
 
 namespace transforms
 {

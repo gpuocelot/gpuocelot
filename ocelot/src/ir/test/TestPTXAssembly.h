@@ -7,7 +7,7 @@
 #ifndef TEST_PTX_ASSEMBLY_H_INCLUDED
 #define TEST_PTX_ASSEMBLY_H_INCLUDED
 
-#include <ocelot/ir/interface/Instruction.h>
+#include <ocelot/ir/Instruction.h>
 #include <hydrazine/Test.h>
 #include <vector>
 

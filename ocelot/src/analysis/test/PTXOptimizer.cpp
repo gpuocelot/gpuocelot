@@ -8,17 +8,17 @@
 #define PTX_OPTIMIZER_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/PTXOptimizer.h>
-#include <ocelot/analysis/interface/PassManager.h>
-#include <ocelot/analysis/interface/LinearScanRegisterAllocationPass.h>
-#include <ocelot/analysis/interface/RemoveBarrierPass.h>
-#include <ocelot/analysis/interface/StructuralTransform.h>
-#include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
-#include <ocelot/analysis/interface/SubkernelFormationPass.h>
-#include <ocelot/analysis/interface/MIMDThreadSchedulingPass.h>
-#include <ocelot/analysis/interface/SyncEliminationPass.h>
+#include <ocelot/analysis/PTXOptimizer.h>
+#include <ocelot/analysis/PassManager.h>
+#include <ocelot/analysis/LinearScanRegisterAllocationPass.h>
+#include <ocelot/analysis/RemoveBarrierPass.h>
+#include <ocelot/analysis/StructuralTransform.h>
+#include <ocelot/analysis/ConvertPredicationToSelectPass.h>
+#include <ocelot/analysis/SubkernelFormationPass.h>
+#include <ocelot/analysis/MIMDThreadSchedulingPass.h>
+#include <ocelot/analysis/SyncEliminationPass.h>
 
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/Module.h>
 
 // Hydrazine Includes
 #include <hydrazine/ArgumentParser.h>

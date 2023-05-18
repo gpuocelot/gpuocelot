@@ -8,11 +8,11 @@
 #define THREAD_FRONTIER_RECONVERGENCE_PASS_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/ThreadFrontierReconvergencePass.h>
+#include <ocelot/transforms/ThreadFrontierReconvergencePass.h>
 
-#include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
+#include <ocelot/analysis/ThreadFrontierAnalysis.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

@@ -11,12 +11,12 @@
 #include <algorithm>
 
 // Ocelot includes
-#include <ocelot/cuda/interface/CudaRuntime.h>
-#include <ocelot/cuda/interface/CudaDriver.h>
-#include <ocelot/ir/interface/PTXInstruction.h>
-#include <ocelot/executive/interface/RuntimeException.h>
-#include <ocelot/executive/interface/ExecutableKernel.h>
-#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/cuda/CudaRuntime.h>
+#include <ocelot/cuda/CudaDriver.h>
+#include <ocelot/ir/PTXInstruction.h>
+#include <ocelot/executive/RuntimeException.h>
+#include <ocelot/executive/ExecutableKernel.h>
+#include <ocelot/transforms/PassManager.h>
 
 // Hydrazine includes
 #include <hydrazine/Exception.h>

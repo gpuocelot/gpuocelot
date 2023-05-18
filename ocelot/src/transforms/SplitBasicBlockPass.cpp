@@ -5,10 +5,10 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/SplitBasicBlockPass.h>
+#include <ocelot/transforms/SplitBasicBlockPass.h>
 
-#include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/ControlFlowGraph.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Standard Library Includes
 #include <cassert>

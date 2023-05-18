@@ -7,11 +7,11 @@
 */
 
 // Ocelot includes
-#include <ocelot/executive/interface/PassThroughDevice.h>
-#include <ocelot/executive/interface/ExecutableKernel.h>
+#include <ocelot/executive/PassThroughDevice.h>
+#include <ocelot/executive/ExecutableKernel.h>
 
-#include <ocelot/cuda/interface/cuda_runtime.h>
-#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/cuda/cuda_runtime.h>
+#include <ocelot/api/OcelotConfiguration.h>
 
 // Hydrazine includes
 #include <hydrazine/debug.h>

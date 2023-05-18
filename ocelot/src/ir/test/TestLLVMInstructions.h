@@ -9,7 +9,7 @@
 #define TEST_LLVM_INSTRUCTIONS_H_INCLUDED
 
 #include <hydrazine/Test.h>
-#include <ocelot/ir/interface/LLVMInstruction.h>
+#include <ocelot/ir/LLVMInstruction.h>
 
 namespace test
 {

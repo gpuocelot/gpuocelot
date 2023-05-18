@@ -5,7 +5,7 @@
 	\brief base class for all instructions
 */
 
-#include <ocelot/ir/interface/PTXInstruction.h>
+#include <ocelot/ir/PTXInstruction.h>
 #include <hydrazine/debug.h>
 #include <sstream>
 

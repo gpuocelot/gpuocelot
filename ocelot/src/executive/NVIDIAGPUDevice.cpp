@@ -11,12 +11,12 @@
 #include <iomanip>
 
 // ocelot includes
-#include <ocelot/executive/interface/NVIDIAGPUDevice.h>
-#include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
-#include <ocelot/cuda/interface/CudaDriver.h>
-#include <ocelot/cuda/interface/cuda_runtime.h>
-#include <ocelot/transforms/interface/PassManager.h>
-#include <ocelot/transforms/interface/SharedPtrAttribute.h>
+#include <ocelot/executive/NVIDIAGPUDevice.h>
+#include <ocelot/executive/NVIDIAExecutableKernel.h>
+#include <ocelot/cuda/CudaDriver.h>
+#include <ocelot/cuda/cuda_runtime.h>
+#include <ocelot/transforms/PassManager.h>
+#include <ocelot/transforms/SharedPtrAttribute.h>
 
 // hydrazine includes
 #include <hydrazine/SystemCompatibility.h>

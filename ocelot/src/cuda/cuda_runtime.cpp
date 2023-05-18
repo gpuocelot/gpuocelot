@@ -11,8 +11,8 @@
 #include <assert.h>
 
 // Ocelot includes
-#include <ocelot/cuda/interface/cuda_runtime.h>
-#include <ocelot/cuda/interface/CudaRuntimeInterface.h>
+#include <ocelot/cuda/cuda_runtime.h>
+#include <ocelot/cuda/CudaRuntimeInterface.h>
 
 /******************************************************************************/
 

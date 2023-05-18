@@ -10,12 +10,12 @@
 
 
 // Ocelot includes
-#include <ocelot/util/interface/OcelotServerConnection.h>
-#include <ocelot/api/interface/ocelot.h>
-#include <ocelot/api/interface/OcelotConfiguration.h>
-#include <ocelot/ir/interface/PTXInstruction.h>
-#include <ocelot/executive/interface/RuntimeException.h>
-#include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/util/OcelotServerConnection.h>
+#include <ocelot/api/ocelot.h>
+#include <ocelot/api/OcelotConfiguration.h>
+#include <ocelot/ir/PTXInstruction.h>
+#include <ocelot/executive/RuntimeException.h>
+#include <ocelot/cuda/cuda_runtime.h>
 
 // Hydrazine includes
 #include <hydrazine/Exception.h>

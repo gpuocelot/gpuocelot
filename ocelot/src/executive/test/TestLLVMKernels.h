@@ -9,8 +9,8 @@
 #define TEST_LLVM_KERNELS_H_INCLUDED
 
 #include <hydrazine/Test.h>
-#include <ocelot/executive/interface/LLVMExecutableKernel.h>
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/executive/LLVMExecutableKernel.h>
+#include <ocelot/ir/Module.h>
 
 namespace test
 {

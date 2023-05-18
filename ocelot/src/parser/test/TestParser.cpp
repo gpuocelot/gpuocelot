@@ -13,7 +13,7 @@
 #include <queue>
 #include <fstream>
 
-#include <ocelot/parser/interface/PTXParser.h>
+#include <ocelot/parser/PTXParser.h>
 #include "TestParser.h"
 
 #include <hydrazine/ArgumentParser.h>

@@ -5,9 +5,9 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/Analysis.h>
+#include <ocelot/analysis/Analysis.h>
 
-#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/PassManager.h>
 
 // Standard Library Includes
 #include <cassert>

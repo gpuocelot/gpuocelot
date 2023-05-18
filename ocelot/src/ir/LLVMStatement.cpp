@@ -8,7 +8,7 @@
 #ifndef LLVM_STATEMENT_CPP_INCLUDED
 #define LLVM_STATEMENT_CPP_INCLUDED
 
-#include <ocelot/ir/interface/LLVMStatement.h>
+#include <ocelot/ir/LLVMStatement.h>
 #include <hydrazine/debug.h>
 
 namespace ir

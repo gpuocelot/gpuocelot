@@ -6,7 +6,7 @@
  */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/DivergenceGraph.h>
+#include <ocelot/analysis/DivergenceGraph.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

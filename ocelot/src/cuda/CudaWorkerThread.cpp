@@ -5,9 +5,9 @@
 */
 
 // Ocelot Includes
-#include <ocelot/cuda/interface/CudaWorkerThread.h>
+#include <ocelot/cuda/CudaWorkerThread.h>
 
-#include <ocelot/executive/interface/Device.h>
+#include <ocelot/executive/Device.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

@@ -9,9 +9,9 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/PostdominatorTree.h>
-#include <ocelot/ir/interface/Instruction.h>
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/analysis/PostdominatorTree.h>
+#include <ocelot/ir/Instruction.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/string.h>

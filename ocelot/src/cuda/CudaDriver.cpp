@@ -7,7 +7,7 @@
 #define CUDA_DRIVER_CPP_INCLUDED
 
 // Ocelot includes
-#include <ocelot/cuda/interface/CudaDriver.h>
+#include <ocelot/cuda/CudaDriver.h>
 
 // hydrazine includes
 #include <hydrazine/Casts.h>

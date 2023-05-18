@@ -6,9 +6,9 @@
 */
 
 // Ocelot includes
-#include <ocelot/executive/interface/ReconvergenceMechanism.h>
-#include <ocelot/executive/interface/RuntimeException.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/executive/ReconvergenceMechanism.h>
+#include <ocelot/executive/RuntimeException.h>
+#include <ocelot/executive/EmulatedKernel.h>
 
 // Hydrazine includes
 #include <hydrazine/debug.h>

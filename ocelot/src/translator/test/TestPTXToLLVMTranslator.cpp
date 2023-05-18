@@ -12,17 +12,17 @@
 #include <queue>
 #include <fstream>
 
-#include <ocelot/translator/interface/PTXToLLVMTranslator.h>
+#include <ocelot/translator/PTXToLLVMTranslator.h>
 #include "TestPTXToLLVMTranslator.h"
 
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/ir/interface/LLVMKernel.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/ir/LLVMKernel.h>
 
-#include <ocelot/transforms/interface/RemoveBarrierPass.h>
-#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
-#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/RemoveBarrierPass.h>
+#include <ocelot/transforms/ConvertPredicationToSelectPass.h>
+#include <ocelot/transforms/PassManager.h>
 
-#include <ocelot/parser/interface/PTXParser.h>
+#include <ocelot/parser/PTXParser.h>
 
 #include <hydrazine/ArgumentParser.h>
 #include <hydrazine/macros.h>

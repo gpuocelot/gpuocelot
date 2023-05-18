@@ -8,9 +8,9 @@
 #define TRANSLATOR_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/translator/interface/Translator.h>
+#include <ocelot/translator/Translator.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
 namespace translator
 {

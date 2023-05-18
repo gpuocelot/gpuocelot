@@ -4,12 +4,12 @@
 */
 
 // Ocelot includes
-#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/api/OcelotConfiguration.h>
 
-#include <ocelot/executive/interface/ReconvergenceMechanism.h>
+#include <ocelot/executive/ReconvergenceMechanism.h>
 
-#include <ocelot/ir/interface/Instruction.h>
-#include <ocelot/translator/interface/Translator.h>
+#include <ocelot/ir/Instruction.h>
+#include <ocelot/translator/Translator.h>
 
 // Hydrazine includes
 #include <hydrazine/json.h>

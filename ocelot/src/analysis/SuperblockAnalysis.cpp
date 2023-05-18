@@ -5,7 +5,7 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/SuperblockAnalysis.h>
+#include <ocelot/analysis/SuperblockAnalysis.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

@@ -6,26 +6,26 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/AnalysisFactory.h>
+#include <ocelot/analysis/AnalysisFactory.h>
 
-#include <ocelot/analysis/interface/DataflowGraph.h>
-#include <ocelot/analysis/interface/DivergenceAnalysis.h>
-#include <ocelot/analysis/interface/AffineAnalysis.h>
-#include <ocelot/analysis/interface/ControlTree.h>
-#include <ocelot/analysis/interface/DominatorTree.h>
-#include <ocelot/analysis/interface/PostdominatorTree.h>
-#include <ocelot/analysis/interface/StructuralAnalysis.h>
-#include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
-#include <ocelot/analysis/interface/LoopAnalysis.h>
-#include <ocelot/analysis/interface/ConvergentRegionAnalysis.h>
-#include <ocelot/analysis/interface/SimpleAliasAnalysis.h>
-#include <ocelot/analysis/interface/CycleAnalysis.h>
-#include <ocelot/analysis/interface/SafeRegionAnalysis.h>
-#include <ocelot/analysis/interface/ControlDependenceAnalysis.h>
-#include <ocelot/analysis/interface/DataDependenceAnalysis.h>
-#include <ocelot/analysis/interface/DependenceAnalysis.h>
-#include <ocelot/analysis/interface/MemoryDependenceAnalysis.h>
-#include <ocelot/analysis/interface/HammockGraphAnalysis.h>
+#include <ocelot/analysis/DataflowGraph.h>
+#include <ocelot/analysis/DivergenceAnalysis.h>
+#include <ocelot/analysis/AffineAnalysis.h>
+#include <ocelot/analysis/ControlTree.h>
+#include <ocelot/analysis/DominatorTree.h>
+#include <ocelot/analysis/PostdominatorTree.h>
+#include <ocelot/analysis/StructuralAnalysis.h>
+#include <ocelot/analysis/ThreadFrontierAnalysis.h>
+#include <ocelot/analysis/LoopAnalysis.h>
+#include <ocelot/analysis/ConvergentRegionAnalysis.h>
+#include <ocelot/analysis/SimpleAliasAnalysis.h>
+#include <ocelot/analysis/CycleAnalysis.h>
+#include <ocelot/analysis/SafeRegionAnalysis.h>
+#include <ocelot/analysis/ControlDependenceAnalysis.h>
+#include <ocelot/analysis/DataDependenceAnalysis.h>
+#include <ocelot/analysis/DependenceAnalysis.h>
+#include <ocelot/analysis/MemoryDependenceAnalysis.h>
+#include <ocelot/analysis/HammockGraphAnalysis.h>
 
 namespace analysis 
 {

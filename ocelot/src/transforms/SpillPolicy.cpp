@@ -5,7 +5,7 @@
  *			Author: undead
  */
 
-#include <ocelot/transforms/interface/SpillPolicy.h>
+#include <ocelot/transforms/SpillPolicy.h>
 
 namespace transforms
 {

@@ -5,10 +5,10 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/SimpleAliasAnalysis.h>
+#include <ocelot/analysis/SimpleAliasAnalysis.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
-#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/IRKernel.h>
+#include <ocelot/ir/ControlFlowGraph.h>
 
 namespace analysis
 {

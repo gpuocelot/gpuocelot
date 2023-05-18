@@ -5,11 +5,11 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
+#include <ocelot/transforms/MIMDThreadSchedulingPass.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
-#include <ocelot/analysis/interface/SafeRegionAnalysis.h>
+#include <ocelot/analysis/SafeRegionAnalysis.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

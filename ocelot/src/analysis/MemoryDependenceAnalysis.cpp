@@ -5,12 +5,12 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/MemoryDependenceAnalysis.h>
+#include <ocelot/analysis/MemoryDependenceAnalysis.h>
 
-#include <ocelot/analysis/interface/SimpleAliasAnalysis.h>
+#include <ocelot/analysis/SimpleAliasAnalysis.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
-#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/IRKernel.h>
+#include <ocelot/ir/ControlFlowGraph.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

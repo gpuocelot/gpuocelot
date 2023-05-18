@@ -8,10 +8,10 @@
 #define MULTICORE_CPU_DEVICE_CPP_INCLUDED
 
 // ocelot includes
-#include <ocelot/executive/interface/MulticoreCPUDevice.h>
-#include <ocelot/executive/interface/LLVMExecutableKernel.h>
-#include <ocelot/executive/interface/LLVMModuleManager.h>
-#include <ocelot/executive/interface/LLVMExecutionManager.h>
+#include <ocelot/executive/MulticoreCPUDevice.h>
+#include <ocelot/executive/LLVMExecutableKernel.h>
+#include <ocelot/executive/LLVMModuleManager.h>
+#include <ocelot/executive/LLVMExecutionManager.h>
 
 // hydrazine includes
 #include <hydrazine/SystemCompatibility.h>

@@ -8,10 +8,10 @@
 #define EMULATOR_DEVICE_CPP_INCLUDED
 
 // ocelot includes
-#include <ocelot/api/interface/OcelotConfiguration.h>
-#include <ocelot/executive/interface/EmulatorDevice.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/api/OcelotConfiguration.h>
+#include <ocelot/executive/EmulatorDevice.h>
+#include <ocelot/executive/EmulatedKernel.h>
+#include <ocelot/cuda/cuda_runtime.h>
 
 // hydrazine includes
 #include <hydrazine/debug.h>

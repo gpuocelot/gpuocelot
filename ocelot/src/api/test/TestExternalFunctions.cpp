@@ -9,9 +9,9 @@
 
 // Ocelot Includes
 #include "TestExternalFunctions.h"
-#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/api/ocelot.h>
 
-#include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/cuda/cuda_runtime.h>
 
 // Standard Library Includes
 #include <fstream>

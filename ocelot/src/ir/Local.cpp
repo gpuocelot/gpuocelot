@@ -8,7 +8,7 @@
 #ifndef LOCAL_CPP_INCLUDED
 #define LOCAL_CPP_INCLUDED
 
-#include <ocelot/ir/interface/Local.h>
+#include <ocelot/ir/Local.h>
 
 #include <hydrazine/debug.h>
 

@@ -8,7 +8,7 @@
 #define LLVM_STATE_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/executive/interface/LLVMState.h>
+#include <ocelot/executive/LLVMState.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

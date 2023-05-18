@@ -10,8 +10,8 @@
 #define LINEAR_SCAN_REGISTER_ALLOCATION_PASS_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/LinearScanRegisterAllocationPass.h>
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/transforms/LinearScanRegisterAllocationPass.h>
+#include <ocelot/ir/Module.h>
 
 // Standard Library Includes
 #include <stack>

@@ -8,9 +8,9 @@
 #include <cstring>
 
 // ocelot includes
-#include <ocelot/api/interface/OcelotConfiguration.h>
-#include <ocelot/executive/interface/RemoteDevice.h>
-#include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/api/OcelotConfiguration.h>
+#include <ocelot/executive/RemoteDevice.h>
+#include <ocelot/cuda/cuda_runtime.h>
 
 // hydrazine includes
 #include <hydrazine/debug.h>

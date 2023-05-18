@@ -7,7 +7,7 @@
 	\location somewhere over western Europe
 */
 
-#include <ocelot/cuda/interface/CudaDriverInterface.h>
+#include <ocelot/cuda/CudaDriverInterface.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 

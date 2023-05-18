@@ -5,7 +5,7 @@
  */
 
 // Ocelot includes
-#include <ocelot/cal/interface/CalDriver.h>
+#include <ocelot/cal/CalDriver.h>
 
 // hydrazine includes
 #include <hydrazine/Casts.h>

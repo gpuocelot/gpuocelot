@@ -8,10 +8,10 @@
 #define EXTERNAL_FUNCTION_SET_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/ir/interface/ExternalFunctionSet.h>
-#include <ocelot/executive/interface/LLVMState.h>
-#include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/LLVMKernel.h>
+#include <ocelot/ir/ExternalFunctionSet.h>
+#include <ocelot/executive/LLVMState.h>
+#include <ocelot/ir/PTXKernel.h>
+#include <ocelot/ir/LLVMKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/Casts.h>

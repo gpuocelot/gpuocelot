@@ -6,8 +6,8 @@
 
 %{
 	#include <iostream>
-	#include <ocelot/parser/interface/PTXParser.h>
-	#include <ocelot/parser/interface/PTXLexer.h>
+	#include <ocelot/parser/PTXParser.h>
+	#include <ocelot/parser/PTXLexer.h>
 	#include <hydrazine/debug.h>
 	#include <cassert>
 	#include <cstring>

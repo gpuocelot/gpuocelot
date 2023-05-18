@@ -8,7 +8,7 @@
 
 
 #include <cstdio>
-#include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/cuda.h>
 
 int main(int argc, char *arg[]) {
 

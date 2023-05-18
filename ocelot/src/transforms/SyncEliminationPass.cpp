@@ -4,8 +4,8 @@
 	\brief The source file for the SyncEliminationPass class
 */
 
-#include <ocelot/transforms/interface/SyncEliminationPass.h>
-#include <ocelot/analysis/interface/DivergenceAnalysis.h>
+#include <ocelot/transforms/SyncEliminationPass.h>
+#include <ocelot/analysis/DivergenceAnalysis.h>
 
 namespace transforms {
 

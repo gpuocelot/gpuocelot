@@ -8,9 +8,9 @@
 #define TEST_DEVICE_SWITCHING_CPP_INCLUDED
 
 #include "TestDeviceSwitching.h"
-#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/api/ocelot.h>
 
-#include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/cuda/cuda_runtime.h>
 
 #include <hydrazine/Thread.h>
 #include <hydrazine/ArgumentParser.h>

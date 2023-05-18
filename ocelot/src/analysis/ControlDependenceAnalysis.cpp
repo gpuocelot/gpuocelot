@@ -5,12 +5,12 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/ControlDependenceAnalysis.h>
+#include <ocelot/analysis/ControlDependenceAnalysis.h>
 
-#include <ocelot/analysis/interface/PostdominatorTree.h>
+#include <ocelot/analysis/PostdominatorTree.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
-#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/IRKernel.h>
+#include <ocelot/ir/ControlFlowGraph.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

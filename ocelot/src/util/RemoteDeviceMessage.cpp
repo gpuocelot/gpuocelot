@@ -9,7 +9,7 @@
 #include <iostream>
 
 // Ocelot includes
-#include <ocelot/util/interface/RemoteDeviceMessage.h>
+#include <ocelot/util/RemoteDeviceMessage.h>
 
 // Boost includes
 #include <boost/array.hpp>

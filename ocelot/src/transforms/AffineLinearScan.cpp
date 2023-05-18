@@ -8,9 +8,9 @@
 #define AFFINE_LINEAR_SCAN_CPP_
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/AffineLinearScan.h>
-#include <ocelot/transforms/interface/AffineRegister.h>
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/transforms/AffineLinearScan.h>
+#include <ocelot/transforms/AffineRegister.h>
+#include <ocelot/ir/Module.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

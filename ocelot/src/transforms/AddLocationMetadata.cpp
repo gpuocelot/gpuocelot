@@ -5,8 +5,8 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/AddLocationMetadata.h>
-#include <ocelot/ir/interface/PTXKernel.h>
+#include <ocelot/transforms/AddLocationMetadata.h>
+#include <ocelot/ir/PTXKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

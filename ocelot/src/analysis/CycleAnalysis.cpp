@@ -5,9 +5,9 @@
 */
 
 // Ocelot Incudes
-#include <ocelot/analysis/interface/CycleAnalysis.h>
+#include <ocelot/analysis/CycleAnalysis.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Standard Library Includes
 #include <stack>

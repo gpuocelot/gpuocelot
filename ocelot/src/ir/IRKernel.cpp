@@ -7,10 +7,10 @@
 #ifndef IR_KERNEL_CPP_INCLUDED
 #define IR_KERNEL_CPP_INCLUDED
 
-#include <ocelot/ir/interface/IRKernel.h>
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/IRKernel.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/ir/PTXKernel.h>
+#include <ocelot/ir/ControlFlowGraph.h>
 
 #include <hydrazine/debug.h>
 

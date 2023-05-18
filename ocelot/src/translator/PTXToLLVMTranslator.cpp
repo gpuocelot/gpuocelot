@@ -9,14 +9,14 @@
 #define PTX_TO_LLVM_TRANSLATOR_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/translator/interface/PTXToLLVMTranslator.h>
-#include <ocelot/ir/interface/ExternalFunctionSet.h>
-#include <ocelot/ir/interface/LLVMInstruction.h>
-#include <ocelot/ir/interface/LLVMKernel.h>
-#include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/PTXInstruction.h>
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/executive/interface/LLVMExecutableKernel.h>
+#include <ocelot/translator/PTXToLLVMTranslator.h>
+#include <ocelot/ir/ExternalFunctionSet.h>
+#include <ocelot/ir/LLVMInstruction.h>
+#include <ocelot/ir/LLVMKernel.h>
+#include <ocelot/ir/PTXKernel.h>
+#include <ocelot/ir/PTXInstruction.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/executive/LLVMExecutableKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/Casts.h>

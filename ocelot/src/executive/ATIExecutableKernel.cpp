@@ -5,8 +5,8 @@
  */
 
 // Ocelot includes
-#include <ocelot/executive/interface/ATIExecutableKernel.h>
-#include <ocelot/translator/interface/PTXToILTranslator.h>
+#include <ocelot/executive/ATIExecutableKernel.h>
+#include <ocelot/translator/PTXToILTranslator.h>
 
 // Hydrazine includes
 #include <hydrazine/debug.h>

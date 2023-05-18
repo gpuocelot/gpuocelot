@@ -14,9 +14,9 @@
 #include <fstream>
 
 // Ocelot includes
-#include <ocelot/cuda/interface/CudaDriver.h>
-#include <ocelot/cuda/interface/CudaDriverInterface.h>
-#include <ocelot/util/interface/ExtractedDeviceState.h>
+#include <ocelot/cuda/CudaDriver.h>
+#include <ocelot/cuda/CudaDriverInterface.h>
+#include <ocelot/util/ExtractedDeviceState.h>
 
 namespace util {
 

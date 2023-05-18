@@ -8,7 +8,7 @@
 #define EMULATOR_CALL_STACK_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/executive/interface/EmulatorCallStack.h>
+#include <ocelot/executive/EmulatorCallStack.h>
 
 // Standard Library Includes
 #include <cassert>

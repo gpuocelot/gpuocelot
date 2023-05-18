@@ -268,18 +268,18 @@ if enabled_tests:
 		env.Alias('tests', test[1])
 
 # find all header files in the source tree
-directories = ['ocelot/ir/interface',
-	'ocelot/analysis/interface',
-	'ocelot/api/interface',
-	'ocelot/cal/interface',
-	'ocelot/cuda/interface',
-	'ocelot/executive/interface',
-	'ocelot/tools/interface',
-	'ocelot/parser/interface',
-	'ocelot/trace/interface',
-	'ocelot/transforms/interface',
-	'ocelot/translator/interface',
-	'ocelot/util/interface',
+directories = ['ocelot/ir',
+	'ocelot/analysis',
+	'ocelot/api',
+	'ocelot/cal',
+	'ocelot/cuda',
+	'ocelot/executive',
+	'ocelot/tools',
+	'ocelot/parser',
+	'ocelot/trace',
+	'ocelot/transforms',
+	'ocelot/translator',
+	'ocelot/util',
 	'hydrazine/src',
 	'hydrazine/include' ]
 extensions = ['*.h', '*.hpp']

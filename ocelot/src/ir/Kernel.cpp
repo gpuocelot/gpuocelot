@@ -4,7 +4,7 @@
 	\brief implements the Kernel base class
 */
 
-#include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/Kernel.h>
 
 #include <hydrazine/debug.h>
 

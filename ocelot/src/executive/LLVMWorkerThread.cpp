@@ -8,10 +8,10 @@
 #define LLVM_WORKER_THREAD_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/executive/interface/LLVMWorkerThread.h>
-#include <ocelot/executive/interface/LLVMCooperativeThreadArray.h>
-#include <ocelot/executive/interface/LLVMModuleManager.h>
-#include <ocelot/executive/interface/LLVMExecutableKernel.h>
+#include <ocelot/executive/LLVMWorkerThread.h>
+#include <ocelot/executive/LLVMCooperativeThreadArray.h>
+#include <ocelot/executive/LLVMModuleManager.h>
+#include <ocelot/executive/LLVMExecutableKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

@@ -4,7 +4,7 @@
 	\brief describes a parameter declaration
 */
 
-#include <ocelot/ir/interface/Parameter.h>
+#include <ocelot/ir/Parameter.h>
 #include <hydrazine/debug.h>
 
 std::string ir::Parameter::value( const Parameter& p ) {

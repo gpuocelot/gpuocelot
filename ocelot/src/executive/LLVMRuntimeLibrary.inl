@@ -10,11 +10,11 @@
 #define LLVM_RUNTIME_LIBRARY_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/executive/interface/Device.h>
-#include <ocelot/executive/interface/LLVMExecutableKernel.h>
-#include <ocelot/executive/interface/LLVMContext.h>
-#include <ocelot/executive/interface/LLVMModuleManager.h>
-#include <ocelot/executive/interface/TextureOperations.h>
+#include <ocelot/executive/Device.h>
+#include <ocelot/executive/LLVMExecutableKernel.h>
+#include <ocelot/executive/LLVMContext.h>
+#include <ocelot/executive/LLVMModuleManager.h>
+#include <ocelot/executive/TextureOperations.h>
 
 // Hydrazine Includes
 #include <hydrazine/math.h>

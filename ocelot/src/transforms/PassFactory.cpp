@@ -6,28 +6,28 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/PassFactory.h>
+#include <ocelot/transforms/PassFactory.h>
 
-#include <ocelot/transforms/interface/LinearScanRegisterAllocationPass.h>
-#include <ocelot/transforms/interface/RemoveBarrierPass.h>
-#include <ocelot/transforms/interface/StructuralTransform.h>
-#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
-#include <ocelot/transforms/interface/SubkernelFormationPass.h>
-#include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
-#include <ocelot/transforms/interface/DeadCodeEliminationPass.h>
-#include <ocelot/transforms/interface/SplitBasicBlockPass.h>
-#include <ocelot/transforms/interface/SyncEliminationPass.h>
-#include <ocelot/transforms/interface/HoistSpecialValueDefinitionsPass.h>
-#include <ocelot/transforms/interface/LoopUnrollingPass.h>
-#include <ocelot/transforms/interface/SimplifyControlFlowGraphPass.h>
-#include <ocelot/transforms/interface/EnforceLockStepExecutionPass.h>
-#include <ocelot/transforms/interface/FunctionInliningPass.h>
-#include <ocelot/transforms/interface/SimplifyExternalCallsPass.h>
-#include <ocelot/transforms/interface/GlobalValueNumberingPass.h>
-#include <ocelot/transforms/interface/ConstantPropagationPass.h>
-#include <ocelot/transforms/interface/SharedPtrAttribute.h>
-#include <ocelot/transforms/interface/HoistParameterLoadsPass.h>
-#include <ocelot/transforms/interface/MoveEliminationPass.h>
+#include <ocelot/transforms/LinearScanRegisterAllocationPass.h>
+#include <ocelot/transforms/RemoveBarrierPass.h>
+#include <ocelot/transforms/StructuralTransform.h>
+#include <ocelot/transforms/ConvertPredicationToSelectPass.h>
+#include <ocelot/transforms/SubkernelFormationPass.h>
+#include <ocelot/transforms/MIMDThreadSchedulingPass.h>
+#include <ocelot/transforms/DeadCodeEliminationPass.h>
+#include <ocelot/transforms/SplitBasicBlockPass.h>
+#include <ocelot/transforms/SyncEliminationPass.h>
+#include <ocelot/transforms/HoistSpecialValueDefinitionsPass.h>
+#include <ocelot/transforms/LoopUnrollingPass.h>
+#include <ocelot/transforms/SimplifyControlFlowGraphPass.h>
+#include <ocelot/transforms/EnforceLockStepExecutionPass.h>
+#include <ocelot/transforms/FunctionInliningPass.h>
+#include <ocelot/transforms/SimplifyExternalCallsPass.h>
+#include <ocelot/transforms/GlobalValueNumberingPass.h>
+#include <ocelot/transforms/ConstantPropagationPass.h>
+#include <ocelot/transforms/SharedPtrAttribute.h>
+#include <ocelot/transforms/HoistParameterLoadsPass.h>
+#include <ocelot/transforms/MoveEliminationPass.h>
 
 // Standard Library Includes
 #include <stdexcept>

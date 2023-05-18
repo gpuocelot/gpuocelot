@@ -8,13 +8,13 @@
 #define IPDOM_RECONVERGENCE_PASS_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/IPDOMReconvergencePass.h>
+#include <ocelot/transforms/IPDOMReconvergencePass.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
-#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/IRKernel.h>
+#include <ocelot/ir/ControlFlowGraph.h>
 
-#include <ocelot/analysis/interface/PostdominatorTree.h>
-#include <ocelot/analysis/interface/DominatorTree.h>
+#include <ocelot/analysis/PostdominatorTree.h>
+#include <ocelot/analysis/DominatorTree.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

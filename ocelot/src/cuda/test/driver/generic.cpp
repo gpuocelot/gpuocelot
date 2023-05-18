@@ -3,7 +3,7 @@
 	\brief CUDA Driver API version of the sequence program
 */
 
-#include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/cuda.h>
 #include <iostream>
 
 #define report(x) std::cout << x << std::endl

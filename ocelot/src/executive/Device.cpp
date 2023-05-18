@@ -5,14 +5,14 @@
 */
 
 // Ocelot Includes
-#include <ocelot/executive/interface/Device.h>
-#include <ocelot/executive/interface/NVIDIAGPUDevice.h>
-#include <ocelot/executive/interface/ATIGPUDevice.h>
-#include <ocelot/executive/interface/EmulatorDevice.h>
-#include <ocelot/executive/interface/MulticoreCPUDevice.h>
-#include <ocelot/executive/interface/RemoteDevice.h>
-#include <ocelot/executive/interface/PassThroughDevice.h>
-#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/executive/Device.h>
+#include <ocelot/executive/NVIDIAGPUDevice.h>
+#include <ocelot/executive/ATIGPUDevice.h>
+#include <ocelot/executive/EmulatorDevice.h>
+#include <ocelot/executive/MulticoreCPUDevice.h>
+#include <ocelot/executive/RemoteDevice.h>
+#include <ocelot/executive/PassThroughDevice.h>
+#include <ocelot/api/OcelotConfiguration.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

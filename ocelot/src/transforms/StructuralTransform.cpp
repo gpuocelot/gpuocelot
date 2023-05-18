@@ -11,8 +11,8 @@
 //===----------------------------------------------------------------------===//
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/StructuralTransform.h> 
-#include <ocelot/analysis/interface/DataflowGraph.h>
+#include <ocelot/transforms/StructuralTransform.h> 
+#include <ocelot/analysis/DataflowGraph.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

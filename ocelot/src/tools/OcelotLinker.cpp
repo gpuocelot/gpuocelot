@@ -5,12 +5,12 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/PassManager.h>
-#include <ocelot/transforms/interface/PassFactory.h>
+#include <ocelot/transforms/PassManager.h>
+#include <ocelot/transforms/PassFactory.h>
 
-#include <ocelot/transforms/interface/ModuleLinkerPass.h>
+#include <ocelot/transforms/ModuleLinkerPass.h>
 
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/Module.h>
 
 // Hydrazine Includes
 #include <hydrazine/ArgumentParser.h>

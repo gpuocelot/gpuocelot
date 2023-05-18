@@ -5,10 +5,10 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/FunctionInliningPass.h>
+#include <ocelot/transforms/FunctionInliningPass.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/IRKernel.h>
+#include <ocelot/ir/Module.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

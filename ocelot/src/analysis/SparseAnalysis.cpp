@@ -9,8 +9,8 @@
 #include <vector>
 #include <iostream>
 
-#include <ocelot/analysis/interface/DataflowGraph.h>
-#include <ocelot/analysis/interface/AffineAnalysis.h>
+#include <ocelot/analysis/DataflowGraph.h>
+#include <ocelot/analysis/AffineAnalysis.h>
 #include <hydrazine/debug.h>
 
 namespace analysis {

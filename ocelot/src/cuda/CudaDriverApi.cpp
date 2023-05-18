@@ -12,8 +12,8 @@
 #include <string>
 
 // Ocelot includes
-#include <ocelot/cuda/interface/cuda_internal.h>
-#include <ocelot/cuda/interface/CudaDriverFrontend.h>
+#include <ocelot/cuda/cuda_internal.h>
+#include <ocelot/cuda/CudaDriverFrontend.h>
 
 // Hydrazine includes
 #include <hydrazine/debug.h>

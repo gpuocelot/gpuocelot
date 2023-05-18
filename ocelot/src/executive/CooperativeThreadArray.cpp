@@ -6,18 +6,18 @@
 */
 
 // Ocelot Includes
-#include <ocelot/ir/interface/PTXOperand.h>
-#include <ocelot/ir/interface/PTXInstruction.h>
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/PTXOperand.h>
+#include <ocelot/ir/PTXInstruction.h>
+#include <ocelot/ir/Module.h>
 
-#include <ocelot/executive/interface/RuntimeException.h>
-#include <ocelot/executive/interface/CooperativeThreadArray.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/EmulatedKernelScheduler.h>
-#include <ocelot/executive/interface/CTAContext.h>
-#include <ocelot/executive/interface/TextureOperations.h>
+#include <ocelot/executive/RuntimeException.h>
+#include <ocelot/executive/CooperativeThreadArray.h>
+#include <ocelot/executive/EmulatedKernel.h>
+#include <ocelot/executive/EmulatedKernelScheduler.h>
+#include <ocelot/executive/CTAContext.h>
+#include <ocelot/executive/TextureOperations.h>
 
-#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/api/OcelotConfiguration.h>
 
 // Hydrazine Includes
 #include <hydrazine/Casts.h>

@@ -5,11 +5,11 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/HoistSpecialValueDefinitionsPass.h>
+#include <ocelot/transforms/HoistSpecialValueDefinitionsPass.h>
 
-#include <ocelot/analysis/interface/DominatorTree.h>
+#include <ocelot/analysis/DominatorTree.h>
 
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/Module.h>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE

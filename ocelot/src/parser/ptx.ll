@@ -19,7 +19,7 @@
 	#define PTX_LPP_INCLUDED
 
 	// Ocelot Includes
-	#include <ocelot/parser/interface/PTXLexer.h>
+	#include <ocelot/parser/PTXLexer.h>
 
 	// Hydrazine Includes
 	#include <hydrazine/macros.h>

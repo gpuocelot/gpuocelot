@@ -6,7 +6,7 @@
 */
 
 // Ocelot Includes
-#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/api/ocelot.h>
 #include "OcelotServer.h"
 
 // Hydrazine Includes

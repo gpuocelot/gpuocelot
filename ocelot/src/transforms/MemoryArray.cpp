@@ -5,7 +5,7 @@
 *			Author: undead
 */
 
-#include <ocelot/transforms/interface/MemoryArray.h>
+#include <ocelot/transforms/MemoryArray.h>
 
 #include <hydrazine/debug.h>
 

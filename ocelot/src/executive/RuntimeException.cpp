@@ -10,7 +10,7 @@
 */
 
 #include <sstream>
-#include <ocelot/executive/interface/RuntimeException.h>
+#include <ocelot/executive/RuntimeException.h>
 
 executive::RuntimeException::RuntimeException( ): 
 	message("Unspecified runtime exception"), PC(-1) {

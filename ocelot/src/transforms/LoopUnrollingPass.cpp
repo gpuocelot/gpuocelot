@@ -5,9 +5,9 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/LoopUnrollingPass.h>
+#include <ocelot/transforms/LoopUnrollingPass.h>
 
-#include <ocelot/analysis/interface/LoopAnalysis.h>
+#include <ocelot/analysis/LoopAnalysis.h>
 
 // Standard Library Includes
 #include <cassert>

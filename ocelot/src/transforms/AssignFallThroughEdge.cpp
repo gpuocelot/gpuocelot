@@ -9,7 +9,7 @@
 // 
 //===----------------------------------------------------------------------===// 
  
-#include <ocelot/transforms/interface/AssignFallThroughEdge.h>
+#include <ocelot/transforms/AssignFallThroughEdge.h>
 
 namespace transforms {  
   void AssignFallThroughEdge::replaceWithDummyEdge() {

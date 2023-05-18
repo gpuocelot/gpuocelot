@@ -8,10 +8,10 @@
 #define DEFAULT_LAYOUT_PASS_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/DefaultLayoutPass.h>
+#include <ocelot/transforms/DefaultLayoutPass.h>
 
-#include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/ControlFlowGraph.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

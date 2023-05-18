@@ -5,9 +5,9 @@
 */
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/ReadableLayoutPass.h>
-#include <ocelot/analysis/interface/DominatorTree.h>
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/transforms/ReadableLayoutPass.h>
+#include <ocelot/analysis/DominatorTree.h>
+#include <ocelot/ir/IRKernel.h>
 
 
 // Hydrazine Includes

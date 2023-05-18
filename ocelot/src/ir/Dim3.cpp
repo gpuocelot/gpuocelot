@@ -8,7 +8,7 @@
 #ifndef DIM_3_CPP_INCLUDED
 #define DIM_3_CPP_INCLUDED
 
-#include <ocelot/ir/interface/Dim3.h>
+#include <ocelot/ir/Dim3.h>
 
 namespace ir
 {

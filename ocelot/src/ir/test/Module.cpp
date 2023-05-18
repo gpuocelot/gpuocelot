@@ -16,10 +16,10 @@
 #include <hydrazine/macros.h>
 #include <hydrazine/debug.h>
 
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/ir/interface/Kernel.h>
-#include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/parser/interface/PTXParser.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/ir/Kernel.h>
+#include <ocelot/ir/ControlFlowGraph.h>
+#include <ocelot/parser/PTXParser.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 

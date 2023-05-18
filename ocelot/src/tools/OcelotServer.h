@@ -8,8 +8,8 @@
 #define OCELOTSERVER_H_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/util/interface/RemoteDeviceMessage.h>
-#include <ocelot/util/interface/OcelotServerConnection.h>
+#include <ocelot/util/RemoteDeviceMessage.h>
+#include <ocelot/util/OcelotServerConnection.h>
 
 namespace remote {
 

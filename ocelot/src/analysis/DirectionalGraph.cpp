@@ -5,7 +5,7 @@
  *      Author: Diogo Sampaio
  */
 
-#include <ocelot/analysis/interface/DirectionalGraph.h>
+#include <ocelot/analysis/DirectionalGraph.h>
 
 namespace analysis
 {

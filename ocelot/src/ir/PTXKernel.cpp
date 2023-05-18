@@ -11,12 +11,12 @@
 #include <cmath>
 
 // Ocelot Includes
-#include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/PTXKernel.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/ir/ControlFlowGraph.h>
 
-#include <ocelot/transforms/interface/PassManager.h>
-#include <ocelot/transforms/interface/ReadableLayoutPass.h>
+#include <ocelot/transforms/PassManager.h>
+#include <ocelot/transforms/ReadableLayoutPass.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

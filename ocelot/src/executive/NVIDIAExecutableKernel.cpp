@@ -4,7 +4,7 @@
 	\brief implements the GPU kernel callable by the executive
 */
 
-#include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
+#include <ocelot/executive/NVIDIAExecutableKernel.h>
 
 #include <hydrazine/debug.h>
 #include <hydrazine/Exception.h>

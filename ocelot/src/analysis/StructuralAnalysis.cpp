@@ -12,7 +12,7 @@
 //===----------------------------------------------------------------------===// 
 
 // Ocelot Includes 
-#include <ocelot/analysis/interface/StructuralAnalysis.h>
+#include <ocelot/analysis/StructuralAnalysis.h>
 #include <algorithm>
 
 // Hydrazine Includes

@@ -15,14 +15,14 @@
 #include <algorithm>
 
 // Ocelot includes
-#include <ocelot/cuda/interface/cuda_internal.h>
-#include <ocelot/api/interface/OcelotConfiguration.h>
-#include <ocelot/cuda/interface/CudaRuntimeContext.h>
-#include <ocelot/cuda/interface/CudaDriverFrontend.h>
-#include <ocelot/ir/interface/PTXInstruction.h>
-#include <ocelot/executive/interface/RuntimeException.h>
-#include <ocelot/executive/interface/Device.h>
-#include <ocelot/executive/interface/ExecutableKernel.h>
+#include <ocelot/cuda/cuda_internal.h>
+#include <ocelot/api/OcelotConfiguration.h>
+#include <ocelot/cuda/CudaRuntimeContext.h>
+#include <ocelot/cuda/CudaDriverFrontend.h>
+#include <ocelot/ir/PTXInstruction.h>
+#include <ocelot/executive/RuntimeException.h>
+#include <ocelot/executive/Device.h>
+#include <ocelot/executive/ExecutableKernel.h>
 
 // Hydrazine includes
 #include <hydrazine/Casts.h>

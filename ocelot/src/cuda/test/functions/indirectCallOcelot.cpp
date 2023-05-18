@@ -10,8 +10,8 @@
 #include <cstdio>
 #include <fstream>
 
-#include <ocelot/cuda/interface/cuda_runtime.h>
-#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/cuda/cuda_runtime.h>
+#include <ocelot/api/ocelot.h>
 
 int main(int argc, char *arg[]) {
 

@@ -24,11 +24,11 @@
 // Boost includes
 
 // CUDA Includes
-#include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/cuda/cuda_runtime.h>
 
 // Ocelot includes
-#include <ocelot/util/interface/ExtractedDeviceState.h>
-#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/util/ExtractedDeviceState.h>
+#include <ocelot/api/ocelot.h>
 #include "KernelTestHarness.h"
 
 #ifdef REPORT_BASE

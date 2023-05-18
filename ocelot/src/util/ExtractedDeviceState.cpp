@@ -21,7 +21,7 @@
 #include <hydrazine/Casts.h>
 
 // Ocelot includes
-#include <ocelot/util/interface/ExtractedDeviceState.h>
+#include <ocelot/util/ExtractedDeviceState.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

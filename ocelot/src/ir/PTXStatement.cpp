@@ -8,7 +8,7 @@
 #define IR_PTXSTATEMENT_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/ir/interface/PTXStatement.h>
+#include <ocelot/ir/PTXStatement.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

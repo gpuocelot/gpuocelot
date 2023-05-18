@@ -6,7 +6,7 @@
 
 
 // Ocelot Includes
-#include <ocelot/cuda/interface/FatBinaryContext.h>
+#include <ocelot/cuda/FatBinaryContext.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

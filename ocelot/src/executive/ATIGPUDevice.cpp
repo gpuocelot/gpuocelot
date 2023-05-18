@@ -8,9 +8,9 @@
 #include <string.h>
 
 // Ocelot includes
-#include <ocelot/executive/interface/ATIGPUDevice.h>
-#include <ocelot/executive/interface/ATIExecutableKernel.h>
-#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/executive/ATIGPUDevice.h>
+#include <ocelot/executive/ATIExecutableKernel.h>
+#include <ocelot/transforms/PassManager.h>
 
 // Hydrazine includes
 #include <hydrazine/Casts.h>
@@ -18,7 +18,7 @@
 #include <hydrazine/debug.h>
 
 // TODO Temporarily. Shouldn't be here
-#include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/cuda/cuda_runtime.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

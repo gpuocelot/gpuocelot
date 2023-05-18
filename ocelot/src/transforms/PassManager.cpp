@@ -6,15 +6,15 @@
 
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/PassManager.h>
-#include <ocelot/transforms/interface/PassFactory.h>
-#include <ocelot/transforms/interface/Pass.h>
+#include <ocelot/transforms/PassManager.h>
+#include <ocelot/transforms/PassFactory.h>
+#include <ocelot/transforms/Pass.h>
 
-#include <ocelot/analysis/interface/Analysis.h>
-#include <ocelot/analysis/interface/AnalysisFactory.h>
+#include <ocelot/analysis/Analysis.h>
+#include <ocelot/analysis/AnalysisFactory.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/IRKernel.h>
+#include <ocelot/ir/Module.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

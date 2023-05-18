@@ -5,8 +5,8 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/DivergenceAnalysis.h>
-#include <ocelot/analysis/interface/PostdominatorTree.h>
+#include <ocelot/analysis/DivergenceAnalysis.h>
+#include <ocelot/analysis/PostdominatorTree.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

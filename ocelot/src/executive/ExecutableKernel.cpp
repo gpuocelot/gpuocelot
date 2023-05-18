@@ -11,8 +11,8 @@
 #include <memory.h>
 
 // Ocelot includes
-#include <ocelot/executive/interface/ExecutableKernel.h>
-#include <ocelot/trace/interface/TraceGenerator.h>
+#include <ocelot/executive/ExecutableKernel.h>
+#include <ocelot/trace/TraceGenerator.h>
 
 // Hydrazine includes
 #include <hydrazine/debug.h>

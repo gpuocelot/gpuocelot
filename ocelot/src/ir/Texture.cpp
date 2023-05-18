@@ -10,7 +10,7 @@
 #ifndef TEXTURE_CPP_INCLUDED
 #define TEXTURE_CPP_INCLUDED
 
-#include <ocelot/ir/interface/Texture.h>
+#include <ocelot/ir/Texture.h>
 
 #include <hydrazine/SystemCompatibility.h>
 

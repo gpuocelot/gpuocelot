@@ -8,8 +8,8 @@
 #define PASS_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/PassManager.h>
-#include <ocelot/transforms/interface/Pass.h>
+#include <ocelot/transforms/PassManager.h>
+#include <ocelot/transforms/Pass.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

@@ -4,7 +4,7 @@
 	\brief internal representation of a PTX operand
 */
 
-#include <ocelot/ir/interface/PTXOperand.h>
+#include <ocelot/ir/PTXOperand.h>
 
 #include <hydrazine/debug.h>
 

@@ -4,9 +4,9 @@
 	\date 28 September 2008; 21 Jan 2009
 */
 
-#include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/ir/interface/IRKernel.h>
-#include <ocelot/ir/interface/PTXInstruction.h>
+#include <ocelot/ir/ControlFlowGraph.h>
+#include <ocelot/ir/IRKernel.h>
+#include <ocelot/ir/PTXInstruction.h>
 
 #include <hydrazine/string.h>
 #include <hydrazine/debug.h>

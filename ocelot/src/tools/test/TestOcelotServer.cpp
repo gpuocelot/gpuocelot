@@ -8,9 +8,9 @@
 #include <string>
 
 // Ocelot includes
-#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/api/ocelot.h>
 #include "OcelotServer.h"
-#include <ocelot/util/interface/RemoteDeviceMessage.h>
+#include <ocelot/util/RemoteDeviceMessage.h>
 
 // Boost includes
 #include <boost/thread/thread.hpp>

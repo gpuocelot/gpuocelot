@@ -8,12 +8,12 @@
 #define LLVM_EXECUTION_MANAGER_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/executive/interface/LLVMExecutionManager.h>
-#include <ocelot/executive/interface/LLVMWorkerThread.h>
-#include <ocelot/executive/interface/LLVMModuleManager.h>
-#include <ocelot/executive/interface/LLVMExecutableKernel.h>
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/executive/LLVMExecutionManager.h>
+#include <ocelot/executive/LLVMWorkerThread.h>
+#include <ocelot/executive/LLVMModuleManager.h>
+#include <ocelot/executive/LLVMExecutableKernel.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/api/OcelotConfiguration.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

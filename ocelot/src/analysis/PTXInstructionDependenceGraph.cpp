@@ -5,11 +5,11 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/PTXInstructionDependenceGraph.h>
+#include <ocelot/analysis/PTXInstructionDependenceGraph.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
-#include <ocelot/ir/interface/PTXInstruction.h>
-#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/IRKernel.h>
+#include <ocelot/ir/PTXInstruction.h>
+#include <ocelot/ir/ControlFlowGraph.h>
 
 // Standard Library Includes
 #include <unordered_set> 

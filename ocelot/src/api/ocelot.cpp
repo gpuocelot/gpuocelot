@@ -7,8 +7,8 @@
 #ifndef OCELOT_CPP_INCLUDED
 #define OCELOT_CPP_INCLUDED
 
-#include <ocelot/api/interface/ocelot.h>
-#include <ocelot/cuda/interface/CudaRuntimeInterface.h>
+#include <ocelot/api/ocelot.h>
+#include <ocelot/cuda/CudaRuntimeInterface.h>
 #include <hydrazine/Exception.h>
 
 namespace ocelot

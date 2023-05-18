@@ -5,12 +5,12 @@
 */
 
 // Ocelot Incudes
-#include <ocelot/analysis/interface/HammockGraphAnalysis.h>
+#include <ocelot/analysis/HammockGraphAnalysis.h>
 
-#include <ocelot/analysis/interface/PostdominatorTree.h>
-#include <ocelot/analysis/interface/DominatorTree.h>
+#include <ocelot/analysis/PostdominatorTree.h>
+#include <ocelot/analysis/DominatorTree.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

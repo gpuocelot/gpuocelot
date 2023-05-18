@@ -5,7 +5,7 @@
  */
 
 // Ocelot includes
-#include <ocelot/ir/interface/ILInstruction.h>
+#include <ocelot/ir/ILInstruction.h>
 
 // Hydrazine includes
 #include <hydrazine/debug.h>

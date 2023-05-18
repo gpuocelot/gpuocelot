@@ -8,7 +8,7 @@
 */
 
 // Ocelot Includes
-#include <ocelot/trace/interface/TraceEvent.h>
+#include <ocelot/trace/TraceEvent.h>
 
 // Standard Library Includes
 #include <sstream>

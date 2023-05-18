@@ -6,7 +6,7 @@
  \brief The source file for the AffineAnalysis class
  */
 
-#include <ocelot/analysis/interface/AffineAnalysis.h>
+#include <ocelot/analysis/AffineAnalysis.h>
 #include <hydrazine/debug.h>
 
 #ifdef REPORT_BASE

@@ -6,11 +6,11 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/BranchInfo.h>
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/analysis/interface/DataflowGraph.h>
-#include <ocelot/analysis/interface/DivergenceGraph.h>
+#include <ocelot/analysis/BranchInfo.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/ir/PTXKernel.h>
+#include <ocelot/analysis/DataflowGraph.h>
+#include <ocelot/analysis/DivergenceGraph.h>
 
 namespace analysis 
 {

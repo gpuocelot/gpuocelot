@@ -8,7 +8,7 @@
 #define LLVM_FUNCTION_CALL_STACK_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/executive/interface/LLVMFunctionCallStack.h>
+#include <ocelot/executive/LLVMFunctionCallStack.h>
 
 // Standard Library Includes
 #include <cassert>

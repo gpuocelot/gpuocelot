@@ -5,8 +5,8 @@
 */
 
 // Ocelot Includes
-#include <ocelot/executive/interface/EmulatedKernelScheduler.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/executive/EmulatedKernelScheduler.h>
+#include <ocelot/executive/EmulatedKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

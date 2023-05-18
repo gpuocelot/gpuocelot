@@ -37,19 +37,7 @@ endforeach()
 set(${PROJECT_NAME}_INCLUDE_DIRS
 	${LLVM_INCLUDE_DIRS}
 	${GLEW_INCLUDE_DIRS}
-	${CMAKE_CURRENT_SOURCE_DIR}/include
-	${CMAKE_CURRENT_SOURCE_DIR}/include/analysis
-	${CMAKE_CURRENT_SOURCE_DIR}/include/api
-	${CMAKE_CURRENT_SOURCE_DIR}/include/cal
-	${CMAKE_CURRENT_SOURCE_DIR}/include/cuda
-	${CMAKE_CURRENT_SOURCE_DIR}/include/executive
-	${CMAKE_CURRENT_SOURCE_DIR}/include/ir
-	${CMAKE_CURRENT_SOURCE_DIR}/include/parser
-	${CMAKE_CURRENT_SOURCE_DIR}/include/tools
-	${CMAKE_CURRENT_SOURCE_DIR}/include/trace
-	${CMAKE_CURRENT_SOURCE_DIR}/include/transforms
-	${CMAKE_CURRENT_SOURCE_DIR}/include/translator
-	${CMAKE_CURRENT_SOURCE_DIR}/include/util)
+	${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(${PROJECT_NAME}_LIBRARIES
 	${LLVM_LIBRARIES}

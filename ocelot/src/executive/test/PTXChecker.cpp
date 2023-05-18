@@ -15,7 +15,7 @@
 #include <hydrazine/macros.h>
 #include <hydrazine/debug.h>
 
-#include <ocelot/cuda/interface/CudaDriver.h>
+#include <ocelot/cuda/CudaDriver.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>

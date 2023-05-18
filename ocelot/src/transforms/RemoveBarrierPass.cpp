@@ -7,9 +7,9 @@
 #ifndef REMOVE_BARRIER_PASS_CPP_INCLUDED
 #define REMOVE_BARRIER_PASS_CPP_INCLUDED
 
-#include <ocelot/transforms/interface/RemoveBarrierPass.h>
-#include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/ExternalFunctionSet.h>
+#include <ocelot/transforms/RemoveBarrierPass.h>
+#include <ocelot/ir/PTXKernel.h>
+#include <ocelot/ir/ExternalFunctionSet.h>
 
 #include <hydrazine/debug.h>
 

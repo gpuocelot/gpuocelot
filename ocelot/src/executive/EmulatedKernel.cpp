@@ -5,27 +5,27 @@
 */
 
 // Ocelot includes
-#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/api/OcelotConfiguration.h>
 
-#include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/EmulatorDevice.h>
-#include <ocelot/executive/interface/RuntimeException.h>
-#include <ocelot/executive/interface/CooperativeThreadArray.h>
-#include <ocelot/executive/interface/EmulatedKernelScheduler.h>
+#include <ocelot/executive/EmulatedKernel.h>
+#include <ocelot/executive/EmulatorDevice.h>
+#include <ocelot/executive/RuntimeException.h>
+#include <ocelot/executive/CooperativeThreadArray.h>
+#include <ocelot/executive/EmulatedKernelScheduler.h>
 
-#include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/Parameter.h>
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/PTXKernel.h>
+#include <ocelot/ir/Parameter.h>
+#include <ocelot/ir/Module.h>
+#include <ocelot/ir/ControlFlowGraph.h>
 
-#include <ocelot/trace/interface/TraceGenerator.h>
+#include <ocelot/trace/TraceGenerator.h>
 
-#include <ocelot/transforms/interface/PassManager.h>
-#include <ocelot/transforms/interface/IPDOMReconvergencePass.h>
-#include <ocelot/transforms/interface/ThreadFrontierReconvergencePass.h>
-#include <ocelot/transforms/interface/DefaultLayoutPass.h>
-#include <ocelot/transforms/interface/EnforceLockStepExecutionPass.h>
-#include <ocelot/transforms/interface/PriorityLayoutPass.h>
+#include <ocelot/transforms/PassManager.h>
+#include <ocelot/transforms/IPDOMReconvergencePass.h>
+#include <ocelot/transforms/ThreadFrontierReconvergencePass.h>
+#include <ocelot/transforms/DefaultLayoutPass.h>
+#include <ocelot/transforms/EnforceLockStepExecutionPass.h>
+#include <ocelot/transforms/PriorityLayoutPass.h>
 
 
 // C++ includes

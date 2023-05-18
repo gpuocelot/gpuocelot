@@ -8,10 +8,10 @@
 #define OCELOT_RUNTIME_CPP_INCLUDED
 
 // Ocelot includes
-#include <ocelot/api/interface/OcelotRuntime.h>
-#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/api/OcelotRuntime.h>
+#include <ocelot/api/ocelot.h>
 
-#include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/cuda/cuda_runtime.h>
 
 // Hydrazine includes
 #include <hydrazine/debug.h>

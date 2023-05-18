@@ -8,10 +8,10 @@
 #define THREAD_FRONTIER_ANALYSIS_CPP_INCLUDED
 
 // Ocelot Incudes
-#include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
-#include <ocelot/analysis/interface/DominatorTree.h>
+#include <ocelot/analysis/ThreadFrontierAnalysis.h>
+#include <ocelot/analysis/DominatorTree.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

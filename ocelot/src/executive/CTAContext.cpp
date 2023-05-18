@@ -3,9 +3,9 @@
 	\brief implements a CTAContext
 */
 
-#include <ocelot/executive/interface/CTAContext.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/CooperativeThreadArray.h>
+#include <ocelot/executive/CTAContext.h>
+#include <ocelot/executive/EmulatedKernel.h>
+#include <ocelot/executive/CooperativeThreadArray.h>
 
 #include <hydrazine/debug.h>
 

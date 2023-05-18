@@ -16,7 +16,7 @@
 #include <map>
 
 // Ocelot includes
-#include <ocelot/util/interface/ExtractedDeviceState.h>
+#include <ocelot/util/ExtractedDeviceState.h>
 
 namespace util {
 

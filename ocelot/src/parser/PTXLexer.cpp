@@ -10,7 +10,7 @@
 #undef yyFlexLexer
 #define yyFlexLexer ptxFlexLexer
 #include <FlexLexer.h>
-#include <ocelot/parser/interface/PTXLexer.h>
+#include <ocelot/parser/PTXLexer.h>
 
 #include <cstring>
 #include <cassert>

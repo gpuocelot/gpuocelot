@@ -5,9 +5,9 @@
 */
 
 // Ocelot Incudes
-#include <ocelot/analysis/interface/ConvergentRegionAnalysis.h>
+#include <ocelot/analysis/ConvergentRegionAnalysis.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/IRKernel.h>
 
 // Standard Library Includes
 #include <cassert>

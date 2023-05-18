@@ -8,7 +8,7 @@
 	\brief base class for all instructions
 */
 
-#include <ocelot/ir/interface/Instruction.h>
+#include <ocelot/ir/Instruction.h>
 
 std::string ir::Instruction::toString( Architecture a ) {
 	switch( a ) {

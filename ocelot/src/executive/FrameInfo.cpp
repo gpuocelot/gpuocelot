@@ -5,7 +5,7 @@
 */
 
 // Ocelot Includes 
-#include <ocelot/executive/interface/FrameInfo.h>
+#include <ocelot/executive/FrameInfo.h>
 
 namespace executive
 {

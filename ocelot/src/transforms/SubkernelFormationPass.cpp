@@ -21,8 +21,8 @@
 #include <queue>
 
 // Ocelot Includes
-#include <ocelot/transforms/interface/SubkernelFormationPass.h>
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/transforms/SubkernelFormationPass.h>
+#include <ocelot/ir/Module.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>

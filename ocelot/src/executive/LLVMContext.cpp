@@ -8,7 +8,7 @@
 #ifndef LLVM_CONTEXT_CPP_INCLUDED
 #define LLVM_CONTEXT_CPP_INCLUDED
 
-#include <ocelot/executive/interface/LLVMContext.h>
+#include <ocelot/executive/LLVMContext.h>
 
 namespace executive
 {
