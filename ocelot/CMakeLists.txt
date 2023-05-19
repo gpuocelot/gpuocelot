@@ -30,7 +30,12 @@ foreach(ARG ${LLVM_FLAGS_LIST})
 	set(STARTS FALSE)
 	string_starts_with("${ARG}" "-D" STARTS)
 	if (STARTS)
-		list(APPEND ${PROJECT_NAME}_DEFINITIONS ${ARG})
+		# Must ignore -DNDEBUG, otherwise our assertions in Ocelot
+		# will always be disabled.
+		string_starts_with("${ARG}" "-DNDEBUG" STARTS)
+		if (NOT STARTS)
+			list(APPEND ${PROJECT_NAME}_DEFINITIONS ${ARG})
+		endif()
 	else()
 		# TODO Currently, Ocelot uses typeid, while LLVM comes with -fno-rtti
 		# list(APPEND ${PROJECT_NAME}_CXXFLAGS ${ARG})
