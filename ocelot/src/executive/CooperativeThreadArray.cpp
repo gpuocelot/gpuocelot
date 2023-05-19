@@ -121,24 +121,25 @@ static executive::ReconvergenceMechanism*
 	getReconvergenceMechanism(executive::CooperativeThreadArray* cta) {
 
 	typedef api::OcelotConfiguration config;
+	auto reconvergenceMechanism = config::get().executive.reconvergenceMechanism;
 
-	if (config::get().executive.reconvergenceMechanism
+	if (reconvergenceMechanism
 		== executive::ReconvergenceMechanism::Reconverge_IPDOM) {
 		return new executive::ReconvergenceIPDOM(cta);
 	}
-	else if (config::get().executive.reconvergenceMechanism
+	else if (reconvergenceMechanism
 		== executive::ReconvergenceMechanism::Reconverge_Barrier) {
 		return new executive::ReconvergenceBarrier(cta);
 	}
-	else if (config::get().executive.reconvergenceMechanism
+	else if (reconvergenceMechanism
 		== executive::ReconvergenceMechanism::Reconverge_TFGen6) {
 		return new executive::ReconvergenceTFGen6(cta);
 	}
-	else if (config::get().executive.reconvergenceMechanism
+	else if (reconvergenceMechanism
 		== executive::ReconvergenceMechanism::Reconverge_TFSortedStack) {
 		return new executive::ReconvergenceTFSortedStack(cta);
 	}
-	else if (config::get().executive.reconvergenceMechanism
+	else if (reconvergenceMechanism
 		== executive::ReconvergenceMechanism::Reconverge_TFSoftware) {
 		return new executive::ReconvergenceTFSoftware(cta);
 	}

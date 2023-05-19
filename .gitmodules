@@ -1,3 +1,6 @@
 [submodule "ocelot/hydrazine"]
 	path = ocelot/ThirdParty/hydrazine
 	url = https://github.com/gpuocelot/hydrazine.git
+[submodule "ocelot/ThirdParty/res_embed"]
+	path = ocelot/ThirdParty/res_embed
+	url = https://github.com/dmikushin/res_embed.git

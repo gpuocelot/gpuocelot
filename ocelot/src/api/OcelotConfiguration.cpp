@@ -19,6 +19,10 @@
 // C stdlib includes
 #include <cassert>
 
+#include "res_embed.h"
+
+#include <streambuf>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -368,6 +372,13 @@ api::OcelotConfiguration::OcelotConfiguration(std::istream &stream) {
 	initialize(stream);
 }
 
+struct membuf : std::streambuf
+{
+	membuf(char* begin, char* end) {
+		this->setg(begin, begin, end);
+	}
+};
+
 api::OcelotConfiguration::OcelotConfiguration(
 	const std::string &_path): path(_path) {
 	std::ifstream file(path.c_str());
@@ -378,10 +389,19 @@ api::OcelotConfiguration::OcelotConfiguration(
 	}
 	else
 	{
-		std::cerr << "==Ocelot== WARNING: Failed to find 'configure.ocelot' "
+		std::cout << "==Ocelot== WARNING: Failed to find 'configure.ocelot' "
 			"in current directory, loading defaults.\n" << std::endl;
-		std::cerr << "==Ocelot== INFO: You may consider adding one if you need "
+		std::cout << "==Ocelot== INFO: You may consider adding one if you need "
 			"to change the Ocelot target, or runtime options.\n" << std::endl;
+
+		size_t szconfig = 0;
+		char* config = const_cast<char*>(res::embed::get("configure_ocelot", &szconfig));
+		if (config && szconfig)
+		{
+			membuf sbuf(config, config + szconfig);
+			std::istream in(&sbuf);
+			initialize(in);
+		}
 	}
 }
 

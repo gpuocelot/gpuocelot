@@ -47,7 +47,7 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
         flex \
         freeglut3-dev \
         git \
-        g++-4.7 llvm-3.4-dev \
+        g++-4.8 llvm-3.4-dev \
         libbison-dev=1:2.5.dfsg-2.1ubuntu1 \
         libboost1.49-all-dev libboost1.49-dev \
         libglew-dev \
@@ -74,11 +74,8 @@ RUN cd /tmp/cuda_toolkit && \
 
 ENV PATH /usr/local/cuda/bin:$PATH
 
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-4.7 40 && \
-    update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-4.7 40
-
 WORKDIR /usr/local/src
 COPY . /usr/local/src/gpuocelot
 
-RUN cd gpuocelot/ocelot && mkdir build && cd build && cmake .. && make -j8
+#RUN cd gpuocelot/ocelot && mkdir build && cd build && cmake .. && make -j8
 

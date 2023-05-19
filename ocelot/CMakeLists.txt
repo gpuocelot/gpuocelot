@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
-project(gpuocelot CXX CUDA)
+project(gpuocelot C CXX CUDA)
 
 set(CMAKE_CUDA_ARCHITECTURES 35)
 set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
@@ -14,6 +14,7 @@ find_package(BISON 2.5 REQUIRED)
 find_package(GLEW REQUIRED)
 
 add_subdirectory(ThirdParty/hydrazine)
+add_subdirectory(ThirdParty/res_embed)
 
 function(string_starts_with str search result)
 	string(FIND "${str}" "${search}" out)
@@ -159,6 +160,10 @@ target_compile_options(${PROJECT_NAME}_api PRIVATE PRIVATE ${${PROJECT_NAME}_CXX
 target_include_directories(${PROJECT_NAME}_api PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME}_api PUBLIC ${${PROJECT_NAME}_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_api PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
+
+include(ResEmbed)
+
+res_embed(TARGET ${PROJECT_NAME}_api NAME "configure_ocelot" PATH ${CMAKE_CURRENT_SOURCE_DIR}/configure.ocelot KEYWORD)
 
 add_library(${PROJECT_NAME}_cal STATIC
 	src/cal/CalDriver.cpp)
