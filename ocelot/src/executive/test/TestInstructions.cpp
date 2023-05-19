@@ -31,8 +31,8 @@ public:
 	int threadCount;
 	bool valid;
 
-	EmulatedKernel *kernel;
-	CooperativeThreadArray* cta;
+	EmulatedKernel *kernel = nullptr;
+	CooperativeThreadArray* cta = nullptr;
 	Module module;
 	
 	TestInstructions() {
