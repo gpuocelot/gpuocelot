@@ -93,11 +93,11 @@ namespace ir {
 		/*!	Unloads module and loads PTX source file in given path */
 		bool load(const std::string& path);
 
-		bool loadEmbedded(const std::string& name);
-
 		/*!	Unloads module and loads PTX source file in given stream */
 		bool load(std::istream& source,
 			const std::string& path = "::unknown path::");
+
+		bool loadEmbedded(const std::string& name);
 
 		/*!	Unloads module and loads PTX source string via a destructive copy */
 		bool lazyLoad(const std::string& source,
@@ -107,6 +107,8 @@ namespace ir {
 			until the module is loaded */
 		bool lazyLoad(const char* source,
 			const std::string& path = "::unknown path::");
+
+		bool lazyLoadEmbedded(const std::string& name);
 		
 		/*! \brief Load the module if it has not already been loaded */
 		void loadNow();

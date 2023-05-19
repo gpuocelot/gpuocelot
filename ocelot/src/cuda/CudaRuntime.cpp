@@ -23,8 +23,6 @@
 #include <hydrazine/string.h>
 #include <hydrazine/debug.h>
 
-#include "res_embed.h"
-
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -3577,11 +3575,24 @@ void cuda::CudaRuntime::registerPTXModule(std::istream& ptx,
 
 void cuda::CudaRuntime::registerPTXModuleEmbedded(
 	const std::string& name) {
-	size_t szsource = 0;
-	char* source = const_cast<char*>(res::embed::get(name, &szsource));
-	std::string ptx;
-	ptx.assign(source, source + szsource);
-	registerPTXModule(ptx, name);
+	_wait();
+	_lock();
+	report("Loading module (ptx) - " << name);
+	assert(_modules.count(name) == 0);
+
+	ModuleMap::iterator module = _modules.insert(
+		std::make_pair(name, ir::Module())).first;
+
+	try {
+		module->second.lazyLoadEmbedded(name);
+	}
+	catch(...) {
+		_modules.erase(module);
+		_unlock();
+		throw;
+	}
+
+	_unlock();
 }
 
 void cuda::CudaRuntime::registerPTXModule(const std::string& ptx,

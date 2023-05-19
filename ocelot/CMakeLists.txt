@@ -190,7 +190,7 @@ set_property(TARGET ${PROJECT_NAME}_cuda PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_cuda PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_cuda PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_cuda PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_cuda PUBLIC ${${PROJECT_NAME}_LIBRARIES} res::embed::static)
+target_link_libraries(${PROJECT_NAME}_cuda PUBLIC ${${PROJECT_NAME}_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_cuda PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 	
 add_library(${PROJECT_NAME}_executive STATIC

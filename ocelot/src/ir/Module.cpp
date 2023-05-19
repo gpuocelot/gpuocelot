@@ -247,6 +247,18 @@ bool ir::Module::lazyLoad(const char* source, const std::string& path) {
 	return true;
 }
 
+bool ir::Module::lazyLoadEmbedded(const std::string& name) {
+	unload();
+
+	size_t szptx = 0;
+	char* ptx = const_cast<char*>(res::embed::get(name, &szptx));
+
+	_ptx.assign(ptx, ptx + szptx);
+	_modulePath = name;
+
+	return true;
+}
+
 void ir::Module::loadNow() {
 	if( loaded() ) return;
 	_loaded = true;
