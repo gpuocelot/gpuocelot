@@ -3569,11 +3569,13 @@ void cuda::CudaRuntime::registerPTXModule(std::istream& ptx,
 	std::string temp;
 	
 	ptx.seekg(0, std::ios::end);
-	size_t size = ptx.tellg();
+	auto size = ptx.tellg();
 	ptx.seekg(0, std::ios::beg);
 	
-	temp.resize(size);
-	ptx.read((char*)temp.data(), size);
+	if (size > 0) {
+		temp.resize(size);
+		ptx.read((char*)temp.data(), size);
+	}
 	
 	try {
 		module->second.lazyLoad(temp, name);
