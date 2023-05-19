@@ -23,6 +23,8 @@
 #include <hydrazine/string.h>
 #include <hydrazine/debug.h>
 
+#include "res_embed.h"
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -3558,31 +3560,46 @@ void cuda::CudaRuntime::limitWorkerThreads(unsigned int limit) {
 
 void cuda::CudaRuntime::registerPTXModule(std::istream& ptx, 
 	const std::string& name) {
-	_wait();
-	_lock();
 	report("Loading module (ptx) - " << name);
-	assert(_modules.count(name) == 0);
-	
-	ModuleMap::iterator module = _modules.insert(
-		std::make_pair(name, ir::Module())).first;
-	
-	std::string temp;
 	
 	ptx.seekg(0, std::ios::end);
 	auto size = ptx.tellg();
 	ptx.seekg(0, std::ios::beg);
-	
+
+	std::string source;	
 	if (size > 0) {
-		temp.resize(size);
-		ptx.read((char*)temp.data(), size);
+		source.resize(size);
+		ptx.read((char*)source.data(), size);
 	}
-	
+
+	registerPTXModule(source, name);
+}
+
+void cuda::CudaRuntime::registerPTXModuleEmbedded(
+	const std::string& name) {
+	size_t szsource = 0;
+	char* source = const_cast<char*>(res::embed::get(name, &szsource));
+	std::string ptx;
+	ptx.assign(source, source + szsource);
+	registerPTXModule(ptx, name);
+}
+
+void cuda::CudaRuntime::registerPTXModule(const std::string& ptx,
+	const std::string& name) {
+	_wait();
+	_lock();
+	report("Loading module (ptx) - " << name);
+	assert(_modules.count(name) == 0);
+
+	ModuleMap::iterator module = _modules.insert(
+		std::make_pair(name, ir::Module())).first;
+
 	try {
-		module->second.lazyLoad(temp, name);
+		module->second.lazyLoad(ptx, name);
 	}
 	catch(...) {
-		_unlock();
 		_modules.erase(module);
+		_unlock();
 		throw;
 	}
 		

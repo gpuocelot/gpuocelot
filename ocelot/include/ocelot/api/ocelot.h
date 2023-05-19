@@ -69,6 +69,8 @@ namespace ocelot
 		\param The name of the module being registered.  Must be Unique.
 	*/
 	void registerPTXModule(std::istream& stream, const std::string& name);
+	void registerPTXModule(const std::string& ptx, const std::string& name);
+	void registerPTXModuleEmbedded(const std::string& name);
 	
 	/*! \brief Register a texture with the cuda runtime */
 	void registerTexture(const void* texref,

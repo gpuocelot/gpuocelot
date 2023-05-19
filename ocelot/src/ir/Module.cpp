@@ -15,6 +15,10 @@
 #include <fstream>
 #include <cassert>
 
+#include "res_embed.h"
+
+#include <streambuf>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -169,6 +173,42 @@ bool ir::Module::load(const std::string& path) {
 	return true;
 }
 
+struct membuf : std::streambuf
+{
+	membuf(char* begin, char* end) {
+		this->setg(begin, begin, end);
+	}
+};
+
+bool ir::Module::loadEmbedded(const std::string& name) {
+	unload();
+	_modulePath = name;
+
+	size_t szptx = 0;
+	char* ptx = const_cast<char*>(res::embed::get(name, &szptx));
+
+	if (ptx && szptx)
+	{
+		membuf sbuf(ptx, ptx + szptx);
+		std::istream mem(&sbuf);
+
+		parser::PTXParser parser;
+		parser.fileName = _modulePath;
+
+		parser.parse( mem );
+
+		_statements = std::move( parser.statements() );
+		extractPTXKernels();
+	}
+	else {
+		return false;
+	}
+
+	_loaded = true;
+
+	return true;
+}
+
 /*!
 	Unloads module and loads everything in path
 */
@@ -189,7 +229,7 @@ bool ir::Module::load(std::istream& stream, const std::string& path) {
 	return true;
 }
 
-bool ir::Module::lazyLoad(std::string& source, const std::string& path) {
+bool ir::Module::lazyLoad(const std::string& source, const std::string& path) {
 	unload();
 	
 	_ptx = std::move( source );

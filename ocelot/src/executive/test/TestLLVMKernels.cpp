@@ -24,7 +24,7 @@ namespace test
 		bool loaded = false;
 		try 
 		{
-			loaded = _module.load(kernelFile);
+			loaded = _module.loadEmbedded(kernelFile);
 		}
 		catch( const hydrazine::Exception& e )
 		{
@@ -241,8 +241,8 @@ int main( int argc, char** argv )
 
 	parser.description( test.testDescription() );
 
-	parser.parse( "-i", test.kernelFile, "ocelot/executive/test/kernels.ptx", 
-		"The input file containing the kernels being tested." );
+	test.kernelFile = "kernels_ptx", 
+	
 	parser.parse( "-s", test.seed, 0,
 		"Set the random seed, 0 implies seed with time." );
 	parser.parse( "-v", test.verbose, false, "Print out info after the test." );

@@ -435,6 +435,10 @@ namespace cuda {
 		*/
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);
+		virtual void registerPTXModule(const std::string& ptx,
+			const std::string& name);
+		virtual void registerPTXModuleEmbedded(
+			const std::string& name);
 		/*! \brief Register a texture with the cuda runtime */
 		virtual void registerTexture(const void* texref,
 			const std::string& moduleName,

@@ -16,6 +16,8 @@ find_package(GLEW REQUIRED)
 add_subdirectory(ThirdParty/hydrazine)
 add_subdirectory(ThirdParty/res_embed)
 
+include(ResEmbed)
+
 function(string_starts_with str search result)
 	string(FIND "${str}" "${search}" out)
 	if("${out}" EQUAL 0)
@@ -108,7 +110,7 @@ set_property(TARGET ${PROJECT_NAME}_ir PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_ir PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_ir PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_ir PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_ir PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_ir PUBLIC ${${PROJECT_NAME}_LIBRARIES} res::embed::static)
 target_link_directories(${PROJECT_NAME}_ir PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME}_analysis STATIC
@@ -161,8 +163,6 @@ target_include_directories(${PROJECT_NAME}_api PRIVATE ${${PROJECT_NAME}_INCLUDE
 target_link_libraries(${PROJECT_NAME}_api PUBLIC ${${PROJECT_NAME}_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_api PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
-include(ResEmbed)
-
 res_embed(TARGET ${PROJECT_NAME}_api NAME "configure_ocelot" PATH ${CMAKE_CURRENT_SOURCE_DIR}/configure.ocelot KEYWORD)
 
 add_library(${PROJECT_NAME}_cal STATIC
@@ -190,7 +190,7 @@ set_property(TARGET ${PROJECT_NAME}_cuda PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_cuda PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_cuda PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_cuda PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_cuda PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_cuda PUBLIC ${${PROJECT_NAME}_LIBRARIES} res::embed::static)
 target_link_directories(${PROJECT_NAME}_cuda PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 	
 add_library(${PROJECT_NAME}_executive STATIC
@@ -391,6 +391,15 @@ ocelot_add_tests(trace)
 ocelot_add_tests(transforms)
 ocelot_add_tests(translator)
 ocelot_add_tests(util)
+
+res_embed(TARGET ${PROJECT_NAME}_executive_TestEmulator NAME "sequence_ptx"
+	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestEmulator.ptx KEYWORD)
+	
+res_embed(TARGET ${PROJECT_NAME}_executive_TestLLVMKernels NAME "kernels_ptx"
+	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestLLVMKernels.ptx KEYWORD)
+	
+res_embed(TARGET ${PROJECT_NAME}_cuda_TestCudaGenericMemory NAME "generic_ptx"
+	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestCudaGenericMemory.ptx KEYWORD)
 
 #++ -o .release_build/ocelot/TestCudaGenericMemory
 #++ -o .release_build/ocelot/TestCudaGlobals

@@ -630,6 +630,10 @@ namespace cuda {
 		virtual void limitWorkerThreads( unsigned int limit = 1024 );
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);
+		virtual void registerPTXModule(const std::string& ptx,
+			const std::string& name);
+		virtual void registerPTXModuleEmbedded(
+			const std::string& name);
 		virtual void registerTexture(const void* texref,
 			const std::string& moduleName,
 			const std::string& textureName, bool normalize);

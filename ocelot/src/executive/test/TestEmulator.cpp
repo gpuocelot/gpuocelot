@@ -49,19 +49,19 @@ public:
 
 		bool result = true;
 
-		string path = "ocelot/executive/test/sequence.ptx";
+		string ptx = "sequence_ptx";
 		
 		bool loaded = false;
 		
 		try {
-			loaded = module.load(path);
+			loaded = module.loadEmbedded(ptx);
 		}
 		catch(const hydrazine::Exception& e) {
 			status << " error - " << e.what() << "\n";
 		}
 
 		if(!loaded) {
-			status << "failed to load module '" << path << "'\n";
+			status << "failed to load module '" << ptx << "'\n";
 			return (result = false);
 		}
 

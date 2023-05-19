@@ -53,6 +53,16 @@ namespace ocelot
 		get()->registerPTXModule( stream, name );
 	}
 
+	void registerPTXModule(const std::string& ptx, const std::string& name)
+	{
+		get()->registerPTXModule( ptx, name );
+	}
+
+	void registerPTXModuleEmbedded(const std::string& name)
+	{
+		get()->registerPTXModuleEmbedded( name );
+	}
+
 	void registerTexture(const void* texref,
 		const std::string& moduleName,
 		const std::string& textureName, bool normalize)

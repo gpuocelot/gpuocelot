@@ -91,6 +91,16 @@ void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream,
 	assert(0 && "unimplemented");
 }
 
+void cuda::CudaRuntimeInterface::registerPTXModule(const std::string& ptx,
+	const std::string& name) {
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::registerPTXModuleEmbedded(
+	const std::string& name) {
+	assert(0 && "unimplemented");
+}
+
 void cuda::CudaRuntimeInterface::registerTexture(
 	const void* texref,
 	const std::string& moduleName,

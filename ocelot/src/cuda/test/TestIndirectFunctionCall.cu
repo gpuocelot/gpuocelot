@@ -89,7 +89,7 @@ int main(int argc, char *arg[]) {
 	
 	kernelEntry<<< grid, block >>>(A_gpu, P);
 	
-	result = cudaThreadSynchronize();
+	result = cudaDeviceSynchronize();
 	if (result != cudaSuccess) {
 		printf("Kernel launch error: %s\n", cudaGetErrorString(result));
 		return 3;

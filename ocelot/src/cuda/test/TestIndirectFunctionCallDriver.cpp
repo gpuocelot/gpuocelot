@@ -42,7 +42,8 @@ int main(int argc, char *arg[]) {
 		printf("cuCtxCreate() failed: %d\n", (int)result);
 		return 1;
 	}
-	
+
+	// TODO cuModuleLoadEx	
 	result = cuModuleLoad(&module, "ocelot/cuda/test/functions/indirectCallDriver.ptx");
 	if (result != CUDA_SUCCESS) {
 		printf("cuModuleLoad() failed: %d\n", (int)result);

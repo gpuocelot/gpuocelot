@@ -6,7 +6,6 @@
 #include <ocelot/cuda/cuda_runtime.h>
 #include <ocelot/api/ocelot.h>
 #include <iostream>
-#include <fstream>
 
 #define report(x) std::cout << x << std::endl
 
@@ -37,8 +36,7 @@ int main() {
 	}
 	
 	// load module
-	std::ifstream file("ocelot/cuda/test/memory/generic.ptx");
-	ocelot::registerPTXModule(file, "generic.ptx");
+	ocelot::registerPTXModuleEmbedded("generic_ptx");
 	
 	// configure call
 	result = cudaConfigureCall(dim3(1,1,1), dim3(1,1,1), 0, 0);
@@ -53,7 +51,7 @@ int main() {
 		return 4;
 	}
 
-	ocelot::launch("generic.ptx", "genericmemory");
+	ocelot::launch("generic_ptx", "genericmemory");
 	
 	result = cudaMemcpy(A_cpu, A_gpu, bytes, cudaMemcpyDeviceToHost);
 	if (result != cudaSuccess) {
