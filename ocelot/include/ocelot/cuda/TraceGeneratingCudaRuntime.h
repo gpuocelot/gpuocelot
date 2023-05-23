@@ -253,7 +253,7 @@ namespace cuda
 			void registerPTXModule(std::istream& stream, 
 				const std::string& name);
 			const char* getKernelPointer(const std::string& name, 
-				const std::string& module);
+				void* id);
 			void** getFatBinaryHandle(const std::string& name);
 			void clearErrors();
 			

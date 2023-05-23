@@ -47,9 +47,10 @@ void trace::KernelTimer::finish() {
 	std::ofstream file(outputFile.c_str(), std::ios_base::app);
 
 	const char *appname = std::getenv("APPNAME");
-	if (!appname) { appname = kernel->module->path().c_str(); }
-
-	file << "{ \"application\": \"" << appname << "\", ";
+	if (appname)
+		file << "{ \"application\": \"" << appname << "\", ";
+	else
+		file << "{ \"application\": \"" << kernel->module->id() << "\", ";
 	
 	const char *trial = std::getenv("TRIALNAME");
 	if (trial) {

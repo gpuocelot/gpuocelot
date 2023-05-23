@@ -411,39 +411,9 @@ namespace executive
 	}
 
 	Device::MemoryAllocation* EmulatorDevice::getGlobalAllocation(
-		const std::string& moduleName, const std::string& name)
+		void* id, const std::string& name)
 	{
-		if(moduleName.empty())
-		{
-			// try a brute force search over all modules
-			for(ModuleMap::iterator module = _modules.begin(); 
-				module != _modules.end(); ++module)
-			{
-				if(module->second->globals.empty())
-				{
-					Module::AllocationVector allocations = std::move(
-						module->second->loadGlobals());
-					for(Module::AllocationVector::iterator 
-						allocation = allocations.begin(); 
-						allocation != allocations.end(); ++allocation)
-					{
-						_allocations.insert(std::make_pair(
-							(*allocation)->pointer(), *allocation));
-					}
-				}
-
-				Module::GlobalMap::iterator global = 
-					module->second->globals.find(name);
-				if(global != module->second->globals.end())
-				{
-					return getMemoryAllocation(global->second,
-						DeviceAllocation);
-				}
-			}
-			return 0;
-		}
-
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		if(module == _modules.end()) return 0;
 		
 		if(module->second->globals.empty())
@@ -747,20 +717,20 @@ namespace executive
 
 	void EmulatorDevice::load(const ir::Module* module)
 	{
-		if(_modules.count(module->path()) != 0)
+		if(_modules.count(module->id()) != 0)
 		{
-			Throw("Duplicate module - " << module->path());
+			Throw("Duplicate module - " << module->id());
 		}
-		_modules.insert(std::make_pair(module->path(), 
+		_modules.insert(std::make_pair(module->id(), 
 			new Module(module, this)));
 	}
 	
-	void EmulatorDevice::unload(const std::string& name)
+	void EmulatorDevice::unload(void* id)
 	{
-		ModuleMap::iterator module = _modules.find(name);
+		ModuleMap::iterator module = _modules.find(id);
 		if(module == _modules.end())
 		{
-			Throw("Cannot unload unknown module - " << name);
+			Throw("Cannot unload unknown module - " << id);
 		}
 		
 		for(Module::GlobalMap::iterator global = module->second->globals.begin();
@@ -778,10 +748,10 @@ namespace executive
 		_modules.erase(module);
 	}
 
-	ExecutableKernel* EmulatorDevice::getKernel(const std::string& moduleName, 
+	ExecutableKernel* EmulatorDevice::getKernel(void* id, 
 		const std::string& kernelName)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		if(module == _modules.end()) return 0;
 		
 		return module->second->getKernel(kernelName);
@@ -925,21 +895,21 @@ namespace executive
 	}
 
 	void EmulatorDevice::bindTexture(void* pointer, 
-		const std::string& moduleName, const std::string& textureName, 
+		void* id, const std::string& textureName, 
 		const textureReference& ref, const cudaChannelFormatDesc& desc, 
 		const ir::Dim3& size)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		if(module == _modules.end())
 		{
-			Throw("Invalid Module - " << moduleName);
+			Throw("Invalid Module - " << id);
 		}
 		
 		ir::Texture* tex = module->second->getTexture(textureName);
 		if(tex == 0)
 		{
 			Throw("Invalid Texture - " << textureName 
-				<< " in Module - " << moduleName);
+				<< " in Module - " << id);
 		}
 		
 		ir::Texture& texture = *tex;
@@ -977,21 +947,21 @@ namespace executive
 		texture.data = pointer;
 	}
 
-	void EmulatorDevice::unbindTexture(const std::string& moduleName, 
+	void EmulatorDevice::unbindTexture(void* id, 
 		const std::string& textureName)
 
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		if(module == _modules.end())
 		{
-			Throw("Invalid Module - " << moduleName);
+			Throw("Invalid Module - " << id);
 		}
 		
 		ir::Texture* tex = module->second->getTexture(textureName);
 		if(tex == 0)
 		{
 			Throw("Invalid Texture - " << textureName 
-				<< " in Module - " << moduleName);
+				<< " in Module - " << id);
 		}
 		
 		ir::Texture& texture = *tex;
@@ -999,29 +969,29 @@ namespace executive
 		texture.data = 0;
 	}
 
-	void* EmulatorDevice::getTextureReference(const std::string& moduleName, 
+	void* EmulatorDevice::getTextureReference(void* id, 
 		const std::string& textureName)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		if(module == _modules.end()) return 0;
 		
 		return module->second->getTexture(textureName);
 	}
 		
-	void EmulatorDevice::launch(const std::string& moduleName, 
+	void EmulatorDevice::launch(void* id, 
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 
 		const void* argumentBlock, size_t argumentBlockSize, 
 		const trace::TraceGeneratorVector& traceGenerators,
 		const ir::ExternalFunctionSet* externals)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
-		report("EmulatorDevice::launch() - " << moduleName << "::"
+		ModuleMap::iterator module = _modules.find(id);
+		report("EmulatorDevice::launch() - " << id << "::"
 			<< kernelName);
 		
 		if(module == _modules.end())
 		{
-			Throw("Unknown module - " << moduleName);
+			Throw("Unknown module - " << id);
 		}
 		
 		ExecutableKernel* kernel = module->second->getKernel(kernelName);
@@ -1029,7 +999,7 @@ namespace executive
 		if(kernel == 0)
 		{
 			Throw("Unknown kernel - " << kernelName 
-				<< " in module " << moduleName);
+				<< " in module " << id);
 		}
 		
 		if(kernel->sharedMemorySize() + sharedMemory > 
@@ -1097,14 +1067,14 @@ namespace executive
 		kernel->clearExternalFunctionSet();
 	}
 	
-	cudaFuncAttributes EmulatorDevice::getAttributes(const std::string& path, 
+	cudaFuncAttributes EmulatorDevice::getAttributes(void* id, 
 		const std::string& kernelName)
 	{
-		ModuleMap::iterator module = _modules.find(path);
+		ModuleMap::iterator module = _modules.find(id);
 		
 		if(module == _modules.end())
 		{
-			Throw("Unknown module - " << path);
+			Throw("Unknown module - " << id);
 		}
 		
 		ExecutableKernel* kernel = module->second->getKernel(kernelName);
@@ -1112,7 +1082,7 @@ namespace executive
 		if(kernel == 0)
 		{
 			Throw("Unknown kernel - " << kernelName 
-				<< " in module " << path);
+				<< " in module " << id);
 		}
 		
 		cudaFuncAttributes attributes;

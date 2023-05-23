@@ -170,19 +170,19 @@ namespace executive
     {
 		report("Loading Module...");
 
-		if (_modules.count(ir->path()) != 0)
+		if (_modules.count(ir->id()) != 0)
 		{
-			Throw("Duplicate module - " << ir->path());
+			Throw("Duplicate module - " << ir->id());
 		}
-		_modules.insert(std::make_pair(ir->path(), new Module(ir, this)));
+		_modules.insert(std::make_pair(ir->id(), new Module(ir, this)));
     }
 
-    void ATIGPUDevice::unload(const std::string& name)
+    void ATIGPUDevice::unload(void* id)
     {
-		ModuleMap::iterator module = _modules.find(name);
+		ModuleMap::iterator module = _modules.find(id);
 		if(module == _modules.end())
 		{
-			Throw("Cannot unload unknown module - " << name);
+			Throw("Cannot unload unknown module - " << id);
 		}
 		
 		for(Module::GlobalMap::iterator global = module->second->globals.begin();
@@ -200,7 +200,7 @@ namespace executive
 		_modules.erase(module);
     }
 
-    ExecutableKernel* ATIGPUDevice::getKernel(const std::string& moduleName, 
+    ExecutableKernel* ATIGPUDevice::getKernel(void* id, 
 		const std::string& kernelName)
     {
 		assertM(false, "Not implemented.");
@@ -235,42 +235,12 @@ namespace executive
 	}
 	
 	Device::MemoryAllocation *ATIGPUDevice::getGlobalAllocation(
-			const std::string &moduleName, const std::string &name)
+			void* id, const std::string &name)
 	{
-		report("Getting global allocation: " << "module = [" << moduleName 
+		report("Getting global allocation: " << "module = [" << id 
 				<< "] " << "global = [" << name << "]");
 
-		if (moduleName.empty())
-		{
-			// try a brute force search over all modules
-			for (ModuleMap::iterator module = _modules.begin(); 
-				module != _modules.end(); ++module)
-			{
-				if (module->second->globals.empty())
-				{
-					Module::AllocationVector allocations = std::move(
-						module->second->loadGlobals());
-					for(Module::AllocationVector::iterator 
-						allocation = allocations.begin(); 
-						allocation != allocations.end(); ++allocation)
-					{
-						_allocations.insert(std::make_pair(
-							(*allocation)->pointer(), *allocation));
-					}
-				}
-
-				Module::GlobalMap::iterator global = 
-					module->second->globals.find(name);
-				if (global != module->second->globals.end())
-				{
-					return getMemoryAllocation(global->second,
-						DeviceAllocation);
-				}
-			}
-			return 0;
-		}
-
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		if (module == _modules.end()) return 0;
 
 		if (module->second->globals.empty())
@@ -471,20 +441,20 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIGPUDevice::bindTexture(void* pointer, const std::string& moduleName, 
+	void ATIGPUDevice::bindTexture(void* pointer, void* id, 
 		const std::string& textureName, const textureReference& ref, 
 		const cudaChannelFormatDesc& desc, const ir::Dim3& size)
 	{
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIGPUDevice::unbindTexture(const std::string& moduleName, 
+	void ATIGPUDevice::unbindTexture(void* id, 
 		const std::string& textureName)
 	{
 		assertM(false, "Not implemented yet");
 	}
 
-	void* ATIGPUDevice::getTextureReference(const std::string& moduleName, 
+	void* ATIGPUDevice::getTextureReference(void* id, 
 		const std::string& textureName)
 	{
 		assertM(false, "Not implemented yet");
@@ -501,7 +471,7 @@ namespace executive
 	}
 	
 	void ATIGPUDevice::launch(
-			const std::string& moduleName,
+			void* id,
 			const std::string& kernelName, 
 			const ir::Dim3& grid, 
 			const ir::Dim3& block, 
@@ -511,11 +481,11 @@ namespace executive
 			const trace::TraceGeneratorVector& traceGenerators,
 			const ir::ExternalFunctionSet* externals)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 
 		if (module == _modules.end())
 		{
-			Throw("Unknown module - " << moduleName);
+			Throw("Unknown module - " << id);
 		}
 
 		ATIExecutableKernel* kernel = 
@@ -524,10 +494,10 @@ namespace executive
 		if(kernel == 0)
 		{
 			Throw("Unknown kernel - " << kernelName 
-				<< " in module " << moduleName);
+				<< " in module " << id);
 		}
 	
-		report("Launching " << moduleName << ":" << kernelName);
+		report("Launching " << id << ":" << kernelName);
 
 		if(kernel->sharedMemorySize() + sharedMemory > 
 			(size_t)properties().sharedMemPerBlock)
@@ -550,14 +520,14 @@ namespace executive
 		kernel->launchGrid(grid.x, grid.y, grid.z);
 	}
 
-	cudaFuncAttributes ATIGPUDevice::getAttributes(const std::string& path, 
+	cudaFuncAttributes ATIGPUDevice::getAttributes(void* id, 
 			const std::string& kernelName)
 	{
-		ModuleMap::iterator module = _modules.find(path);
+		ModuleMap::iterator module = _modules.find(id);
 		
 		if(module == _modules.end())
 		{
-			Throw("Unknown module - " << path);
+			Throw("Unknown module - " << id);
 		}
 		
 		ExecutableKernel* kernel = module->second->getKernel(kernelName);
@@ -565,7 +535,7 @@ namespace executive
 		if(kernel == 0)
 		{
 			Throw("Unknown kernel - " << kernelName 
-				<< " in module " << path);
+				<< " in module " << id);
 		}
 		
 		cudaFuncAttributes attributes;

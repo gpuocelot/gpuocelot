@@ -175,17 +175,17 @@ unsigned int cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cuda::RegisteredKernel::RegisteredKernel(size_t h, const std::string& m, 
-	const std::string& k) : handle(h), module(m), kernel(k) {
+cuda::RegisteredKernel::RegisteredKernel(void* id, 
+	const std::string& k) : id(id), kernel(k) {
 }
 
-cuda::RegisteredTexture::RegisteredTexture(const std::string& m, 
-	const std::string& t, bool n) : module(m), texture(t), norm(n) {
+cuda::RegisteredTexture::RegisteredTexture(void* id, 
+	const std::string& t, bool n) : id(id), texture(t), norm(n) {
 	
 }
 
-cuda::RegisteredGlobal::RegisteredGlobal(const std::string& m, 
-	const std::string& g) : module(m), global(g) {
+cuda::RegisteredGlobal::RegisteredGlobal(void* id, 
+	const std::string& g) : id(id), global(g) {
 
 }
 
@@ -459,7 +459,7 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 	
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
 		texture != _textures.end(); ++texture) {
-		if(texture->second.module != module->first) continue;
+		if(texture->second.id != module->first) continue;
 		ir::Texture* tex = module->second.getTexture(texture->second.texture);
 		assert(tex != 0);
 		tex->normalizedFloat = texture->second.norm;
@@ -484,8 +484,8 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 	}
 }
 
-void cuda::CudaRuntime::_registerModule(const std::string& name) {
-	ModuleMap::iterator module = _modules.find(name);
+void cuda::CudaRuntime::_registerModule(void* id) {
+	ModuleMap::iterator module = _modules.find(id);
 	if(module != _modules.end()) {
 		_registerModule(module);
 	}
@@ -566,34 +566,24 @@ cuda::CudaRuntime::~CudaRuntime() {
 	for referencing the fat binary
 */
 
-void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
+void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubinHandle) {
 	size_t handle = 0;
 	_lock();
 
-	handle = _fatBinaries.size();
-	
-	FatBinaryMap::const_iterator fatbin = _fatBinaries.insert(std::make_pair(
-		handle,	FatBinaryContext(fatCubin))).first;
-	
-	for (FatBinaryMap::const_iterator it = _fatBinaries.begin();
-		it != _fatBinaries.end(); ++it) {
-		if(fatbin == it) continue;
-		
-		if (std::string(it->second.name()) == fatbin->second.name()) {
-			_unlock();
-	
-			assert(0 && "binary already exists");		
-			return 0;
-		}	
-	}
+	auto id = (void*)fatCubinHandle;
 
-	// register associated PTX
-	ModuleMap::iterator module = _modules.insert(
-		std::make_pair(fatbin->second.name(), ir::Module())).first;
-	module->second.lazyLoad(fatbin->second.ptx(), fatbin->second.name());
+	auto i = _fatBinaries.emplace(std::make_pair(id,
+		FatBinaryContext(fatCubinHandle)));
+	auto& ctx = i.first->second;
 	
-	report("Loading module (fatbin) - " << module->first);
-	reportE(REPORT_ALL_PTX, " with PTX\n" << fatbin->second.ptx());
+	// TODO Register associated PTX module or modules - in case of separable compilation.
+	// Currently, Ocelot assumes on module per fat binary, and needs a lot of changes
+	// for separable compilation. In simplest case of separable compilation, there
+	// will be just one module either, so we support this case only for now.
+	auto module = ctx.getFirstModule();
+	_modules.emplace(std::make_pair(id, module));
+	
+	report("Loading module (fatbin) - " << std::hex << fatCubinHandle);
 		
 	_unlock();
 	
@@ -604,15 +594,6 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	unregister a cuda fat binary
 */
 void cuda::CudaRuntime::cudaUnregisterFatBinary(void **fatCubinHandle) {
-	// Andy: do we really care?
-	// Greg: For most cuda applications, probably not.  The only use would be 
-	// to remove and reinsert a fat binary.  Let's use a different interface
-	//  for that
-	size_t handle = (size_t)fatCubinHandle;
-	if (handle >= _fatBinaries.size()) {
-		Ocelot_Exception("cudaUnregisterFatBinary(" << handle 
-			<< ") - invalid handle.");
-	}
 }
 
 /*!
@@ -635,12 +616,11 @@ void cuda::CudaRuntime::cudaRegisterVar(void **fatCubinHandle, char *hostVar,
 		<< size << " bytes," << (constant ? " constant" : " ")
 		<< (global ? " global" : " "));
 
-	size_t handle = (size_t)fatCubinHandle;
 	_lock();
 
-	std::string moduleName = _fatBinaries[handle].name();
+	auto id = (void*)fatCubinHandle;
 	
-	_globals[(void *)hostVar] = RegisteredGlobal(moduleName, deviceName);
+	_globals.emplace(std::make_pair((void *)hostVar, RegisteredGlobal(id, deviceName)));
 	
 	_unlock();
 }
@@ -664,16 +644,14 @@ void cuda::CudaRuntime::cudaRegisterTexture(
 	int norm,
 	int ext) {
 	
-	size_t handle = (size_t)fatCubinHandle;
-	
 	_lock();
 	
-	std::string moduleName = _fatBinaries[handle].name();
+	auto id = (void*)fatCubinHandle;
 	
 	report("cudaRegisterTexture('" << deviceName << ", dim: " << dim 
 		<< ", norm: " << norm << ", ext: " << ext);
 
-	_textures[(void*)hostVar] = RegisteredTexture(moduleName, deviceName, norm);
+	_textures.emplace(std::make_pair((void*)hostVar, RegisteredTexture(id, deviceName, norm)));
 	
 	_unlock();
 }
@@ -683,10 +661,11 @@ void cuda::CudaRuntime::cudaRegisterShared(
 	void **devicePtr) {
 	
 	_lock();
+
+	auto id = (void*)fatCubinHandle;
 	
 	report("cudaRegisterShared() - module " 
-		<< _fatBinaries[(size_t)fatCubinHandle].name()
-		<< ", devicePtr: " << devicePtr << " named "
+		<< id << ", devicePtr: " << devicePtr << " named "
 		<< (const char *)devicePtr);
 	
 	report(" Ignoring this variable.");
@@ -702,10 +681,11 @@ void cuda::CudaRuntime::cudaRegisterSharedVar(
 	int storage) {
 
 	_lock();
+
+	auto id = (void*)fatCubinHandle;
 	
 	report("cudaRegisterSharedVar() - module " 
-		<< _fatBinaries[(size_t)fatCubinHandle].name() 
-		<< ", devicePtr: " << devicePtr << " named " << (const char *)devicePtr 
+		<< id << ", devicePtr: " << devicePtr << " named " << (const char *)devicePtr 
 		<< ", size: " << size << ", alignment: " << alignment << ", storage: " 
 		<< storage);
 	
@@ -726,17 +706,15 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	dim3 *gDim,
 	int *wSize) {
 
-	size_t handle = (size_t)fatCubinHandle;
-	
 	_lock();
 
 	void *symbol = (void *)hostFun;
 	std::string kernelName = deviceFun;
-	std::string moduleName = _fatBinaries[handle].name();
+	auto id = (void*)fatCubinHandle;
 	
 	report("Registered kernel - " << kernelName 
-		<< " in module '" << moduleName << "'");
-	_kernels[symbol] = RegisteredKernel(handle, moduleName, kernelName);
+		<< " in module '" << id << "'");
+	_kernels.emplace(std::make_pair(symbol, RegisteredKernel(id, kernelName)));
 	
 	_unlock();
 }
@@ -1168,7 +1146,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol,
 	
 	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
 	std::string name;
-	std::string module;
+	void* id;
 	
 	if (global == _globals.end()) {
 		name = symbol;
@@ -1176,9 +1154,9 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol,
 	}
 	else {
 		name = global->second.global;
-		module = global->second.module;
+		id = global->second.id;
 		try {
-			_registerModule(module);
+			_registerModule(id);
 		}
 		catch(...) {
 			_unlock();
@@ -1189,7 +1167,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol,
 	_bind();
 
 	executive::Device::MemoryAllocation* allocation = 
-		_getDevice().getGlobalAllocation(module, name);
+		_getDevice().getGlobalAllocation(id, name);
 
 	if (allocation != 0) {
 		if (!_getDevice().checkMemoryAccess((char*)allocation->pointer() 
@@ -1229,7 +1207,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst,
 	
 	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
 	std::string name;
-	std::string module;
+	void* id;
 	
 	if (global == _globals.end()) {
 		name = symbol;	
@@ -1237,9 +1215,9 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst,
 	}
 	else {
 		name = global->second.global;
-		module = global->second.module;
+		id = global->second.id;
 		try {
-			_registerModule(module);
+			_registerModule(id);
 		}
 		catch(...) {
 			_unlock();
@@ -1250,7 +1228,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst,
 	_bind();
 
 	executive::Device::MemoryAllocation* allocation = 
-		_getDevice().getGlobalAllocation(module, name);
+		_getDevice().getGlobalAllocation(id, name);
 
 	if (allocation != 0) {
 		if (!_getDevice().checkMemoryAccess((char*)allocation->pointer() 
@@ -2096,14 +2074,14 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr,
 	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
 	
 	std::string name;
-	std::string module;
+	void* id;
 	
 	if (global != _globals.end()) {
 		name = global->second.global;
-		module = global->second.module;
+		id = global->second.id;
 		
 		try {
-			_registerModule(module);
+			_registerModule(id);
 		}
 		catch(...) {
 			_unlock();
@@ -2118,9 +2096,9 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr,
 	_bind();
 	
 	executive::Device::MemoryAllocation* 
-		allocation = _getDevice().getGlobalAllocation(module, name);
+		allocation = _getDevice().getGlobalAllocation(id, name);
 	assertM(allocation != 0, "Invalid global name " << name 
-		<< " in module " << module);
+		<< " in module " << id);
 
 	*devPtr = allocation->pointer();
 	report("devPtr: " << *devPtr);	
@@ -2149,13 +2127,13 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size,
 	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
 	
 	std::string name;
-	std::string module;
+	void* id;
 	
 	if (global != _globals.end()) {
 		name = global->second.global;
-		module = global->second.module;
+		id = global->second.id;
 		try {
-			_registerModule(module);
+			_registerModule(id);
 		}
 		catch(...) {
 			_unlock();
@@ -2170,9 +2148,9 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size,
 	_bind();
 	
 	executive::Device::MemoryAllocation* 
-		allocation = _getDevice().getGlobalAllocation(module, name);
+		allocation = _getDevice().getGlobalAllocation(id, name);
 	assertM(allocation != 0, "Invalid global name " << name 
-		<< " in module " << module);
+		<< " in module " << id);
 
 	*size = allocation->size();
 	report("size: " << *size);	
@@ -2359,7 +2337,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
 		try {
-			_registerModule(texture->second.module);
+			_registerModule(texture->second.id);
 		}
 		catch(...) {
 			_unlock();
@@ -2368,7 +2346,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 		
 		_bind();
 		try {
-			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
+			_getDevice().bindTexture((void*)devPtr, texture->second.id, 
 				texture->second.texture, *texref, *desc, ir::Dim3(size, 1, 1));
 			if(offset != 0) *offset = 0;
 			result = cudaSuccess;
@@ -2409,7 +2387,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 
 	if(texture != _textures.end()) {
 		try {
-			_registerModule(texture->second.module);
+			_registerModule(texture->second.id);
 		}
 		catch(...) {
 			_unlock();
@@ -2417,7 +2395,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 		}
 		_bind();
 		try {
-			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
+			_getDevice().bindTexture((void*)devPtr, texture->second.id, 
 				texture->second.texture, *texref, *desc, 
 				ir::Dim3(width, height, 1));
 			if(offset != 0) *offset = 0;
@@ -2465,7 +2443,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
 		try {
-			_registerModule(texture->second.module);
+			_registerModule(texture->second.id);
 		}
 		catch(...) {
 			_unlock();
@@ -2473,7 +2451,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 		}
 		_bind();
 		try {
-			_getDevice().bindTexture((void*)array, texture->second.module, 
+			_getDevice().bindTexture((void*)array, texture->second.id, 
 				texture->second.texture, *texref, *desc, size);
 			result = cudaSuccess;
 		}
@@ -2504,7 +2482,7 @@ cudaError_t cuda::CudaRuntime::cudaUnbindTexture(
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
 		try {
-			_registerModule(texture->second.module);
+			_registerModule(texture->second.id);
 		}
 		catch(...) {
 			_unlock();
@@ -2512,7 +2490,7 @@ cudaError_t cuda::CudaRuntime::cudaUnbindTexture(
 		}
 		_bind();
 		try {
-			_getDevice().unbindTexture(texture->second.module, 
+			_getDevice().unbindTexture(texture->second.id, 
 				texture->second.texture);
 			result = cudaSuccess;
 		}
@@ -2549,8 +2527,8 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureReference(
 				_unlock();
 				Ocelot_Exception("==Ocelot== Ambiguous texture '" << name 
 					<< "' declared in at least two modules ('" 
-					<< texture->second.module << "' and '" 
-					<< matchedTexture->second.module << "')");
+					<< texture->second.id << "' and '" 
+					<< matchedTexture->second.id << "')");
 			}
 			matchedTexture = texture;
 		}
@@ -2649,7 +2627,7 @@ static ir::Dim3 convert(const dim3& d) {
 	return std::move(ir::Dim3(d.x, d.y, d.z));
 }
 
-cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName, 
+cudaError_t cuda::CudaRuntime::_launchKernel(void* id, 
 	const std::string& kernelName )
 {
 	_lock();
@@ -2660,7 +2638,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 		return _setLastError(cudaErrorNoDevice);
 	}
 	
-	ModuleMap::iterator module = _modules.find(moduleName);
+	ModuleMap::iterator module = _modules.find(id);
 	assert(module != _modules.end());
 
 	try {
@@ -2698,13 +2676,13 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 			_nextTraceGenerators.end());
 
 		if (config::get().executive.asynchronousKernelLaunch) {
-			_getWorkerThread().launch(moduleName, kernelName,
+			_getWorkerThread().launch(id, kernelName,
 				convert(launch.gridDim), 
 				convert(launch.blockDim), launch.sharedMemory, 
 				thread.parameterBlock, paramSize, traceGens, &_externals);
 		}
 		else {
-			_getDevice().launch(moduleName, kernelName, convert(launch.gridDim),
+			_getDevice().launch(id, kernelName, convert(launch.gridDim),
 				convert(launch.blockDim), launch.sharedMemory,
 				thread.parameterBlock, paramSize, traceGens, &_externals);
 		}
@@ -2748,12 +2726,12 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 	
 	RegisteredKernelMap::iterator kernel = _kernels.find((void*)entry);
 	assert(kernel != _kernels.end());
-	std::string moduleName = kernel->second.module;
+	auto id = kernel->second.id;
 	std::string kernelName = kernel->second.kernel;
 
 	_unlock();
 
-	cudaError_t result = _launchKernel(moduleName, kernelName);
+	cudaError_t result = _launchKernel(id, kernelName);
 	
 	return _setLastError(result);
 }
@@ -2777,7 +2755,7 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	RegisteredKernelMap::iterator kernel = _kernels.find((void*)symbol);
 	if (kernel != _kernels.end()) {
 		try {
-			_registerModule(kernel->second.module);
+			_registerModule(kernel->second.id);
 		}
 		catch(...) {
 			_unlock();
@@ -2786,7 +2764,7 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 		
 		_bind();
 
-		*attr = _getDevice().getAttributes(kernel->second.module, 
+		*attr = _getDevice().getAttributes(kernel->second.id, 
 			kernel->second.kernel);
 		result = cudaSuccess;
 
@@ -2827,7 +2805,7 @@ cudaError_t cuda::CudaRuntime::cudaFuncSetCacheConfig(const char *entry,
 	RegisteredKernelMap::iterator kernel = _kernels.find((void*)entry);
 	if (kernel != _kernels.end()) {
 		try {
-			_registerModule(kernel->second.module);
+			_registerModule(kernel->second.id);
 		}
 		catch(...) {
 			_unlock();
@@ -2837,7 +2815,7 @@ cudaError_t cuda::CudaRuntime::cudaFuncSetCacheConfig(const char *entry,
 	    _bind();
 
 		executive::ExecutableKernel *executableKernel =
-			_getDevice().getKernel(kernel->second.module,
+			_getDevice().getKernel(kernel->second.id,
 				kernel->second.kernel);
 		executableKernel->setCacheConfiguration(
 			_translateCacheConfiguration(cacheConfig));
@@ -3573,21 +3551,40 @@ void cuda::CudaRuntime::registerPTXModule(std::istream& ptx,
 	registerPTXModule(source, name);
 }
 
+void cuda::CudaRuntime::registerPTXModule(std::istream& ptx,
+        void* id) {
+        report("Loading module (ptx) - " << id);
+
+        ptx.seekg(0, std::ios::end);
+        auto size = ptx.tellg();
+        ptx.seekg(0, std::ios::beg);
+
+        std::string source;
+        if (size > 0) {
+                source.resize(size);
+                ptx.read((char*)source.data(), size);
+        }
+
+        registerPTXModule(source, id);
+}
+
 void cuda::CudaRuntime::registerPTXModuleEmbedded(
 	const std::string& name) {
 	_wait();
 	_lock();
 	report("Loading module (ptx) - " << name);
-	assert(_modules.count(name) == 0);
 
-	ModuleMap::iterator module = _modules.insert(
-		std::make_pair(name, ir::Module())).first;
-
-	try {
-		module->second.lazyLoadEmbedded(name);
+	try
+	{
+		ir::Module module;
+		char* id = (char*)malloc(name.size() + 1);
+		strcpy(id, name.c_str());
+		module.lazyLoadEmbedded(id, name);
+		_modules.emplace(std::make_pair(id, module));
+		_ids[name] = id;
 	}
-	catch(...) {
-		_modules.erase(module);
+	catch(...)
+	{
 		_unlock();
 		throw;
 	}
@@ -3600,16 +3597,18 @@ void cuda::CudaRuntime::registerPTXModule(const std::string& ptx,
 	_wait();
 	_lock();
 	report("Loading module (ptx) - " << name);
-	assert(_modules.count(name) == 0);
 
-	ModuleMap::iterator module = _modules.insert(
-		std::make_pair(name, ir::Module())).first;
-
-	try {
-		module->second.lazyLoad(ptx, name);
+	try
+	{
+		ir::Module module;
+		char* id = (char*)malloc(name.size() + 1);
+		strcpy(id, name.c_str());
+		module.lazyLoad(id, ptx);
+		_modules.emplace(std::make_pair(id, module));
+		_ids[name] = id;
 	}
-	catch(...) {
-		_modules.erase(module);
+	catch(...)
+	{
 		_unlock();
 		throw;
 	}
@@ -3617,15 +3616,36 @@ void cuda::CudaRuntime::registerPTXModule(const std::string& ptx,
 	_unlock();
 }
 
+void cuda::CudaRuntime::registerPTXModule(const std::string& ptx,
+	void* id) {
+	_wait();
+	_lock();
+	report("Loading module (ptx) - " << id);
+
+        try
+        {
+                ir::Module module;
+                module.lazyLoad(id, ptx);
+                _modules.emplace(std::make_pair(id, module));
+        }
+        catch(...)
+        {
+                _unlock();
+                throw;
+        }
+
+        _unlock();
+}
+
 void cuda::CudaRuntime::registerTexture(const void* texref,
-	const std::string& moduleName,
+	void* id,
 	const std::string& textureName, bool normalize) {
 	_lock();
 	
 	report("registerTexture('" << textureName << ", norm: " << normalize );
 
-	_textures[(void*)texref] = RegisteredTexture(moduleName,
-		textureName, normalize);
+	_textures.emplace(std::make_pair((void*)texref, RegisteredTexture(id,
+		textureName, normalize)));
 	
 	_unlock();
 }
@@ -3662,7 +3682,7 @@ void cuda::CudaRuntime::reset() {
 		for(FatBinaryMap::iterator bin = _fatBinaries.begin(); 
 			bin != _fatBinaries.end(); ++bin)
 		{
-			if(bin->second.name() == module->first)
+			if(bin->second.id() == module->first)
 			{
 				found = true;
 				break;
@@ -3803,21 +3823,25 @@ ocelot::PointerMap cuda::CudaRuntime::contextSwitch(unsigned int destinationId,
 }
 
 void cuda::CudaRuntime::unregisterModule(const std::string& name) {
+	unregisterModule(_ids[name]);
+}
+
+void cuda::CudaRuntime::unregisterModule(void* id) {
 	
 	_wait();
 
 	_lock();
 
-	ModuleMap::iterator module = _modules.find(name);
+	ModuleMap::iterator module = _modules.find(id);
 	if (module == _modules.end()) {
 		_unlock();
-		Ocelot_Exception("Module - " << name << " - is not registered.");
+		Ocelot_Exception("Module - " << id << " - is not registered.");
 	}
 
 	for (DeviceVector::iterator device = _devices.begin(); 
 		device != _devices.end(); ++device) {
 		(*device)->select();
-		(*device)->unload(name);
+		(*device)->unload(id);
 		(*device)->unselect();
 	}
 	
@@ -3826,9 +3850,14 @@ void cuda::CudaRuntime::unregisterModule(const std::string& name) {
 	_unlock();
 }
 
-void cuda::CudaRuntime::launch(const std::string& moduleName, 
+void cuda::CudaRuntime::launch(const std::string& name, 
 	const std::string& kernelName) {
-	_launchKernel(moduleName, kernelName);
+	_launchKernel(_ids[name], kernelName);
+}
+
+void cuda::CudaRuntime::launch(void* id,
+	const std::string& kernelName) {
+	_launchKernel(id, kernelName);
 }
 
 void cuda::CudaRuntime::setOptimizationLevel(

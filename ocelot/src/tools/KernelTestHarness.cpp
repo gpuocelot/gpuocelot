@@ -101,7 +101,7 @@ void util::KernelTestHarness::execute() {
 		throw hydrazine::Exception("Failed to setup parameter memory");
 	}
 	
-	ocelot::launch(state.launch.moduleName, state.launch.kernelName);
+	ocelot::launch(state.launch.id, state.launch.kernelName);
 	
 	result = cudaThreadSynchronize();
 	if (result != cudaSuccess) {
@@ -236,7 +236,7 @@ void util::KernelTestHarness::reset() {
 	}
 	
 	pointers.clear();
-	ocelot::unregisterModule(state.launch.moduleName);
+	ocelot::unregisterModule(state.launch.id);
 }
 
 static cudaTextureFilterMode convert(ir::Texture::Interpolation filter)
@@ -312,7 +312,7 @@ void util::KernelTestHarness::_setupTextures(
 				<< " to " << p_it->second);
 		}
 		
-		ocelot::registerTexture(&texref, module.name, texture->second->name,
+		ocelot::registerTexture(&texref, module.id, texture->second->name,
 			texture->second->normalizedFloat);
 		
 		cudaError_t result = cudaBindTexture2D(&offset, &texref, devicePointer,
@@ -361,18 +361,18 @@ void util::KernelTestHarness::_setupMemory() {
 }
 
 void util::KernelTestHarness::_setupModule() {
-	report("setting up module (" << state.launch.moduleName << ")");
+	report("setting up module (" << state.launch.id << ")");
 	
 	// register launched module
 	ExtractedDeviceState::ModuleMap::const_iterator 
-		mod_it = state.modules.find(state.launch.moduleName);
+		mod_it = state.modules.find(state.launch.id);
 	if (mod_it != state.modules.end()) {
 	
 		// register module
-		report("registering PTX module '" << state.launch.moduleName
+		report("registering PTX module '" << state.launch.id
 			<< "'");
 		std::stringstream file(mod_it->second->ptx);
-		ocelot::registerPTXModule(file, state.launch.moduleName);
+		ocelot::registerPTXModule(file, state.launch.id);
 		
 		// add textures
 		_setupTextures(*mod_it->second);

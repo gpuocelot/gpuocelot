@@ -107,17 +107,14 @@ namespace cuda {
 	typedef std::map<boost::thread::id, HostThreadContext> HostThreadContextMap;
 	
 	//! references a kernel registered to CUDA runtime
-	class RegisteredKernel {
+	class RegisteredKernel
+	{
 	public:
-		RegisteredKernel(size_t handle = 0, const std::string& module = "", 
-			const std::string& kernel = "");
+		RegisteredKernel(void* id, const std::string& kernel = "");
 
 	public:
 		//! cubin handle
-		size_t handle;
-		
-		//! name of module
-		std::string module;
+		void* id;
 		
 		//! name of kernel
 		std::string kernel;
@@ -128,12 +125,11 @@ namespace cuda {
 	class RegisteredTexture
 	{
 		public:
-			RegisteredTexture(const std::string& module = "", 
-				const std::string& texture = "", bool norm = false);
+			RegisteredTexture(void* id, const std::string& texture = "", bool norm = false);
 	
 		public:
 			/*! \brief The module that the texture is declared in */
-			std::string module;
+			void* id;
 			/*! \brief The name of the texture */
 			std::string texture;
 			// Should the texture be normalized?
@@ -143,12 +139,12 @@ namespace cuda {
 	class RegisteredGlobal
 	{
 		public:
-			RegisteredGlobal(const std::string& module = "", 
-				const std::string& global = "");
+			RegisteredGlobal(void* id, const std::string& global = "");
 	
 		public:
 			/*! \brief The module that the global is declared in */
-			std::string module;
+			void* id;
+			
 			/*! \brief The name of the global */
 			std::string global;
 	};
@@ -178,11 +174,12 @@ namespace cuda {
 	/*! \brief Set of PTX passes */
 	typedef std::set< transforms::Pass* > PassSet;
 
-	typedef std::map< unsigned int, FatBinaryContext > FatBinaryMap;
+	typedef std::map< void*, FatBinaryContext > FatBinaryMap;
 	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
 	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
 	typedef std::map< void*, Dimension > DimensionMap;
-	typedef std::map< std::string, ir::Module > ModuleMap;
+	typedef std::map< void*, ir::Module > ModuleMap;
+	typedef std::map< std::string, void* > NameMap;
 	typedef std::unordered_map<unsigned int, void*> GLBufferMap;
 	typedef executive::DeviceVector DeviceVector;
 
@@ -228,7 +225,7 @@ namespace cuda {
 		// Load module and register it with all devices
 		void _registerModule(ModuleMap::iterator module);
 		// Load module and register it with all devices
-		void _registerModule(const std::string& name);
+		void _registerModule(void* id);
 		// Load all modules and register them with all devices
 		void _registerAllModules();
 
@@ -238,7 +235,10 @@ namespace cuda {
 		
 		//! worker threads for each device
 		ThreadVector _workers;
-		
+	
+		//! map of module names to module ids
+		NameMap _ids;
+
 		//! Registered modules
 		ModuleMap _modules;
 		
@@ -300,7 +300,7 @@ namespace cuda {
 		trace::TraceGeneratorVector _nextTraceGenerators;
 	
 	private:
-		cudaError_t _launchKernel(const std::string& module, 
+		cudaError_t _launchKernel(void* id, 
 			const std::string& kernel);
 		
 	public:
@@ -630,19 +630,26 @@ namespace cuda {
 		virtual void limitWorkerThreads( unsigned int limit = 1024 );
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);
+		virtual void registerPTXModule(std::istream& stream,
+			void* id);
 		virtual void registerPTXModule(const std::string& ptx,
 			const std::string& name);
+		virtual void registerPTXModule(const std::string& ptx,
+			void* id);
 		virtual void registerPTXModuleEmbedded(
 			const std::string& name);
 		virtual void registerTexture(const void* texref,
-			const std::string& moduleName,
+			void* id,
 			const std::string& textureName, bool normalize);
 		virtual void clearErrors();
 		virtual void reset();
 		virtual ocelot::PointerMap contextSwitch( 
 			unsigned int destinationDevice, unsigned int sourceDevice);
 		virtual void unregisterModule(const std::string& name);
-		virtual void launch(const std::string& moduleName, 
+		virtual void unregisterModule(void* id);
+		virtual void launch(const std::string& name, 
+			const std::string& kernelName);
+		virtual void launch(void* id,
 			const std::string& kernelName);
 		virtual void setOptimizationLevel(
 			translator::Translator::OptimizationLevel l);

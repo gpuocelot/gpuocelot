@@ -108,7 +108,7 @@ namespace executive
 				AllocationType type) const;
 			/*! \brief Get the address of a global by name */
 			Device::MemoryAllocation *getGlobalAllocation(
-				const std::string& module, const std::string& name);
+				void* id, const std::string& name);
 			/*! \brief Allocate some new dynamic memory on this device */
 			Device::MemoryAllocation *allocate(size_t size);
 			/*! \brief Make this a host memory allocation */
@@ -146,14 +146,14 @@ namespace executive
 				unsigned int flags);
 			/*! \brief Unmap a mapped resource */
 			void unmapGraphicsResource(void** resource, int count, 
-                    unsigned int streamID);
+				unsigned int streamID);
 
 			/*! \brief Load a module, must have a unique name */
 			void load(const ir::Module *irModule);
 			/*! \brief Unload a module by name */
-			void unload(const std::string& name);
+			void unload(void* id);
 			/*! \brief Get a translated kernel from the device */
-			ExecutableKernel* getKernel(const std::string& module, 
+			ExecutableKernel* getKernel(void* id, 
 				const std::string& kernel);
 
 			/*! \brief Create a new event */
@@ -181,15 +181,15 @@ namespace executive
 			void setStream(unsigned int stream);
 			
 			/*! \brief Binds a texture to a memory allocation at a pointer */
-			void bindTexture(void* pointer, const std::string& moduleName,
+			void bindTexture(void* pointer, void* id,
 				const std::string& textureName, 
 				const textureReference& ref, const cudaChannelFormatDesc& desc, 
 				const ir::Dim3& size);
 			/*! \brief unbinds anything bound to a particular texture */
-			void unbindTexture(const std::string& moduleName, 
+			void unbindTexture(void* id, 
 				const std::string& textureName);
 			/*! \brief Get's a reference to an internal texture */
-			void* getTextureReference(const std::string& moduleName, 
+			void* getTextureReference(void* id, 
 				const std::string& textureName);
 			
 			/*! \brief helper function for launching a kernel
@@ -203,7 +203,7 @@ namespace executive
 			 *  \param traceGenerators vector of trace generators to add and 
 			 	remove from kernel
 			 */
-			void launch(const std::string& module, 
+			void launch(void* id, 
 					const std::string& kernel, const ir::Dim3& grid, 
 					const ir::Dim3& block, size_t sharedMemory, 
 					const void *argumentBlock, size_t argumentBlockSize, 
@@ -211,7 +211,7 @@ namespace executive
 					traceGenerators = trace::TraceGeneratorVector(),
 					const ir::ExternalFunctionSet* externals = 0);
 			/*! \brief Get the function attributes of a specific kernel */
-			cudaFuncAttributes getAttributes(const std::string& path, 
+			cudaFuncAttributes getAttributes(void* id, 
 				const std::string& kernelName);
 			/*! \brief Get the last error from this device */
 			unsigned int getLastError();
@@ -232,7 +232,7 @@ namespace executive
 			void _optimizePTX(Module* m, const std::string& k);
 
 			/*! \brief A map of registered modules */
-			typedef std::unordered_map<std::string, Module*> ModuleMap;
+			typedef std::unordered_map<void*, Module*> ModuleMap;
 
 			/*! \brief A map of memory allocations */
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;

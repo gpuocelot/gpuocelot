@@ -194,16 +194,16 @@ void util::KernelExtractorDriver::kernelLaunch(CUfunction f, int gridX, int grid
 	synchronizeFromDevice();
 	
 	if (f_it != functionNameMap.end()) {
-		state.launch.moduleName = f_it->second.first;
+		state.launch.id = f_it->second.first;
 		state.launch.kernelName = f_it->second.second;
 	}
 	else {
-		state.launch.moduleName = "unknown_module";
+		state.launch.id = "unknown_module";
 		state.launch.kernelName = "unknown_kernel";
 	}
 	
 	// serialize 'before' state
-	std::string launchName = state.launch.moduleName + "-" + state.launch.kernelName;
+	std::string launchName = state.launch.id + "-" + state.launch.kernelName;
 	std::ofstream file(state.application.name + "-" + launchName + ".json");
 	
 	std::string app = state.application.name;
@@ -219,11 +219,11 @@ void util::KernelExtractorDriver::kernelReturn(CUresult result) {
 	synchronizeFromDevice();
 	
 	
-	std::string launchName = state.launch.moduleName + "-" + state.launch.kernelName;
+	std::string launchName = state.launch.id + "-" + state.launch.kernelName;
 	std::ofstream file(state.application.name + "-" + launchName + ".json", std::ios_base::app);
 	
 	std::string app = state.application.name;
-	state.application.name += "-after-" + state.launch.moduleName + "-" + state.launch.kernelName;
+	state.application.name += "-after-" + state.launch.id + "-" + state.launch.kernelName;
 	state.serialize(file);
 	state.application.name = app;
 }

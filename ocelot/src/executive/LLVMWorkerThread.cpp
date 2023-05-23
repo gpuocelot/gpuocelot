@@ -133,12 +133,12 @@ void LLVMWorkerThread::flushTranslatedKernels()
 }
 
 LLVMModuleManager::FunctionId LLVMWorkerThread::getFunctionId(
-	const std::string& moduleName, const std::string& functionName)
+	void* id, const std::string& functionName)
 {
 	LLVMModuleManager::GetFunctionMessage message;
 	
 	message.type       = LLVMModuleManager::DatabaseMessage::GetId;
-	message.moduleName = moduleName;
+	message.moduleId = id;
 	message.kernelName = functionName;
 	
 	threadSend(&message, LLVMModuleManager::id());

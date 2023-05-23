@@ -66,7 +66,7 @@ void CudaWorkerThread::setDevice(executive::Device* d)
 	_device = d;
 }
 
-void CudaWorkerThread::launch(const std::string& module, 
+void CudaWorkerThread::launch(void* id, 
 	const std::string& kernel, const ir::Dim3& grid, 
 	const ir::Dim3& block, size_t sharedMemory, 
 	const void* argumentBlock, size_t argumentBlockSize, 
@@ -80,7 +80,7 @@ void CudaWorkerThread::launch(const std::string& module,
 
 	Launch* l = new Launch;
 
-	l->module       = module;
+	l->id           = id;
 	l->kernel       = kernel;
 	l->gridDim      = grid;
 	l->blockDim     = block;
@@ -191,7 +191,7 @@ void CudaWorkerThread::_launchNext()
 	report(" Launching kernel '" << l.kernel << "' now.");
 
 	_device->select();
-	_device->launch(l.module, l.kernel, l.gridDim, l.blockDim, l.sharedMemory, 
+	_device->launch(l.id, l.kernel, l.gridDim, l.blockDim, l.sharedMemory, 
 		l.parameters.data(), l.parameters.size(), l.generators, l.externals);
 	_device->unselect();
 	

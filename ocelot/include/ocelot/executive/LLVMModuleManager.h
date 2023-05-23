@@ -50,13 +50,13 @@ public:
 		translator::Translator::OptimizationLevel l, Device* device);
 
 	/*! \brief Is a module loaded? */
-	static bool isModuleLoaded(const std::string& moduleName);
+	static bool isModuleLoaded(void* id);
 
 	/*! \brief Gets the total number of functions in all modules */
 	static unsigned int totalFunctionCount();
 
 	/*! \brief unLoad module from the database, this invalidates all ids */
-	static void unloadModule(const std::string& moduleName);
+	static void unloadModule(void* id);
 
 	/*! \brief Sets the current external function set for linking */
 	static void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
@@ -146,7 +146,7 @@ public:
 	class GetFunctionMessage : public DatabaseMessage
 	{
 	public:
-		std::string moduleName;
+		void* moduleId;
 		std::string kernelName;
 		FunctionId  id;
 		MetaData*   metadata;
@@ -181,7 +181,7 @@ public:
 		ir::Module*    _originalModule;
 	};
 
-	typedef std::unordered_map<std::string, Module> ModuleMap;
+	typedef std::unordered_map<void*, Module> ModuleMap;
 
 	/*! \brief A thread safe-class for actually maintaining the modules */
 	class ModuleDatabase : public hydrazine::Thread
@@ -198,10 +198,10 @@ public:
 			translator::Translator::OptimizationLevel l, Device* device);
 	
 		/*! \brief Is a module loaded? */
-		bool isModuleLoaded(const std::string& moduleName);
+		bool isModuleLoaded(void* id);
 	
 		/*! \brief unLoad module from the database */
-		void unloadModule(const std::string& moduleName);
+		void unloadModule(void* id);
 		
 		/*! \brief Gets the total number of functions in all modules */
 		unsigned int totalFunctionCount() const;
@@ -214,7 +214,7 @@ public:
 		
 	public:
 		/*! \brief Get the id of a kernel by module and kernel name */
-		FunctionId getFunctionId(const std::string& moduleName,
+		FunctionId getFunctionId(void* id,
 			const std::string& kernelName) const;
 
 		/*! \brief Get the external function set */

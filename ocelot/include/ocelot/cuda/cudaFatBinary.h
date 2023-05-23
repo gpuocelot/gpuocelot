@@ -131,7 +131,7 @@ typedef struct __cudaFatCudaBinary2EntryRec {
 	unsigned long long int uncompressedBinarySize;
 } __cudaFatCudaBinary2Entry;
 
-#define COMPRESSED_PTX 0x0000000000001000LL
+#define COMPRESSED_PTX 0x0000000000002000LL
 
 typedef struct __cudaFatCudaBinaryRec2 {
 	int magic;

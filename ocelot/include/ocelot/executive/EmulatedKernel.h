@@ -261,7 +261,7 @@ namespace executive {
 		std::string toString() const;
 		
 		/*! \brief Get the file name that the kernel resides in */
-		std::string fileName() const;
+		void* id() const;
 		
 		/*! \brief Get the nearest location to an instruction at a given PC */
 		std::string location(unsigned int PC) const;

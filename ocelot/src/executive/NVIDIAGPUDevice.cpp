@@ -394,7 +394,7 @@ namespace executive
 	
 	void NVIDIAGPUDevice::Module::load()
 	{
-		report("Loading module - " << ir->path() << " on NVIDIA GPU.");
+		report("Loading module - " << ir->id() << " on NVIDIA GPU.");
 		
 		// deal with .ptr.shared kernel parameter attributes
 		const ir::Module *module = ir;
@@ -468,7 +468,7 @@ namespace executive
 #endif
 
 			Throw("cuModuleLoadDataEx() - returned " << result 
-				<< ". Failed to JIT module - " << ir->path() 
+				<< ". Failed to JIT module - " << ir->id() 
 				<< " using NVIDIA JIT with error:\n" << errorLogBuffer);
 		}
 		
@@ -500,7 +500,7 @@ namespace executive
 	{
 		if(!loaded()) load();
 		
-		report("Creating NVIDIA kernels for module - " << ir->path());
+		report("Creating NVIDIA kernels for module - " << ir->id());
 		for(ir::Module::KernelMap::const_iterator 
 			kernel = ir->kernels().begin(); 
 			kernel != ir->kernels().end(); ++kernel)
@@ -523,7 +523,7 @@ namespace executive
 		assert(globals.empty());
 		
 		AllocationVector allocations;
-		report("Loading globals in module - " << ir->path());
+		report("Loading globals in module - " << ir->id());
 		for(ir::Module::GlobalMap::const_iterator 
 			global = ir->globals().begin(); 
 			global != ir->globals().end(); ++global)
@@ -928,39 +928,9 @@ namespace executive
 	}
 
 	Device::MemoryAllocation* NVIDIAGPUDevice::getGlobalAllocation(
-		const std::string& moduleName, const std::string& name)
+		void* id, const std::string& name)
 	{
-		if(moduleName.empty())
-		{
-			// try a brute force search over all modules
-			for(ModuleMap::iterator module = _modules.begin(); 
-				module != _modules.end(); ++module)
-			{
-				if(module->second.globals.empty())
-				{
-					Module::AllocationVector allocations = std::move(
-						module->second.loadGlobals());
-					for(Module::AllocationVector::iterator 
-						allocation = allocations.begin(); 
-						allocation != allocations.end(); ++allocation)
-					{
-						_allocations.insert(std::make_pair(
-							(*allocation)->pointer(), *allocation));
-					}
-				}
-
-				Module::GlobalMap::iterator global = 
-					module->second.globals.find(name);
-				if(global != module->second.globals.end())
-				{
-					return getMemoryAllocation(global->second, 
-						DeviceAllocation);
-				}
-			}
-			return 0;
-		}
-
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		if(module == _modules.end()) return 0;
 		
 		if(module->second.globals.empty())
@@ -1243,22 +1213,22 @@ namespace executive
 	{
 		assert(selected());
 	
-		if(_modules.count(module->path()) != 0)
+		if(_modules.count(module->id()) != 0)
 		{
-			Throw("Duplicate module - " << module->path());
+			Throw("Duplicate module - " << module->id());
 		}
-		_modules.insert(std::make_pair(module->path(), 
+		_modules.insert(std::make_pair(module->id(), 
 			Module(this, module)));
 	}
 	
-	void NVIDIAGPUDevice::unload(const std::string& name)
+	void NVIDIAGPUDevice::unload(void* id)
 	{
 		assert(selected());
 	
-		ModuleMap::iterator module = _modules.find(name);
+		ModuleMap::iterator module = _modules.find(id);
 		if(module == _modules.end())
 		{
-			Throw("Cannot unload unknown module - " << name);
+			Throw("Cannot unload unknown module - " << id);
 		}
 		
 		for(Module::GlobalMap::iterator global = module->second.globals.begin();
@@ -1274,10 +1244,10 @@ namespace executive
 		_modules.erase(module);
 	}
 
-	ExecutableKernel* NVIDIAGPUDevice::getKernel(const std::string& moduleName, 
+	ExecutableKernel* NVIDIAGPUDevice::getKernel(void* id, 
 		const std::string& kernelName)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		
 		if(module == _modules.end()) return 0;
 		
@@ -1448,29 +1418,29 @@ namespace executive
 	}
 		
 	void NVIDIAGPUDevice::bindTexture(void* pointer, 
-		const std::string& moduleName, const std::string& textureName, 
+		void* id, const std::string& textureName, 
 		const textureReference& texref, const cudaChannelFormatDesc& desc, 
 		const ir::Dim3& size)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		if(module == _modules.end())
 		{
-			Throw("Invalid Module - " << moduleName);
+			Throw("Invalid Module - " << id);
 		}
 		
 		void* tex = module->second.getTexture(textureName);
 		if(tex == 0)
 		{
 			Throw("Invalid Texture - " << textureName 
-				<< " in Module - " << moduleName);
+				<< " in Module - " << id);
 		}
 
 		if(_arrays.count(textureName) != 0)
 		{
-			unbindTexture(moduleName, textureName);
+			unbindTexture(id, textureName);
 		}
 
-		report("Binding texture " << textureName << " in module " << moduleName
+		report("Binding texture " << textureName << " in module " << id
 			<< " to pointer " << pointer << " with dimensions (" << size.x
 			<< "," << size.y << "," << size.z << ")");
 
@@ -1533,27 +1503,27 @@ namespace executive
 		checkError(driver::cuTexRefSetFlags(ref, flags));
 	}
 	
-	void NVIDIAGPUDevice::unbindTexture(const std::string& moduleName, 
+	void NVIDIAGPUDevice::unbindTexture(void* id, 
 		const std::string& textureName)
 	{
 		// this is a nop, textures cannot be unbound
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		if(module == _modules.end())
 		{
 
 
-			Throw("Invalid Module - " << moduleName);
+			Throw("Invalid Module - " << id);
 		}
 		
 		void* tex = module->second.getTexture(textureName);
 		if(tex == 0)
 		{
 			Throw("Invalid Texture - " << textureName 
-				<< " in Module - " << moduleName);
+				<< " in Module - " << id);
 		}
 		
 		report("Unbinding texture " << textureName 
-			<< " in module " << moduleName);
+			<< " in module " << id);
 		
 		ArrayMap::iterator array = _arrays.find(textureName);
 		if (array != _arrays.end()) {
@@ -1563,27 +1533,27 @@ namespace executive
 		}
 	}
 	
-	void* NVIDIAGPUDevice::getTextureReference(const std::string& moduleName, 
+	void* NVIDIAGPUDevice::getTextureReference(void* id, 
 		const std::string& textureName)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		
 		if(module == _modules.end()) return 0;
 		return module->second.getTexture(textureName);
 	}
 
-	void NVIDIAGPUDevice::launch(const std::string& moduleName, 
+	void NVIDIAGPUDevice::launch(void* id, 
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory,
 		const void* argumentBlock, size_t argumentBlockSize,
 		const trace::TraceGeneratorVector& traceGenerators,
 		const ir::ExternalFunctionSet* externals)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		
 		if(module == _modules.end())
 		{
-			Throw("Unknown module - " << moduleName);
+			Throw("Unknown module - " << id);
 		}
 		
 		NVIDIAExecutableKernel* kernel = module->second.getKernel(kernelName);
@@ -1591,7 +1561,7 @@ namespace executive
 		if(kernel == 0)
 		{
 			Throw("Unknown kernel - " << kernelName 
-				<< " in module " << moduleName);
+				<< " in module " << id);
 		}
 		
 		if(kernel->sharedMemorySize() + sharedMemory > 
@@ -1647,14 +1617,14 @@ namespace executive
 		
 	}
 
-	cudaFuncAttributes NVIDIAGPUDevice::getAttributes(const std::string& path, 
+	cudaFuncAttributes NVIDIAGPUDevice::getAttributes(void* id, 
 		const std::string& kernelName)
 	{
-		ModuleMap::iterator module = _modules.find(path);
+		ModuleMap::iterator module = _modules.find(id);
 		
 		if(module == _modules.end())
 		{
-			Throw("Unknown module - " << path);
+			Throw("Unknown module - " << id);
 		}
 		
 		NVIDIAExecutableKernel* kernel = module->second.getKernel(kernelName);
@@ -1662,7 +1632,7 @@ namespace executive
 		if(kernel == 0)
 		{
 			Throw("Unknown kernel - " << kernelName 
-				<< " in module " << path);
+				<< " in module " << id);
 		}
 		
 		cudaFuncAttributes attributes;

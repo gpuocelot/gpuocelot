@@ -44,7 +44,7 @@ public:
 
 public:
 	/*! \brief Get the id of a translated function from the database */
-	LLVMModuleManager::FunctionId getFunctionId(const std::string& moduleName,
+	LLVMModuleManager::FunctionId getFunctionId(void* id,
 		const std::string& functionName);
 
 	/*! \brief Get the translated function from the database */

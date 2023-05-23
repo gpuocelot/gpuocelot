@@ -41,7 +41,7 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 	_functions.resize(LLVMModuleManager::totalFunctionCount(), 0);
 	_queuedThreads.resize(_functions.size());
 
-	_entryPoint = _worker->getFunctionId(kernel.module->path(), kernel.name);
+	_entryPoint = _worker->getFunctionId(kernel.module->id(), kernel.name);
 	report(" Entry point is function " << _entryPoint);
 
 	if(_functions[_entryPoint] == 0)

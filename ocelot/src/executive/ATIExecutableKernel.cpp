@@ -499,7 +499,7 @@ namespace executive
 						if (device)
 						{
 							Device::MemoryAllocation* allocation = 
-								device->getGlobalAllocation(module->path(),
+								device->getGlobalAllocation(/* TODO id */ nullptr,
 										global->first);
 
 							operand->addressMode = ir::PTXOperand::Immediate;

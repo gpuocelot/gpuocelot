@@ -142,7 +142,7 @@ namespace executive
 				AllocationType type = DeviceAllocation) const = 0;
 			/*! \brief Get the address of a global by name */
 			virtual MemoryAllocation* getGlobalAllocation(
-				const std::string& module, const std::string& name) = 0;
+				void* id, const std::string& name) = 0;
 			/*! \brief Allocate some new dynamic memory on this device */
 			virtual MemoryAllocation* allocate(size_t size) = 0;
 			/*! \brief Register some host memory */
@@ -189,9 +189,9 @@ namespace executive
 			/*! \brief Load a module, must have a unique name */
 			virtual void load(const ir::Module* module) = 0;
 			/*! \brief Unload a module by name */
-			virtual void unload(const std::string& name) = 0;
+			virtual void unload(void* id) = 0;
 			/*! \brief Get a translated kernel from the device */
-			virtual ExecutableKernel* getKernel(const std::string& module, 
+			virtual ExecutableKernel* getKernel(void* id, 
 				const std::string& kernel) = 0;
 
 		public:
@@ -238,14 +238,14 @@ namespace executive
 		public:
 			/*! \brief Binds a texture to a memory allocation at a pointer */
 			virtual void bindTexture(void* pointer, 
-				const std::string& moduleName, const std::string& textureName,
+				void* id, const std::string& textureName,
 				const textureReference& ref, const cudaChannelFormatDesc& desc, 
 				const ir::Dim3& size) = 0;
 			/*! \brief unbinds anything bound to a particular texture */
-			virtual void unbindTexture(const std::string& moduleName, 
+			virtual void unbindTexture(void* id, 
 				const std::string& textureName) = 0;
 			/*! \brief Get's a reference to an internal texture */
-			virtual void* getTextureReference(const std::string& moduleName, 
+			virtual void* getTextureReference(void* id, 
 				const std::string& textureName) = 0;
 		
 		public:
@@ -266,7 +266,7 @@ namespace executive
 				\param traceGenerators vector of trace generators to add 
 					and remove from kernel
 			*/
-			virtual void launch(const std::string& module, 
+			virtual void launch(void* id, 
 				const std::string& kernel, const ir::Dim3& grid, 
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 
@@ -274,7 +274,7 @@ namespace executive
 				traceGenerators = trace::TraceGeneratorVector(),
 				const ir::ExternalFunctionSet* externals = 0) = 0;
 			/*! \brief Get the function attributes of a specific kernel */
-			virtual cudaFuncAttributes getAttributes(const std::string& module, 
+			virtual cudaFuncAttributes getAttributes(void* id, 
 				const std::string& kernel) = 0;
 			/*! \brief Get the last error from this device */
 			virtual unsigned int getLastError() = 0;

@@ -440,7 +440,7 @@ executive::Device::MemoryAllocation*
 /*! \brief Get the address of a global by stream */
 executive::Device::MemoryAllocation*
 	executive::RemoteDevice::getGlobalAllocation(
-	const std::string& module, const std::string& name) {
+	void* id, const std::string& name) {
 	assert(selected());
 
 	assert(0 && "unimplemented");
@@ -654,8 +654,8 @@ void executive::RemoteDevice::load(const ir::Module* module) {
 	
 	module->writeIR(ptx);
 
-	unsigned int size = 2 * sizeof(unsigned int)
-		+ ptx.str().size() + module->path().size();
+	unsigned int size = sizeof(unsigned int) + sizeof(void*)
+		+ ptx.str().size();
 	
 	_message.header.operation   = M::Device_load;
 	_message.header.messageSize = size;
@@ -664,12 +664,8 @@ void executive::RemoteDevice::load(const ir::Module* module) {
 	
 	unsigned int offset = 0;
 
-	*(unsigned int*)(_message.data() + offset) = module->path().size();
-	offset += sizeof(unsigned int);
-
-	std::memcpy(_message.data() + offset,
-		module->path().data(), module->path().size());	
-	offset += module->path().size();
+	*(void**)(_message.data() + offset) = module->id();
+	offset += sizeof(void*);
 
 	*(unsigned int*)(_message.data() + offset) = ptx.str().size();
 	offset += sizeof(unsigned int);
@@ -686,8 +682,8 @@ void executive::RemoteDevice::load(const ir::Module* module) {
 }
 
 /*! \brief Unload a module by name */
-void executive::RemoteDevice::unload(const std::string& name) {
-	unsigned int size = sizeof(unsigned int) + name.size();
+void executive::RemoteDevice::unload(void* id) {
+	unsigned int size = sizeof(void*);
 	
 	_message.header.operation   = M::Device_unload;
 	_message.header.messageSize = size;
@@ -696,11 +692,8 @@ void executive::RemoteDevice::unload(const std::string& name) {
 	
 	unsigned int offset = 0;
 
-	*(unsigned int*)(_message.data() + offset) = name.size();
-	offset += sizeof(unsigned int);
-
-	std::memcpy(_message.data() + offset, name.data(), name.size());	
-	offset += name.size();
+	*(void**)(_message.data() + offset) = id;
+	offset += sizeof(void*);
 
 	connectionManager.exchange(_message);
 	
@@ -711,7 +704,7 @@ void executive::RemoteDevice::unload(const std::string& name) {
 
 /*! \brief Get a translated kernel from the device */
 executive::ExecutableKernel* executive::RemoteDevice::getKernel(
-	const std::string& module, 
+	void* id, 
 	const std::string& kernel) {
 	assert(selected());
 
@@ -967,14 +960,14 @@ void executive::RemoteDevice::unselect() {
 
 /*! \brief Binds a texture to a memory allocation at a pointer */
 void executive::RemoteDevice::bindTexture(void* pointer,
-	const std::string& module, const std::string& texture, 
+	void* id, const std::string& texture, 
 	const textureReference& ref, const cudaChannelFormatDesc& desc, 
 	const ir::Dim3& dim) {
 	assert(selected());
 	
-	unsigned int size = sizeof(long long unsigned int)
-		+ 2 * sizeof(unsigned int)
-		+ module.size() + texture.size() + sizeof(textureReference)
+	unsigned int size =
+		+ sizeof(unsigned int) + sizeof(void*)
+		+ texture.size() + sizeof(textureReference)
 		+ sizeof(cudaChannelFormatDesc)
 		+ sizeof(ir::Dim3);
 	
@@ -985,14 +978,8 @@ void executive::RemoteDevice::bindTexture(void* pointer,
 	
 	unsigned int offset = 0;
 
-	*(long long unsigned int*)(_message.data() + offset) = module.size();
-	offset += sizeof(long long unsigned int);
-
-	*(unsigned int*)(_message.data() + offset) = module.size();
-	offset += sizeof(unsigned int);
-
-	std::memcpy(_message.data() + offset, module.data(), module.size());	
-	offset += module.size();
+	*(void**)(_message.data() + offset) = id;
+	offset += sizeof(void*);
 
 	*(unsigned int*)(_message.data() + offset) = texture.size();
 	offset += sizeof(unsigned int);
@@ -1017,12 +1004,12 @@ void executive::RemoteDevice::bindTexture(void* pointer,
 }
 
 /*! \brief unbinds anything bound to a particular texture */
-void executive::RemoteDevice::unbindTexture(const std::string& module, 
+void executive::RemoteDevice::unbindTexture(void* id, 
 	const std::string& texture) {
 	assert(selected());
 
-	unsigned int size = 2 * sizeof(unsigned int)
-		+ module.size() + texture.size();
+	unsigned int size = sizeof(unsigned int) + sizeof(void*)
+		+ texture.size();
 	
 	_message.header.operation   = M::Device_getAttributes;
 	_message.header.messageSize = size;
@@ -1031,11 +1018,8 @@ void executive::RemoteDevice::unbindTexture(const std::string& module,
 	
 	unsigned int offset = 0;
 
-	*(unsigned int*)(_message.data() + offset) = texture.size();
-	offset += sizeof(unsigned int);
-
-	std::memcpy(_message.data() + offset, module.data(), module.size());	
-	offset += module.size();
+	*(void**)(_message.data() + offset) = id;
+	offset += sizeof(void*);
 
 	*(unsigned int*)(_message.data() + offset) = texture.size();
 	offset += sizeof(unsigned int);
@@ -1052,7 +1036,7 @@ void executive::RemoteDevice::unbindTexture(const std::string& module,
 
 /*! \brief Get's a reference to an internal texture */
 void* executive::RemoteDevice::getTextureReference(
-	const std::string& moduleName, 
+	void* id, 
 	const std::string& textureName) {
 	assert(selected());
 
@@ -1074,7 +1058,7 @@ void* executive::RemoteDevice::getTextureReference(
 	\param traceGenerators vector of trace generators to add 
 		and remove from kernel
 */
-void executive::RemoteDevice::launch(const std::string& module, 
+void executive::RemoteDevice::launch(void* id, 
 	const std::string& kernel, const ir::Dim3& grid, 
 	const ir::Dim3& block, size_t sharedMemory, 
 	const void* argumentBlock, size_t argumentBlockSize, 
@@ -1082,8 +1066,8 @@ void executive::RemoteDevice::launch(const std::string& module,
 	const ir::ExternalFunctionSet* externals) {
 	assert(selected());
 
-	unsigned int size = 4 * sizeof(unsigned int)
-		+ module.size() + kernel.size() + argumentBlockSize
+	unsigned int size = 3 * sizeof(unsigned int) + sizeof(void*)
+		+ kernel.size() + argumentBlockSize
 		+ 2 * sizeof(ir::Dim3);
 	
 	_message.header.operation   = M::Device_launch;
@@ -1093,11 +1077,8 @@ void executive::RemoteDevice::launch(const std::string& module,
 	
 	unsigned int offset = 0;
 
-	*(unsigned int*)(_message.data() + offset) = module.size();
-	offset += sizeof(unsigned int);
-
-	std::memcpy(_message.data() + offset, module.data(), module.size());	
-	offset += module.size();
+	*(void**)(_message.data() + offset) = id;
+	offset += sizeof(void*);
 
 	*(unsigned int*)(_message.data() + offset) = kernel.size();
 	offset += sizeof(unsigned int);
@@ -1132,12 +1113,12 @@ void executive::RemoteDevice::launch(const std::string& module,
 
 /*! \brief Get the function attributes of a specific kernel */
 cudaFuncAttributes executive::RemoteDevice::getAttributes(
-	const std::string& module, 
+	void* id, 
 	const std::string& kernel) {
 	assert(selected());
 	
-	unsigned int size = 2 * sizeof(unsigned int)
-		+ module.size() + kernel.size();
+	unsigned int size = sizeof(unsigned int) + sizeof(void*)
+		+ kernel.size();
 	
 	_message.header.operation   = M::Device_getAttributes;
 	_message.header.messageSize = size;
@@ -1146,11 +1127,8 @@ cudaFuncAttributes executive::RemoteDevice::getAttributes(
 	
 	unsigned int offset = 0;
 
-	*(unsigned int*)(_message.data() + offset) = module.size();
-	offset += sizeof(unsigned int);
-
-	std::memcpy(_message.data() + offset, module.data(), module.size());	
-	offset += module.size();
+	*(void**)(_message.data() + offset) = id;
+	offset += sizeof(void*);
 
 	*(unsigned int*)(_message.data() + offset) = kernel.size();
 	offset += sizeof(unsigned int);

@@ -557,7 +557,7 @@ void PassManager::runOnKernel(IRKernel& function)
 
 void PassManager::runOnModule()
 {
-	report("Running pass manager on module " << _module->path());
+	report("Running pass manager on module " << _module->id());
 
 	typedef std::map<std::string, AnalysisMap> AnalysisMapMap;
 	

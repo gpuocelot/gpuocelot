@@ -139,7 +139,7 @@ LinearScanRegisterAllocationPass::LinearScanRegisterAllocationPass(
 void LinearScanRegisterAllocationPass::initialize(const ir::Module& m)
 {
 	reportE(INFO, "Initializing linear scan register allocation "
-		"pass for module " << m.path());
+		"pass for module " << m.id());
 }
 
 /*TODO: Run on a kernel making different linear sequences,

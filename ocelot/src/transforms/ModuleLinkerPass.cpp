@@ -41,7 +41,7 @@ ModuleLinkerPass::~ModuleLinkerPass()
 
 void ModuleLinkerPass::runOnModule(ir::Module& m)
 {
-	report("Linking module " << m.path());
+	report("Linking module " << m.id());
 	
 	if(_linkedModule == 0)
 	{
@@ -54,8 +54,6 @@ void ModuleLinkerPass::runOnModule(ir::Module& m)
 		else
 		{
 			_linkedModule = new ir::Module;
-		
-			_linkedModule->isLoaded();
 		}
 	}
 

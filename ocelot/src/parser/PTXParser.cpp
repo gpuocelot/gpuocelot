@@ -2925,7 +2925,7 @@ namespace parser
 		ir::Instruction::Architecture language )
 	{
 		assert( language == ir::Instruction::PTX );
-	
+
 		std::stringstream temp;
 		
 		report( "Parsing file " << fileName );

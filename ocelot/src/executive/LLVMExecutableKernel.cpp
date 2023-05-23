@@ -138,7 +138,7 @@ void LLVMExecutableKernel::updateMemory()
 
 			assert(device != 0);
 			Device::MemoryAllocation* global = device->getGlobalAllocation(
-				module->path(), constant->second.statement.name);
+				module->id(), constant->second.statement.name);
 
 			assert(global != 0);
 			assert(global->size() + bytes <= _constMemorySize);

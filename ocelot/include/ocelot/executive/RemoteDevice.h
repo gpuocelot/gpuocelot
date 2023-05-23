@@ -155,7 +155,7 @@ namespace executive
 				AllocationType type) const;
 			/*! \brief Get the address of a global by stream */
 			Device::MemoryAllocation* getGlobalAllocation(
-				const std::string& module, const std::string& name);
+				void* id, const std::string& name);
 			/*! \brief Allocate some new dynamic memory on this device */
 			Device::MemoryAllocation* allocate(size_t size);
 			/*! \brief Make this a host memory allocation */
@@ -199,9 +199,9 @@ namespace executive
 			/*! \brief Load a module, must have a unique name */
 			void load(const ir::Module* module);
 			/*! \brief Unload a module by name */
-			void unload(const std::string& name);
+			void unload(void* id);
 			/*! \brief Get a translated kernel from the device */
-			ExecutableKernel* getKernel(const std::string& module, 
+			ExecutableKernel* getKernel(void* id, 
 				const std::string& kernel);
 
 		public:
@@ -242,14 +242,14 @@ namespace executive
 		public:
 			/*! \brief Binds a texture to a memory allocation at a pointer */
 			void bindTexture(void* pointer,
-				const std::string& moduleName, const std::string& textureName, 
+				void* id, const std::string& textureName, 
 				const textureReference& ref, const cudaChannelFormatDesc& desc, 
 				const ir::Dim3& size);
 			/*! \brief unbinds anything bound to a particular texture */
-			void unbindTexture(const std::string& moduleName, 
+			void unbindTexture(void* id, 
 				const std::string& textureName);
 			/*! \brief Get's a reference to an internal texture */
-			void* getTextureReference(const std::string& moduleName, 
+			void* getTextureReference(void* id, 
 				const std::string& textureName);
 
 		public:
@@ -264,7 +264,7 @@ namespace executive
 				\param traceGenerators vector of trace generators to add 
 					and remove from kernel
 			*/
-			void launch(const std::string& module, 
+			void launch(void* id, 
 				const std::string& kernel, const ir::Dim3& grid, 
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 
@@ -273,7 +273,7 @@ namespace executive
 				const ir::ExternalFunctionSet* externals = 0);
 					
 			/*! \brief Get the function attributes of a specific kernel */
-			cudaFuncAttributes getAttributes(const std::string& module, 
+			cudaFuncAttributes getAttributes(void* id, 
 				const std::string& kernel);
 			/*! \brief Get the last error from this device */
 			unsigned int getLastError();

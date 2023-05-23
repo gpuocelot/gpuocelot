@@ -651,9 +651,12 @@ CUresult cuda::CudaDriverFrontend::cuModuleLoad(CUmodule *cuModule, const char *
 	if (context) {
 		std::ifstream file(fname);
 		if (file.good()) {
+			// Make a module id out of the filename, by allocating it on the heap.
+			char* id = (char*)malloc(strlen(fname) + 1);
+			strcpy(id, fname);
 			ModuleMap::iterator module = context->_modules.insert(
-				std::make_pair(fname, ir::Module())).first;
-			if (module->second.load(fname)) {
+				std::make_pair(id, ir::Module())).first;
+			if (module->second.load(id, fname)) {
 				*cuModule = reinterpret_cast<CUmodule>(& module->second);
 				context->_getDevice().load(&module->second);
 				context->_getDevice().setOptimizationLevel(context->_optimization);
@@ -691,25 +694,22 @@ CUresult cuda::CudaDriverFrontend::cuModuleLoadDataEx(CUmodule *cuModule,
 	
 	CUresult result = CUDA_ERROR_NOT_FOUND;
 	Context *context = _bind();
-	if (context) {
+	if (context)
+	{
 		report("  obtained context");
-		
+
+		// Make a module id out of the filename, by allocating it on the heap.
+		char* id = (char*)malloc(1);
+		id[0] = '\0';
+
 		std::stringstream ss;
 		ss << (const char *)image;
 		
-		std::stringstream modname;
-		modname << "ocelotModule" << context->_modules.size() << ".ptx";
-		
-		{
-			std::ofstream file(modname.str().c_str());
-			file << (const char *)image;
-		}
-	
-		ModuleMap::iterator module = context->_modules.insert(std::make_pair(modname.str(), ir::Module())).first;
+		ModuleMap::iterator module = context->_modules.insert(std::make_pair(id, ir::Module())).first;
 		
 		report("  created module, now loading..");
 
-		if (module->second.load(ss, modname.str())) {
+		if (module->second.load(id, ss)) {
 			*cuModule = reinterpret_cast<CUmodule>(& module->second);
 			
 			report("  loaded PTX module, now loading into emulator");
@@ -747,7 +747,12 @@ CUresult cuda::CudaDriverFrontend::cuModuleUnload(CUmodule hmod) {
 	CUresult result = CUDA_ERROR_NOT_FOUND;
 	Context *context = _bind();
 	if (context) {
-		context->_getDevice().unload(reinterpret_cast<const ir::Module *>(hmod)->path());
+		void* id = reinterpret_cast<const ir::Module *>(hmod)->id();
+		context->_getDevice().unload(id);
+		
+		// Our id is allocated on the heap.
+		free(id);
+
 		result = CUDA_SUCCESS;
 	}
 	else {
@@ -801,7 +806,7 @@ CUresult cuda::CudaDriverFrontend::cuModuleGetGlobal(CUdeviceptr *dptr,
 			// get global
 			//
 			executive::Device::MemoryAllocation *allocation = 
-				context->_getDevice().getGlobalAllocation(module->path(), std::string(name));
+				context->_getDevice().getGlobalAllocation(module->id(), std::string(name));
 			if (allocation) {
 				*dptr = hydrazine::bit_cast<CUdeviceptr, void *>(allocation->pointer());
 				result = CUDA_SUCCESS;
@@ -1350,7 +1355,7 @@ CUresult cuda::CudaDriverFrontend::cuFuncSetCacheConfig(CUfunction hfunc, CUfunc
 	if (context) {
 		ir::PTXKernel *ptxKernel = reinterpret_cast<ir::PTXKernel *>(hfunc);
 		executive::ExecutableKernel *executableKernel = context->_getDevice().getKernel(
-			ptxKernel->module->path(), ptxKernel->name);
+			ptxKernel->module->id(), ptxKernel->name);
 		executableKernel->setCacheConfiguration(_translateCacheConfiguration(config));
 	}
 	else {
@@ -1607,7 +1612,7 @@ CUresult cuda::CudaDriverFrontend::cuLaunch(CUfunction hfunc) {
 					context->_hostThreadContext.nextTraceGenerators.begin(), 
 					context->_hostThreadContext.nextTraceGenerators.end());
 
-				context->_getDevice().launch(ptxKernel->module->path(), 
+				context->_getDevice().launch(ptxKernel->module->id(), 
 					ptxKernel->name, 
 					convert(context->_launchConfiguration.gridDim), 
 					convert(context->_launchConfiguration.blockDim), 
@@ -1682,7 +1687,7 @@ CUresult cuda::CudaDriverFrontend::cuLaunchGrid (CUfunction hfunc, int grid_widt
 					context->_hostThreadContext.nextTraceGenerators.begin(), 
 					context->_hostThreadContext.nextTraceGenerators.end());
 
-				context->_getDevice().launch(ptxKernel->module->path(), 
+				context->_getDevice().launch(ptxKernel->module->id(), 
 					ptxKernel->name, 
 					convert(context->_launchConfiguration.gridDim), 
 					convert(context->_launchConfiguration.blockDim), 

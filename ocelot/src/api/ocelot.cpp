@@ -50,24 +50,34 @@ namespace ocelot
 
 	void registerPTXModule(std::istream& stream, const std::string& name)
 	{
-		get()->registerPTXModule( stream, name );
+		get()->registerPTXModule(stream, name);
+	}
+
+	void registerPTXModule(std::istream& stream, void* id)
+	{
+		get()->registerPTXModule(stream, id);
 	}
 
 	void registerPTXModule(const std::string& ptx, const std::string& name)
 	{
-		get()->registerPTXModule( ptx, name );
+		get()->registerPTXModule(ptx, name);
+	}
+
+	void registerPTXModule(const std::string& ptx, void* id)
+	{
+		get()->registerPTXModule(ptx, id);
 	}
 
 	void registerPTXModuleEmbedded(const std::string& name)
 	{
-		get()->registerPTXModuleEmbedded( name );
+		get()->registerPTXModuleEmbedded(name);
 	}
 
 	void registerTexture(const void* texref,
-		const std::string& moduleName,
+		void* id,
 		const std::string& textureName, bool normalize)
 	{
-		get()->registerTexture(texref, moduleName, textureName, normalize);
+		get()->registerTexture(texref, id, textureName, normalize);
 	}
 	
 	void clearErrors()
@@ -87,14 +97,24 @@ namespace ocelot
 			destinationDevice, sourceDevice ));
 	}
 	
-	void unregisterModule( const std::string& name )
+	void unregisterModule(const std::string& name)
 	{
-		get()->unregisterModule( name );
+		get()->unregisterModule(name);
+	}
+
+	void unregisterModule(void* id)
+	{
+		get()->unregisterModule(id);
 	}
 	
-	void launch(const std::string& module, const std::string& name)
+	void launch(const std::string& name, const std::string& kernelName)
 	{
-		get()->launch(module, name);
+		get()->launch(name, kernelName);
+	}
+
+	void launch(void* id, const std::string& kernelName)
+	{
+		get()->launch(id, kernelName);
 	}
 
 	void registerExternalFunction(const std::string& name, void* function)

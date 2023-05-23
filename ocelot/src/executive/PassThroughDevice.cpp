@@ -80,11 +80,11 @@ executive::Device::MemoryAllocation*
 }
 
 executive::Device::MemoryAllocation*
-	executive::PassThroughDevice::getGlobalAllocation(const std::string& module, 
+	executive::PassThroughDevice::getGlobalAllocation(void* id, 
 	const std::string& name) {
 	TRACE();
 	CHECK();
-	return _target->getGlobalAllocation(module, name);
+	return _target->getGlobalAllocation(id, name);
 }
 
 executive::Device::MemoryAllocation* executive::PassThroughDevice::allocate(
@@ -206,10 +206,10 @@ void executive::PassThroughDevice::load(const ir::Module* module) {
 	CHECK();
 	
 	util::ExtractedDeviceState::ModuleMap::iterator eModule =
-		_state.modules.insert(std::make_pair(module->path(),
+		_state.modules.insert(std::make_pair(module->id(),
 		new util::ExtractedDeviceState::Module())).first;
 	
-	eModule->second->name = module->path();
+	eModule->second->id = module->id();
 	std::stringstream stream;
 	module->writeIR(stream);
 	eModule->second->ptx = stream.str();
@@ -227,22 +227,22 @@ void executive::PassThroughDevice::load(const ir::Module* module) {
 	_modules.push_back(module);
 }
 
-void executive::PassThroughDevice::unload(const std::string& name) {
+void executive::PassThroughDevice::unload(void* id) {
 	TRACE();
 	CHECK();
 	
 	util::ExtractedDeviceState::ModuleMap::iterator eModule =
-		_state.modules.find(name);
+		_state.modules.find(id);
 	if (eModule != _state.modules.end()) {
 		delete eModule->second;
 		_state.modules.erase(eModule);
 	}
 	
-	_target->unload(name);
+	_target->unload(id);
 	
 	for (ModuleVector::iterator module = _modules.begin();
 		module != _modules.end(); ++module) {
-		if((*module)->path() == name) {
+		if((*module)->id() == id) {
 			_modules.erase(module);
 			break;
 		}
@@ -250,11 +250,11 @@ void executive::PassThroughDevice::unload(const std::string& name) {
 }
 
 executive::ExecutableKernel* executive::PassThroughDevice::getKernel(
-	const std::string& module, 
+	void* id, 
 	const std::string& kernel) {
 	TRACE();
 	CHECK();
-	return _target->getKernel(module, kernel);
+	return _target->getKernel(id, kernel);
 }
 
 unsigned int executive::PassThroughDevice::createEvent(int flags) {
@@ -367,7 +367,7 @@ static ir::Texture::AddressMode convert(cudaTextureAddressMode mode)
 
 void executive::PassThroughDevice::bindTexture(
 	void* pointer, 
-	const std::string& moduleName, 
+	void* id, 
 	const std::string& textureName,
 	const textureReference& ref, 
 	const cudaChannelFormatDesc& desc, 
@@ -377,18 +377,19 @@ void executive::PassThroughDevice::bindTexture(
 	
 	// bind the texture to the captured state
 	util::ExtractedDeviceState::ModuleMap::iterator
-		module = _state.modules.find(moduleName);
+		module = _state.modules.find(id);
 	if(module == _state.modules.end())
 	{
-		throw hydrazine::Exception("Invalid Module - " + moduleName);
+		throw hydrazine::Exception("Invalid Module - " +
+			((std::ostringstream&)(std::ostringstream() << id)).str());
 	}	
 	
 	util::ExtractedDeviceState::TextureMap::iterator
 		tex = module->second->textures.find(textureName);
 	if(tex == module->second->textures.end())
 	{
-		throw hydrazine::Exception("Invalid Texture - " + textureName 
-			+ " in Module - " + moduleName);
+		throw hydrazine::Exception("Invalid Texture - " + textureName + " in Module - " +
+			((std::ostringstream&)(std::ostringstream() << id)).str());
 	}
 
 	ir::Texture& texture = *tex->second;
@@ -425,27 +426,27 @@ void executive::PassThroughDevice::bindTexture(
 	texture.size.z = size.z;
 	texture.data = pointer;
 	
-	_target->bindTexture(pointer, moduleName, textureName, ref, desc, size);
+	_target->bindTexture(pointer, id, textureName, ref, desc, size);
 }
 
 void executive::PassThroughDevice::unbindTexture(
-	const std::string& moduleName, 
+	void* id, 
 	const std::string& textureName) {
 	TRACE();
 	CHECK();
-	_target->unbindTexture(moduleName, textureName);
+	_target->unbindTexture(id, textureName);
 }
 
 void * executive::PassThroughDevice::getTextureReference(
-	const std::string& moduleName, 
+	void* id, 
 	const std::string& textureName) {
 	TRACE();
 	CHECK();
-	return _target->getTextureReference(moduleName, textureName);
+	return _target->getTextureReference(id, textureName);
 }
 
 void executive::PassThroughDevice::launch(
-	const std::string& module, 
+	void* id, 
 	const std::string& kernel, 
 	const ir::Dim3& grid, 
 	const ir::Dim3& block, 
@@ -462,11 +463,11 @@ void executive::PassThroughDevice::launch(
 	if(match)
 	{
 		_recordStatePreExecution();
-		_recordKernelLaunch(module, kernel, grid, block, sharedMemory,
+		_recordKernelLaunch(id, kernel, grid, block, sharedMemory,
 			argumentBlock, argumentBlockSize);
 	}
 	
-	_target->launch(module, kernel, grid, block, sharedMemory, argumentBlock,
+	_target->launch(id, kernel, grid, block, sharedMemory, argumentBlock,
 		argumentBlockSize, traceGenerators, externals);
 	
 	if(match)
@@ -476,10 +477,10 @@ void executive::PassThroughDevice::launch(
 }
 
 cudaFuncAttributes executive::PassThroughDevice::getAttributes(
-	const std::string& module, const std::string& kernel) {
+	void* id, const std::string& kernel) {
 	TRACE();
 	CHECK();
-	return _target->getAttributes(module, kernel);
+	return _target->getAttributes(id, kernel);
 }
 
 unsigned int executive::PassThroughDevice::getLastError() {
@@ -541,12 +542,12 @@ void  executive::PassThroughDevice::_recordStatePreExecution() {
 			if(global->second.space() == ir::PTXInstruction::Local)  continue;
 		
 			Device::MemoryAllocation* allocation = getGlobalAllocation(
-				(*module)->path(), global->second.name());
+				(*module)->id(), global->second.name());
 		
 			util::ExtractedDeviceState::GlobalAllocation*
 				g = new util::ExtractedDeviceState::GlobalAllocation(
 					allocation->pointer(), allocation->size(),
-					(*module)->path(), global->second.name());
+					(*module)->id(), global->second.name());
 		
 			util::ExtractedDeviceState::GlobalVariableMap::iterator memory
 				= _state.globalVariables.insert(
@@ -560,7 +561,7 @@ void  executive::PassThroughDevice::_recordStatePreExecution() {
 }
 
 void  executive::PassThroughDevice::_recordKernelLaunch(
-	const std::string& module, 
+	void* id,
 	const std::string& kernel, 
 	const ir::Dim3& grid, 
 	const ir::Dim3& block, 
@@ -568,13 +569,13 @@ void  executive::PassThroughDevice::_recordKernelLaunch(
 	const void* argumentBlock, 
 	size_t argumentBlockSize) {
 	
-	_state.launch.moduleName = module;
+	_state.launch.id = id;
 	_state.launch.kernelName = kernel;
 	_state.launch.blockDim = block;
 	_state.launch.gridDim = grid;
 	_state.launch.sharedMemorySize = sharedMemory;
 	_state.launch.staticSharedMemorySize =
-		_getStaticSharedMemorySize(module, kernel);
+		_getStaticSharedMemorySize(id, kernel);
 	_state.launch.parameterMemory.assign((const char*)argumentBlock,
 		(const char*)argumentBlock + argumentBlockSize);
 }
@@ -608,12 +609,12 @@ void executive::PassThroughDevice::_recordStatePostExecution() {
 			if(global->second.space() == ir::PTXInstruction::Local)  continue;
 		
 			Device::MemoryAllocation* allocation = getGlobalAllocation(
-				(*module)->path(), global->second.name());
+				(*module)->id(), global->second.name());
 		
 			util::ExtractedDeviceState::GlobalAllocation*
 				g = new util::ExtractedDeviceState::GlobalAllocation(
 					allocation->pointer(), allocation->size(),
-					(*module)->path(), global->second.name());
+					(*module)->id(), global->second.name());
 		
 			util::ExtractedDeviceState::GlobalVariableMap::iterator memory
 				= _state.postLaunchGlobalVariables.insert(
@@ -639,9 +640,9 @@ void executive::PassThroughDevice::_recordStatePostExecution() {
 }
 
 unsigned int executive::PassThroughDevice::_getStaticSharedMemorySize(
-	const std::string& module, const std::string& kernel) {
+	void* id, const std::string& kernel) {
 	
-	auto executableKernel = getKernel(module, kernel);
+	auto executableKernel = getKernel(id, kernel);
 	
 	assert(executableKernel != 0);
 	

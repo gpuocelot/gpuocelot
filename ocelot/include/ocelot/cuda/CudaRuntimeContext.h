@@ -115,7 +115,7 @@ namespace cuda {
 	//! references a kernel registered to CUDA runtime
 	class RegisteredKernel {
 	public:
-		RegisteredKernel(size_t handle = 0, const std::string& module = "", 
+		RegisteredKernel(size_t handle = 0, void* id = nullptr, 
 			const std::string& kernel = "");
 
 	public:
@@ -146,7 +146,7 @@ namespace cuda {
 	class RegisteredTexture
 	{
 		public:
-			RegisteredTexture(const std::string& module = "", 
+			RegisteredTexture(void* id = nullptr, 
 				const std::string& texture = "", bool norm = false);
 	
 		public:
@@ -161,7 +161,7 @@ namespace cuda {
 	class RegisteredGlobal
 	{
 		public:
-			RegisteredGlobal(const std::string& module = "", 
+			RegisteredGlobal(void* id = nullptr, 
 				const std::string& global = "");
 	
 		public:
@@ -197,7 +197,7 @@ namespace cuda {
 	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
 	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
 	typedef std::map< void*, Dimension > DimensionMap;
-	typedef std::map< std::string, ir::Module > ModuleMap;
+	typedef std::map< void*, ir::Module > ModuleMap;
 	typedef std::unordered_map<unsigned int, void*> GLBufferMap;
 	typedef executive::DeviceVector DeviceVector;
 

@@ -214,8 +214,8 @@ void util::ExtractedDeviceState::MemoryAllocation::deserialize(
 ////////////////////////////////////////////////////////////////////////////////
 
 util::ExtractedDeviceState::GlobalAllocation::GlobalAllocation(const void *ptr,
-	size_t _size, const std::string& m, const std::string& g): 
-	module(m), name(g), data(_size) {
+	size_t _size, void* id, const std::string& g): 
+	id(id), name(g), data(_size) {
 }
 
 size_t util::ExtractedDeviceState::GlobalAllocation::size() const {
@@ -225,7 +225,7 @@ size_t util::ExtractedDeviceState::GlobalAllocation::size() const {
 void util::ExtractedDeviceState::GlobalAllocation::serialize(
 	std::ostream &out) const {
 	out << "{";
-	out << "  \"module\": \"" << module << "\",\n";
+	out << "  \"module\": \"" << id << "\",\n";
 	out << "  \"name\": \""   << name   << "\",\n";
 	out << "  \"data\": ";
 	::serializeBinary(out, data);
@@ -236,24 +236,27 @@ void util::ExtractedDeviceState::GlobalAllocation::serialize(
 void util::ExtractedDeviceState::GlobalAllocation::deserialize(
 	const hydrazine::json::Visitor &object) {
 	
-	module = object.parse<std::string>("module", "unknown-module");
+	id = (void*)(object.parse<uint64_t>("module", 0));
 	name   = object.parse<std::string>("name",   "unknown-variable");
 	
 	if (hydrazine::json::Value *dataMemory = object.find("data")) {
 		deserializeBinary(data, hydrazine::json::Visitor(dataMemory));
 	}
 }
-
 			
 std::string util::ExtractedDeviceState::GlobalAllocation::key() const {
-	return module + ":" + name;
+	std::ostringstream ss;
+	ss << id;
+	ss << ":";
+	ss << name;
+	return ss.str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 void util::ExtractedDeviceState::KernelLaunch::serialize(
 	std::ostream &out) const {
-	out << "{ \"module\": \"" << moduleName << "\", \"kernel\": \""
+	out << "{ \"module\": \"" << id << "\", \"kernel\": \""
 		<< kernelName << "\",\n";
 	out << "  \"gridDim\": "; ::serialize(out, gridDim); out << ",\n";
 	out << "  \"blockDim\": "; ::serialize(out, blockDim); out << ",\n";
@@ -266,7 +269,7 @@ void util::ExtractedDeviceState::KernelLaunch::serialize(
 
 void util::ExtractedDeviceState::KernelLaunch::deserialize(
 	const hydrazine::json::Visitor &object) {
-	moduleName = object.parse<std::string>("module", "unknown-module");
+	id = (void*)(object.parse<uint64_t>("module", 0));
 	kernelName = object.parse<std::string>("kernel", "unknown-kernel");
 	
 	::deserialize(gridDim, object["gridDim"]);
@@ -334,7 +337,7 @@ void util::ExtractedDeviceState::Module::serializeTexture(
 void util::ExtractedDeviceState::Module::serialize(std::ostream &out,
 	const std::string & prefix) const {
 	out << "{\n";
-	out << "  \"name\": \"" << name << "\",\n";
+	out << "  \"name\": \"" << id << "\",\n";
 	out << "  \"ptx\": \"";
 	emitEscapedString(out, ptx);
 	out << "\"";
@@ -354,7 +357,7 @@ void util::ExtractedDeviceState::Module::serialize(std::ostream &out,
 
 void util::ExtractedDeviceState::Module::deserialize(
 	const hydrazine::json::Visitor& object) {
-	name = object.parse<std::string>("name", "module");
+	id = (void*)(object.parse<uint64_t>("name", 0));
 	ptx = object.parse<std::string>("ptx", "");
 
 	hydrazine::json::Value* textureValue = object.find("textures");
@@ -505,7 +508,7 @@ void util::ExtractedDeviceState::serialize(std::ostream &out) const {
 	
 	out << "\"modules\": [";
 	
-	ModuleMap::const_iterator mod_it = modules.find(launch.moduleName);
+	ModuleMap::const_iterator mod_it = modules.find(launch.id);
 	if (mod_it == modules.end()) {
 		n = 0;
 		for (ModuleMap::const_iterator mod_it = modules.begin(); 
@@ -583,7 +586,7 @@ void util::ExtractedDeviceState::deserialize(std::istream &in) {
 			
 			Module* module = new Module;
 			module->deserialize(hydrazine::json::Visitor(*mod_it));
-			modules[module->name] = module;
+			modules[module->id] = module;
 		}
 	}
 	

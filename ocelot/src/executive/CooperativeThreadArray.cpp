@@ -31,6 +31,7 @@
 #include <cstring>
 #include <climits>
 #include <algorithm>
+#include <sstream>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -2592,7 +2593,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 
 				throw RuntimeException("attempted to call function at PC '"
 					+ stream.str() + "' in module '"
-					+ kernel->module->path() +
+					+ ((std::ostringstream&)(std::ostringstream() << kernel->module->id())).str() +
 					"', but there is no function at that PC.",
 					context.PC, instr);
 			}
@@ -2639,7 +2640,8 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 			if(prototype == kernel->module->prototypes().end()) {
 				throw RuntimeException("no prototype for external function '"
 					+ instr.a.identifier + "' in module '"
-					+ kernel->module->path() + "'", context.PC, instr);
+					+ ((std::ostringstream&)(std::ostringstream() << kernel->module->id())).str()
+					+ "'", context.PC, instr);
 			}
 
 			for (int threadID = 0; threadID != threadCount; ++threadID) {

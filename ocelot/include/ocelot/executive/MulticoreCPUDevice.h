@@ -45,7 +45,7 @@ namespace executive
 			/*! \brief Load a module, must have a unique name */
 			void load(const ir::Module* module);
 			/*! \brief Get a translated kernel from the device */
-			ExecutableKernel* getKernel(const std::string& module, 
+			ExecutableKernel* getKernel(void* id, 
 				const std::string& kernel);
 			
 		public:
@@ -60,7 +60,7 @@ namespace executive
 				\param traceGenerators vector of trace generators to add 
 					and remove from kernel
 			*/
-			void launch(const std::string& module, 
+			void launch(void* id, 
 				const std::string& kernel, const ir::Dim3& grid, 
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 

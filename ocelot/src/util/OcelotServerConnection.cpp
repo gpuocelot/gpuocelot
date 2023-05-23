@@ -62,6 +62,12 @@ static std::string readString(const void* data, unsigned int offset)
 	return result;
 }
 
+static void* readId(const void* data, unsigned int offset)
+{
+	const char* buffer = (const char*) data + offset;
+	return *(void**)buffer;
+}
+
 typedef api::OcelotConfiguration config;
 
 remote::OcelotServerConnection::OcelotServerConnection(boost::asio::ip::tcp::socket &socket)
@@ -449,18 +455,17 @@ void remote::OcelotServerConnection::_handleClearMemory(RemoteDeviceMessage& mes
 
 // Message format is (string, string), ack is blank
 void remote::OcelotServerConnection::_handleLoadModule(RemoteDeviceMessage& message) {
-	std::string name = readString(message.data(), 0);
+	void* id = readId(message.data(), 0);
 
-	ModuleMap::iterator module = _modules.find(name);
+	ModuleMap::iterator module = _modules.find(id);
 	if(module == _modules.end()) {
 	
-		std::string ptx  = readString(message.data(),
-			sizeof(unsigned int) + name.size());
+		std::string ptx  = readString(message.data(), sizeof(void*));
 	
 		std::stringstream ptxstream(ptx);
 	
-		module = _modules.insert(std::make_pair(name,
-			new ir::Module(ptxstream, name))).first;
+		module = _modules.insert(std::make_pair(id,
+			new ir::Module(id, ptxstream))).first;
 	}
 	
 	executive::Device& device = _getDevice(message.header.deviceId);
@@ -476,14 +481,14 @@ void remote::OcelotServerConnection::_handleLoadModule(RemoteDeviceMessage& mess
 
 // Message format is (string), ack is blank
 void remote::OcelotServerConnection::_handleUnloadModule(RemoteDeviceMessage& message) {
-	std::string module = readString(message.data(), 0);
+	void* id = readId(message.data(), 0);
 	
 	message.header.messageSize = 0;
 	message.resize();
 	
 	executive::Device& device = _getDevice(message.header.deviceId);
 	
-	device.unload(module);
+	device.unload(id);
 	
 	message.header.operation = RemoteDeviceMessage::Client_acknowledge;
 	message.send(_socket);
@@ -712,8 +717,8 @@ void remote::OcelotServerConnection::_handleBindTexture(RemoteDeviceMessage& mes
 		= *(long long unsigned int*)(message.data() + offset);
 	offset += sizeof(long long unsigned int);
 	
-	std::string module = readString(message.data(), offset);
-	offset += sizeof(unsigned int) + module.size();
+	void* id = readId(message.data(), offset);
+	offset += sizeof(void*);
 	
 	std::string name   = readString(message.data(), offset);
 	offset += sizeof(unsigned int) + name.size();
@@ -733,7 +738,7 @@ void remote::OcelotServerConnection::_handleBindTexture(RemoteDeviceMessage& mes
 	
 	executive::Device& device = _getDevice(message.header.deviceId);
 	
-	device.bindTexture(hydrazine::bit_cast<void*>(pointer), module,
+	device.bindTexture(hydrazine::bit_cast<void*>(pointer), id,
 		name, ref, desc, size);
 	
 	message.header.operation = RemoteDeviceMessage::Client_acknowledge;
@@ -742,16 +747,15 @@ void remote::OcelotServerConnection::_handleBindTexture(RemoteDeviceMessage& mes
 
 // Message format is (string, string), ack is blank
 void remote::OcelotServerConnection::_handleUnbindTexture(RemoteDeviceMessage& message) {
-	std::string module = readString(message.data(), 0);
-	std::string kernel = readString(message.data(),
-		sizeof(unsigned int) + module.size());
+	void* id = readId(message.data(), 0);
+	std::string kernel = readString(message.data(), sizeof(void*));
 	
 	message.header.messageSize = 0;
 	message.resize();
 	
 	executive::Device& device = _getDevice(message.header.deviceId);
 	
-	device.unbindTexture(module, kernel);
+	device.unbindTexture(id, kernel);
 	
 	message.header.operation = RemoteDeviceMessage::Client_acknowledge;
 	message.send(_socket);
@@ -796,8 +800,8 @@ void remote::OcelotServerConnection::_handleRuntimeVersion(RemoteDeviceMessage& 
 // Message format is (string, string, dim3, dim3, int, string), ack is blank
 void remote::OcelotServerConnection::_handleLaunch(RemoteDeviceMessage& message) {
 	unsigned int offset = 0;
-	std::string moduleName = readString(message.data(), 0);
-	offset += sizeof(unsigned int) + moduleName.size();
+	void* id = readId(message.data(), 0);
+	offset += sizeof(void*);
 
 	std::string kernelName = readString(message.data(), offset);
 	offset += sizeof(unsigned int) + kernelName.size();
@@ -818,7 +822,7 @@ void remote::OcelotServerConnection::_handleLaunch(RemoteDeviceMessage& message)
 	
 	executive::Device& device = _getDevice(message.header.deviceId);
 	
-	device.launch(moduleName, kernelName, grid, block, sharedSize,
+	device.launch(id, kernelName, grid, block, sharedSize,
 		arguments.c_str(), arguments.size());
 	
 	message.header.operation = RemoteDeviceMessage::Client_acknowledge;
@@ -827,9 +831,8 @@ void remote::OcelotServerConnection::_handleLaunch(RemoteDeviceMessage& message)
 
 // Message format is (string, string), ack is (attributes)
 void remote::OcelotServerConnection::_handleGetAttributes(RemoteDeviceMessage& message) {
-	std::string moduleName = readString(message.data(), 0);
-	std::string kernelName = readString(message.data(),
-		sizeof(unsigned int) + moduleName.size());
+	void* id = readId(message.data(), 0);
+	std::string kernelName = readString(message.data(), sizeof(void*));
 
 	executive::Device& device = _getDevice(message.header.deviceId);
 	
@@ -837,7 +840,7 @@ void remote::OcelotServerConnection::_handleGetAttributes(RemoteDeviceMessage& m
 	message.resize();
 	
 	*(cudaFuncAttributes*)message.data() = device.getAttributes(
-		moduleName, kernelName);
+		id, kernelName);
 
 	message.header.operation = RemoteDeviceMessage::Client_acknowledge;
 	message.send(_socket);

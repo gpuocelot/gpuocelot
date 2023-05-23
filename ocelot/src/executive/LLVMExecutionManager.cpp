@@ -72,7 +72,7 @@ void LLVMExecutionManager::Manager::launch(const LLVMExecutableKernel& kernel)
 			(unsigned)Config::get().executive.workerThreadLimit));
 	}
 
-	if(!LLVMModuleManager::isModuleLoaded(kernel.module->path()))
+	if(!LLVMModuleManager::isModuleLoaded(kernel.module->id()))
 	{
 		LLVMModuleManager::loadModule(kernel.module, kernel.optimization(),
 			kernel.device);	

@@ -45,20 +45,25 @@ namespace ir {
 				
 	public:
 
+                /*! Given a path to a PTX source file, construct the Module, 
+                        load and parse the PTX file,
+                        and extract kernels into Kernel objects
+                */
+                Module(const std::string& path);
+
 		/*! Given a path to a PTX source file, construct the Module, 
 			load and parse the PTX file,
 			and extract kernels into Kernel objects
 		*/
-		Module(const std::string& path, bool dontLoad = false);
+		Module(void* id, const std::string& path);
 
 		/*! Given a stream constaining a PTX file, parse the PTX file,
 			and extract kernels into Kernel objects
 		*/
-		Module(std::istream& source, 
-			const std::string& path = "::unknown path::");
+		Module(void* id, std::istream& source); 
 
 		/*! Construct a Module from a name and a vector of PTXStatements */
-		Module(const std::string& , const StatementVector&);
+		Module(void* id, const StatementVector&);
 
 		/*!	Construct an empty module */
 		Module();
@@ -87,28 +92,30 @@ namespace ir {
 		/*!	Deletes everything associated with this particular module */
 		void unload();
 
-		/*! Unloads module and indicates that the empty module is loaded */
-		void isLoaded();
-		
-		/*!	Unloads module and loads PTX source file in given path */
+		/*!     Unloads module and loads PTX source file in given path */
 		bool load(const std::string& path);
 
+		/*!	Unloads module and loads PTX source file in given path */
+		bool load(void* id, const std::string& path);
+
+		/*!     Unloads module and loads PTX source file in given stream */
+		bool load(std::istream& source);
+
 		/*!	Unloads module and loads PTX source file in given stream */
-		bool load(std::istream& source,
-			const std::string& path = "::unknown path::");
+		bool load(void* id, std::istream& source);
+
+		bool loadEmbedded(void* id, const std::string& name);
 
 		bool loadEmbedded(const std::string& name);
 
 		/*!	Unloads module and loads PTX source string via a destructive copy */
-		bool lazyLoad(const std::string& source,
-			const std::string& path = "::unknown path::");
+		bool lazyLoad(void* id, const std::string& source);
 		
 		/*!	Unloads module and loads PTX source, this pointer must be valid 
 			until the module is loaded */
-		bool lazyLoad(const char* source,
-			const std::string& path = "::unknown path::");
+		bool lazyLoad(void* id, const char* source);
 
-		bool lazyLoadEmbedded(const std::string& name);
+		bool lazyLoadEmbedded(void* id, const std::string& name);
 		
 		/*! \brief Load the module if it has not already been loaded */
 		void loadNow();
@@ -197,7 +204,7 @@ namespace ir {
 		void insertGlobalAsStatement(const PTXStatement &statement);
 
 		/*! \brief Gets the module path */
-		const std::string& path() const;
+		void* id() const;
 		
 		/*! \brief Gets the kernel map */
 		const KernelMap& kernels() const;
@@ -235,10 +242,6 @@ namespace ir {
 		/*! \brief This is a copy of the original ptx source for lazy loading */
 		std::string _ptx;
 
-		/*! \brief This is a pointer to the original ptx source 
-			for lazy loading */
-		const char* _ptxPointer;
-	
 		/*! Set of PTX statements loaded from PTX source file. This must not 
 			change after parsing, as all kernels have const_iterators into 
 			this vector.
@@ -259,24 +262,23 @@ namespace ir {
 		/*! Set of global variables in the modules */
 		GlobalMap _globals;
 
-		/*! Path from which Module was loaded */
-		std::string _modulePath;
+		/*! Module ID */
+		void* _id = nullptr;
 
-		/*! Target statment */
+		/*! Target statement */
 		PTXStatement _target;
 
-		/*! \brief Version statment */
+		/*! \brief Version statement */
 		PTXStatement _version;
 
 		/*! \brief The address size */
-		unsigned int _addressSize;
+		unsigned int _addressSize = 64;
 		
 		/*! Is the module currently loaded? */
-		bool _loaded;
+		bool _loaded = true;
 		
 		friend class executive::Executive;
 	};
-
 }
 
 #endif

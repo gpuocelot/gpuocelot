@@ -91,8 +91,18 @@ void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream,
 	assert(0 && "unimplemented");
 }
 
+void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream,
+	void* id) {
+	assert(0 && "unimplemented");
+}
+
 void cuda::CudaRuntimeInterface::registerPTXModule(const std::string& ptx,
 	const std::string& name) {
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::registerPTXModule(const std::string& ptx,
+	void* id) {
 	assert(0 && "unimplemented");
 }
 
@@ -103,7 +113,7 @@ void cuda::CudaRuntimeInterface::registerPTXModuleEmbedded(
 
 void cuda::CudaRuntimeInterface::registerTexture(
 	const void* texref,
-	const std::string& moduleName,
+	void* id,
 	const std::string& textureName, bool normalize){
 	assert(0 && "unimplemented");
 }
@@ -122,12 +132,21 @@ ocelot::PointerMap cuda::CudaRuntimeInterface::contextSwitch(
 	return ocelot::PointerMap();
 }
 
-void cuda::CudaRuntimeInterface::unregisterModule( const std::string& name ) {
+void cuda::CudaRuntimeInterface::unregisterModule(const std::string& name) {
 	assert(0 && "unimplemented");
 }
 
-void cuda::CudaRuntimeInterface::launch(const std::string& moduleName, const 
-	std::string& kernelName) {
+void cuda::CudaRuntimeInterface::unregisterModule(void* id) {
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::launch(const std::string& name,
+	const std::string& kernelName) {
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::launch(void* id,
+	const std::string& kernelName) {
 	assert(0 && "unimplemented");
 }
 

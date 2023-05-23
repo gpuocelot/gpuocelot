@@ -59,14 +59,14 @@ void LLVMModuleManager::loadModule(const ir::Module* m,
 	_database.loadModule(m, l, d);
 }
 
-bool LLVMModuleManager::isModuleLoaded(const std::string& moduleName)
+bool LLVMModuleManager::isModuleLoaded(void* id)
 {
-	return _database.isModuleLoaded(moduleName);
+	return _database.isModuleLoaded(id);
 }
 
-void LLVMModuleManager::unloadModule(const std::string& moduleName)
+void LLVMModuleManager::unloadModule(void* id)
 {
-	_database.unloadModule(moduleName);
+	_database.unloadModule(id);
 }
 
 unsigned int LLVMModuleManager::totalFunctionCount()
@@ -555,7 +555,7 @@ static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
 						
 					ir::Texture* texture = (ir::Texture*)
 						device->getTextureReference(
-						kernel.module->path(), ptx.a.identifier);
+						kernel.module->id(), ptx.a.identifier);
 					assert(texture != 0);
 					
 					metadata->textures.push_back(texture);
@@ -832,7 +832,7 @@ static void setupCallTargets(ir::PTXKernel& kernel,
 			if(ptx.a.addressMode == ir::PTXOperand::FunctionName)
 			{
 				LLVMModuleManager::FunctionId id = database.getFunctionId(
-					kernel.module->path(), ptx.a.identifier);
+					kernel.module->id(), ptx.a.identifier);
 				report("   setting target '" << ptx.a.identifier 
 					<< "' of instruction '" << ptx.toString()
 					<< "' to id " << id);
@@ -1025,7 +1025,7 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 			assertM(value != 0, "Global variable " << global->first 
 				<< " not found in llvm module.");
 			Device::MemoryAllocation* allocation = device->getGlobalAllocation( 
-				kernel.module->path(), global->first);
+				kernel.module->id(), global->first);
 			assert(allocation != 0);
 			report("   Binding global variable " << global->first 
 				<< " to " << allocation->pointer());
@@ -1049,14 +1049,14 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 			size_t offset = symbol->offset * size;
 			
 			Device::MemoryAllocation* allocation = device->getGlobalAllocation( 
-				kernel.module->path(), global->first);
+				kernel.module->id(), global->first);
 			assert(allocation != 0);
 			report("   Adding symbol " << symbol->name 
 				<< " to global " << global->first << " at byte-offset "
 				<< offset);
 			
 			LLVMModuleManager::FunctionId id = database.getFunctionId(
-				kernel.module->path(), symbol->name);
+				kernel.module->id(), symbol->name);
 			
 			std::memcpy((char*)allocation->pointer() + offset, &id, size);
 		}
@@ -1342,9 +1342,9 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 	
 	typedef api::OcelotConfiguration config;
 
-	assert(!isModuleLoaded(module->path()));
+	assert(!isModuleLoaded(module->id()));
 
-	report("Loading module '" << module->path() << "'");
+	report("Loading module '" << module->id() << "'");
 
 	ir::Module* newModule = new ir::Module(*module);
 
@@ -1375,23 +1375,23 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 		}
 	}
 
-	_modules.insert(std::make_pair(module->path(),
+	_modules.insert(std::make_pair(module->id(),
 		Module(subkernels, _kernels.size(), newModule)));
 	_kernels.insert(_kernels.end(), subkernels.begin(), subkernels.end());
 }
 
 bool LLVMModuleManager::ModuleDatabase::isModuleLoaded(
-	const std::string& moduleName)
+	void* id)
 {
-	return _modules.count(moduleName) != 0;
+	return _modules.count(id) != 0;
 }
 
 void LLVMModuleManager::ModuleDatabase::unloadModule(
-	const std::string& moduleName)
+	void* id)
 {
-	report("Unloading module '" << moduleName << "'");
+	report("Unloading module '" << id << "'");
 	
-	ModuleMap::iterator module = _modules.find(moduleName);
+	ModuleMap::iterator module = _modules.find(id);
 	assert(module != _modules.end());
 
 	if(module->second.empty())
@@ -1446,9 +1446,9 @@ unsigned int LLVMModuleManager::ModuleDatabase::totalFunctionCount() const
 }
 
 LLVMModuleManager::FunctionId LLVMModuleManager::ModuleDatabase::getFunctionId(
-	const std::string& moduleName, const std::string& kernelName) const
+	void* id, const std::string& kernelName) const
 {
-	ModuleMap::const_iterator module = _modules.find(moduleName);
+	ModuleMap::const_iterator module = _modules.find(id);
 
 	assert(module != _modules.end());
 	return module->second.getFunctionId(kernelName);
@@ -1485,7 +1485,7 @@ void LLVMModuleManager::ModuleDatabase::execute()
 		{
 			if(message->type == DatabaseMessage::GetId)
 			{
-				ModuleMap::iterator module = _modules.find(message->moduleName);
+				ModuleMap::iterator module = _modules.find(message->moduleId);
 
 				if(module != _modules.end())
 				{

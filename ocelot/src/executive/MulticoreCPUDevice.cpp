@@ -37,9 +37,9 @@ namespace executive
 	{
 		assert(ir->loaded());
 		
-		if(!LLVMModuleManager::isModuleLoaded(ir->path())) return;
+		if(!LLVMModuleManager::isModuleLoaded(ir->id())) return;
 
-		LLVMModuleManager::unloadModule(ir->path());
+		LLVMModuleManager::unloadModule(ir->id());
 		LLVMExecutionManager::flushTranslatedKernels();
 	}
 
@@ -81,36 +81,36 @@ namespace executive
 	
 	void MulticoreCPUDevice::load(const ir::Module* module)
 	{
-		if(_modules.count(module->path()) != 0)
+		if(_modules.count(module->id()) != 0)
 		{
-			Throw("Duplicate module - " << module->path());
+			Throw("Duplicate module - " << module->id());
 		}
-		_modules.insert(std::make_pair(module->path(), 
+		_modules.insert(std::make_pair(module->id(), 
 			new Module(module, this)));	
 	}
 
 	ExecutableKernel* MulticoreCPUDevice::getKernel(
-		const std::string& moduleName, const std::string& kernelName)
+		void* id, const std::string& kernelName)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		
 		if(module == _modules.end()) return 0;
 		
 		return module->second->getKernel(kernelName);
 	}
 	
-	void MulticoreCPUDevice::launch(const std::string& moduleName, 
+	void MulticoreCPUDevice::launch(void* id, 
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 
 		const void* argumentBlock, size_t argumentBlockSize, 
 		const trace::TraceGeneratorVector& traceGenerators,
 		const ir::ExternalFunctionSet* externals)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(id);
 		
 		if(module == _modules.end())
 		{
-			Throw("Unknown module - " << moduleName);
+			Throw("Unknown module - " << id);
 		}
 		
 		ExecutableKernel* kernel = module->second->getKernel(kernelName);
@@ -118,7 +118,7 @@ namespace executive
 		if(kernel == 0)
 		{
 			Throw("Unknown kernel - " << kernelName 
-				<< " in module " << moduleName);
+				<< " in module " << id);
 		}
 		
 		if(kernel->sharedMemorySize() + sharedMemory > 

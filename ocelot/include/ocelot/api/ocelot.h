@@ -69,12 +69,14 @@ namespace ocelot
 		\param The name of the module being registered.  Must be Unique.
 	*/
 	void registerPTXModule(std::istream& stream, const std::string& name);
+	void registerPTXModule(std::istream& stream, void* id);
 	void registerPTXModule(const std::string& ptx, const std::string& name);
+	void registerPRXModule(const std::string& ptx, void* id);
 	void registerPTXModuleEmbedded(const std::string& name);
 	
 	/*! \brief Register a texture with the cuda runtime */
 	void registerTexture(const void* texref,
-		const std::string& moduleName,
+		void* id,
 		const std::string& textureName, bool normalize);
 	
 	/*! \brief Clear all errors in the Cuda Runtime */
@@ -87,11 +89,17 @@ namespace ocelot
 	PointerMap contextSwitch(unsigned int destinationDevice, 
 		unsigned int sourceDevice);
 	
-	/*! \brief Unregister a module, either PTX or LLVM, not a fatbinary */
+	/*! \brief Unregister a module */
 	void unregisterModule(const std::string& name);
 
+	/*! \brief Unregister a module */
+	void unregisterModule(void* id);
+
 	/*! \brief Launch a cuda kernel by name */
-	void launch(const std::string& moduleName, const std::string& kernelName);
+	void launch(const std::string& name, const std::string& kernelName);
+
+	/*! \brief Launch a cuda kernel by name */
+	void launch(void* id, const std::string& kernelName);
 
 	/*! \brief Register a callable host function with Ocelot 
 

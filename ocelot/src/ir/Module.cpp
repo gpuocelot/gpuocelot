@@ -17,6 +17,7 @@
 
 #include "res_embed.h"
 
+#include <cstring>
 #include <streambuf>
 
 #ifdef REPORT_BASE
@@ -32,21 +33,21 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ir::Module::Module(const std::string& path, bool dontLoad)
-: _ptxPointer(0), _modulePath(path), _addressSize(64), _loaded(true) {
-	//.target sm_21
-	_target.directive = PTXStatement::Directive::Target;
-	_target.targets.push_back("sm_21");
-	//.version 2.3
-	_version.directive = PTXStatement::Directive::Version;
-	_version.minor = 3;
-	_version.major = 2;
+ir::Module::Module(const std::string& path)
+{
+        //.target sm_21
+        _target.directive = PTXStatement::Directive::Target;
+        _target.targets.push_back("sm_21");
+        //.version 2.3
+        _version.directive = PTXStatement::Directive::Version;
+        _version.minor = 3;
+        _version.major = 2;
 
-	if(!dontLoad) load(path);
+        load(path);
 }
 
-ir::Module::Module(std::istream& stream, const std::string& path)
-: _ptxPointer(0), _addressSize(64), _loaded(true) {
+ir::Module::Module(void* id, const std::string& path)
+{
 	//.target sm_21
 	_target.directive = PTXStatement::Directive::Target;
 	_target.targets.push_back("sm_21");
@@ -55,11 +56,24 @@ ir::Module::Module(std::istream& stream, const std::string& path)
 	_version.minor = 3;
 	_version.major = 2;
 
-	load(stream, path);
+	load(id, path);
+}
+
+ir::Module::Module(void* id, std::istream& stream)
+{
+	//.target sm_21
+	_target.directive = PTXStatement::Directive::Target;
+	_target.targets.push_back("sm_21");
+	//.version 2.3
+	_version.directive = PTXStatement::Directive::Version;
+	_version.minor = 3;
+	_version.major = 2;
+
+	load(id, stream);
 }
 
 ir::Module::Module()
-: _ptxPointer(0), _addressSize(64), _loaded(false){
+{
 	//.target sm_21
 	_target.directive = PTXStatement::Directive::Target;
 	_target.targets.push_back("sm_21");
@@ -69,31 +83,31 @@ ir::Module::Module()
 	_version.major = 2;
 }
 
-ir::Module::Module(const ir::Module& m) 
-: _ptxPointer(0), _addressSize(64), _loaded(false) {
+ir::Module::Module(const ir::Module& m) : _loaded(false)
+{
 	*this = m;
 }
 
-ir::Module::~Module() {
+ir::Module::~Module()
+{
 	unload();
 }
 
 
-ir::Module::Module(const std::string& name, 
-	const StatementVector& statements) : _loaded(true) {
-	_modulePath = name;
+ir::Module::Module(void* id, const StatementVector& statements) : _id(id)
+{
 	_statements = statements;
 	extractPTXKernels();
 }
 
-const ir::Module& ir::Module::operator=(const Module& m) {
+const ir::Module& ir::Module::operator=(const Module& m)
+{
 	unload();
 	
-	_ptxPointer = m._ptxPointer;
 	_loaded     = m.loaded();
 
 	if(loaded()) {
-		_modulePath = m.path();
+		_id = m.id();
 		_statements = m._statements;
 		
 		_textures   = m._textures;
@@ -121,7 +135,8 @@ const ir::Module& ir::Module::operator=(const Module& m) {
 /*!
 	Deletes everything associated with this particular module
 */
-void ir::Module::unload() {
+void ir::Module::unload()
+{
 	// delete all available kernels
 	for (KernelMap::iterator kern_it = _kernels.begin(); 
 		kern_it != _kernels.end(); ++kern_it) {
@@ -131,33 +146,30 @@ void ir::Module::unload() {
 	_statements.clear();
 	_textures.clear();
 	_globals.clear();
-	_modulePath = "::unloaded::";
+	_id = nullptr;
 	
 	_loaded = false;
-}
-
-void ir::Module::isLoaded() {
-	unload();
-	
-	_loaded = true;
 }
 
 /*!
 	Unloads module and loads everything in path
 */
-bool ir::Module::load(const std::string& path) {
+bool ir::Module::load(void* id, const std::string& path)
+{
 	using namespace std;
 
-	unload();
-	_modulePath = path;
+	_id = id;
 
 	// open file, parse file, extract statements vector
 
-	ifstream file(_modulePath.c_str());
+	ifstream file(path.c_str());
 
-	if (file.is_open()) {
+	if (file.is_open())
+	{
+		unload();
+
 		parser::PTXParser parser;
-		parser.fileName = _modulePath;
+		parser.fileName = path;
 
 		parser.parse( file );
 
@@ -173,6 +185,16 @@ bool ir::Module::load(const std::string& path) {
 	return true;
 }
 
+/*!
+	Unloads module and loads everything in path
+*/
+bool ir::Module::load(const std::string& path)
+{
+	char* id = (char*)malloc(path.size() + 1);
+	strcpy(id, path.c_str());
+	return load(id, path);
+}
+
 struct membuf : std::streambuf
 {
 	membuf(char* begin, char* end) {
@@ -180,20 +202,28 @@ struct membuf : std::streambuf
 	}
 };
 
-bool ir::Module::loadEmbedded(const std::string& name) {
-	unload();
-	_modulePath = name;
+bool ir::Module::loadEmbedded(const std::string& name)
+{
+	char* id = (char*)malloc(name.size() + 1);
+	strcpy(id, name.c_str());
+	return loadEmbedded(id, name);
+}
+
+bool ir::Module::loadEmbedded(void* id, const std::string& name)
+{
+	_id = id;
 
 	size_t szptx = 0;
 	char* ptx = const_cast<char*>(res::embed::get(name, &szptx));
 
 	if (ptx && szptx)
 	{
+		unload();
+
 		membuf sbuf(ptx, ptx + szptx);
 		std::istream mem(&sbuf);
 
 		parser::PTXParser parser;
-		parser.fileName = _modulePath;
 
 		parser.parse( mem );
 
@@ -210,15 +240,24 @@ bool ir::Module::loadEmbedded(const std::string& name) {
 }
 
 /*!
+        Unloads module and loads everything in path
+*/
+bool ir::Module::load(std::istream& stream)
+{
+        char* id = (char*)malloc(sizeof(char));
+	id[0] = '\0';
+        return load(id, stream);
+}
+
+/*!
 	Unloads module and loads everything in path
 */
-bool ir::Module::load(std::istream& stream, const std::string& path) {
-	
+bool ir::Module::load(void* id, std::istream& stream)
+{	
 	unload();
 	
 	parser::PTXParser parser;
-	_modulePath = path;
-	parser.fileName = _modulePath;
+	_id = id;
 	
 	parser.parse( stream );
 	_statements = std::move( parser.statements() );
@@ -229,32 +268,35 @@ bool ir::Module::load(std::istream& stream, const std::string& path) {
 	return true;
 }
 
-bool ir::Module::lazyLoad(const std::string& source, const std::string& path) {
+bool ir::Module::lazyLoad(void* id, const std::string& source)
+{
 	unload();
 	
 	_ptx = std::move( source );
-	_modulePath = path;
+	_id = id;
 	
 	return true;
 }
 
-bool ir::Module::lazyLoad(const char* source, const std::string& path) {
+bool ir::Module::lazyLoad(void* id, const char* source)
+{
 	unload();
 	
-	_ptxPointer = source;
-	_modulePath = path;
+	_ptx.assign(source);
+	_id = id;
 	
 	return true;
 }
 
-bool ir::Module::lazyLoadEmbedded(const std::string& name) {
+bool ir::Module::lazyLoadEmbedded(void* id, const std::string& name)
+{
 	unload();
 
 	size_t szptx = 0;
 	char* ptx = const_cast<char*>(res::embed::get(name, &szptx));
 
 	_ptx.assign(ptx, ptx + szptx);
-	_modulePath = name;
+	_id = id;
 
 	return true;
 }
@@ -264,39 +306,19 @@ void ir::Module::loadNow() {
 	_loaded = true;
 	if( !_ptx.empty() )
 	{
-		std::stringstream stream( std::move( _ptx ) );
-		_ptx.clear();
-	
-		parser::PTXParser parser;
-		parser.fileName = path();
-	
-		parser.parse( stream );
-		_statements = std::move( parser.statements() );
-		extractPTXKernels();
+		report("Module::loadNow() - id: '" << id()
+			<< "' contains no PTX");
+		return;
 	}
-	else
-	{
-		if (!_ptxPointer) {
-			report("Module::loadNow() - path: '" << path()
-				<< "' contains no PTX");
-		}
-		else {
-			report("Module::loadNow() - contains PTX string literal:\n\n"
-				<< _ptxPointer << "\n");
-		}
-		
-		
-		assert( _ptxPointer != 0 );
-		std::stringstream stream( _ptxPointer );
-		_ptxPointer = 0;
+
+	std::stringstream stream( std::move( _ptx ) );
+	_ptx.clear();
 	
-		parser::PTXParser parser;
-		parser.fileName = path();
+	parser::PTXParser parser;
 	
-		parser.parse( stream );
-		_statements = std::move( parser.statements() );
-		extractPTXKernels();
-	}
+	parser.parse( stream );
+	_statements = std::move( parser.statements() );
+	extractPTXKernels();
 }	
 	
 bool ir::Module::loaded() const {
@@ -308,7 +330,7 @@ bool ir::Module::loaded() const {
 void ir::Module::write( std::ostream& stream ) const {
 	assert( loaded() );
 
-	report("Writing module (statements) - " << _modulePath 
+	report("Writing module (statements) - " << _id 
 		<< " - to output stream.");
 
 	if( _statements.empty() ) {
@@ -366,7 +388,7 @@ void ir::Module::write( std::ostream& stream ) const {
 
 void ir::Module::writeIR( std::ostream& stream, PTXEmitter::Target emitterTarget) const {
 	assert( loaded() );
-	report("Writing module (IR) - " << _modulePath << " - to output stream.");
+	report("Writing module (IR) - " << _id << " - to output stream.");
 
 	stream << "/*\n* Ocelot Version : TODO\n*/\n\n";
 		
@@ -378,7 +400,7 @@ void ir::Module::writeIR( std::ostream& stream, PTXEmitter::Target emitterTarget
 		stream << ".address_size " << addressSize() << "\n";
 	}
 	
-	stream << "/* Module " << _modulePath << " */\n\n";
+	stream << "/* Module " << _id << " */\n\n";
 	
 #if EMIT_FUNCTION_PROTOTYPES == 1
 	{
@@ -521,9 +543,9 @@ void ir::Module::insertGlobalAsStatement(const PTXStatement &statement) {
     }
 }   
 
-const std::string& ir::Module::path() const {
+void* ir::Module::id() const {
 	assert( loaded() );
-	return _modulePath;
+	return _id;
 }
 
 const ir::Module::KernelMap& ir::Module::kernels() const {

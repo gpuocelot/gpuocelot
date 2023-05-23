@@ -4,44 +4,30 @@
 	\brief object for interacting with CUDA Fat Binaries
 */
 
-#ifndef OCELOT_CUDA_FATBINARYCONTEXT_H_INCLUDED
-#define OCELOT_CUDA_FATBINARYCONTEXT_H_INCLUDED
+#ifndef FAT_BINARY_CONTEXT_H
+#define FAT_BINARY_CONTEXT_H
 
-// Ocelot Includes
-#include <ocelot/cuda/cudaFatBinary.h>
-
-// Standard Library Includes
-#include <vector>
+#include "FatBinaryPTXLoader.h"
+#include <ocelot/ir/Module.h>
 
 namespace cuda {
-	/*!	\brief Class allowing sharing of a fat binary among threads	*/
-	class FatBinaryContext {
-	public:
-		FatBinaryContext(const void *);
-		FatBinaryContext();
-	
-		//! pointer to CUBIN structure
-		const void *cubin_ptr;
-		
-	public:
-		const char *name() const;
-		const char *ptx() const;
 
-	private:
-		void _decompressPTX(unsigned int compressedBinarySize);
+// Load PTX sources from the provided CUDA Fat Binary.
+class FatBinaryContext : public FatBinaryPTXLoader
+{
+	// Could be more than one module, if separable compilation is enabled.
+	std::vector<ir::Module> modules;
 
-	private:
-		const char* _name;
-		const char* _ptx;
+public :
 
-	private:
-		typedef std::vector<char> ByteVector;
+	const ir::Module& getFirstModule() const;
 
-	private:
-		ByteVector _decompressedPTX;
-	
-	};
-}
+	FatBinaryContext(const void* );
 
-#endif
+	virtual void consumePTX(void* id, const std::string& ptx);
+};
+
+} // namespace cuda
+
+#endif // FAT_BINARY_CONTEXT_H
 

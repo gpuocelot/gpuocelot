@@ -435,13 +435,17 @@ namespace cuda {
 		*/
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);
+		virtual void registerPTXModule(std::istream& stream,
+			void* id);
 		virtual void registerPTXModule(const std::string& ptx,
 			const std::string& name);
+		virtual void registerPTXModule(const std::string& ptx,
+			void* id);
 		virtual void registerPTXModuleEmbedded(
 			const std::string& name);
 		/*! \brief Register a texture with the cuda runtime */
 		virtual void registerTexture(const void* texref,
-			const std::string& moduleName,
+			void* id,
 			const std::string& textureName, bool normalize);
 		/*! \brief Clear all errors in the Cuda Runtime */
 		virtual void clearErrors();
@@ -450,10 +454,15 @@ namespace cuda {
 		/*! \brief Perform a device context switch */
 		virtual ocelot::PointerMap contextSwitch(unsigned int destinationDevice, 
 			unsigned int sourceDevice);
-		/*! \brief Unregister a module, either PTX or LLVM, not a fatbinary */
-		virtual void unregisterModule( const std::string& name );
+		/*! \brief Unregister a module */
+		virtual void unregisterModule(const std::string& name);
+		/*! \brief Unregister a module */
+		virtual void unregisterModule(void* id);
 		/*! \brief Launch a cuda kernel by name */
-		virtual void launch(const std::string& moduleName, 
+		virtual void launch(const std::string& name, 
+			const std::string& kernelName);
+		/*! \brief Launch a cuda kernel by name */
+		virtual void launch(void* id,
 			const std::string& kernelName);
 		/*! \brief Set the optimization level */
 		virtual void setOptimizationLevel(

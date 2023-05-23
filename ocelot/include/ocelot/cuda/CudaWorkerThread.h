@@ -46,7 +46,7 @@ public:
 
 public:
 	/*! \brief Launch the specified kernel on this thread */
-	void launch(const std::string& module, 
+	void launch(void* id, 
 		const std::string& kernel, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 
 		const void* argumentBlock, size_t argumentBlockSize, 
@@ -72,7 +72,7 @@ public:
 	class Launch
 	{
 	public:
-		std::string                    module;
+		void*                          id;
 		std::string                    kernel;
 		ir::Dim3                       gridDim;
 		ir::Dim3                       blockDim;

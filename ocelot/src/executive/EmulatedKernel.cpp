@@ -743,7 +743,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 
 		assert(device != 0);
 		Device::MemoryAllocation* global = device->getGlobalAllocation(
-			module->path(), l_it->first);
+			module->id(), l_it->first);
 
 		assert(global != 0);
 		assert(global->size() + l_it->second <= _constMemorySize);
@@ -794,7 +794,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 						assert( device != 0);
 						Device::MemoryAllocation* allocation = 
 							device->getGlobalAllocation(
-							module->path(), *l_it);
+							module->id(), *l_it);
 						assert(allocation != 0);
 						(instr.*operands[n]).imm_uint = 
 							(ir::PTXU64)allocation->pointer();
@@ -841,9 +841,9 @@ void executive::EmulatedKernel::fixBranchTargets(size_t basePC) {
 size_t executive::EmulatedKernel::link(const std::string& functionName) {
 	report("Getting PC for kernel '" << functionName << "'");
 	EmulatedKernel* kernel = static_cast<EmulatedKernel*>(
-		device->getKernel(module->path(), functionName));
+		device->getKernel(module->id(), functionName));
 	assertM(kernel != 0, "Kernel function '" << functionName 
-		<< "' not found in module '" << module->path() << "'");
+		<< "' not found in module '" << module->id() << "'");
 	FunctionNameMap::iterator entryPoint =
 		functionEntryPoints.find(functionName);
 
@@ -878,9 +878,9 @@ void executive::EmulatedKernel::lazyLink(int callPC,
 	
 	if (instructions[callPC].opcode == ir::PTXInstruction::Call) {
 		EmulatedKernel* kernel = static_cast<EmulatedKernel*>(
-				device->getKernel(module->path(), name));
+				device->getKernel(module->id(), name));
 		assertM(kernel != 0, "Kernel function '" << name 
-			<< "' not found in module '" << module->path() << "'");
+			<< "' not found in module '" << module->id() << "'");
 	
 		instructions[callPC].a.stackMemorySize = 
 			kernel->parameterMemorySize();
@@ -1127,7 +1127,7 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 		if (fi->opcode == ir::PTXInstruction::Tex) {
 			assert(device != 0);
 			ir::Texture* texture = (ir::Texture*)device->getTextureReference(
-				module->path(), fi->a.identifier);
+				module->id(), fi->a.identifier);
 			assert(texture != 0);
 			
 			IndexMap::iterator index = indices.find(fi->a.identifier);
@@ -1165,7 +1165,7 @@ void executive::EmulatedKernel::initializeSymbolReferences() {
 				it->second.statement.array.symbols.begin(); symbol !=
 				it->second.statement.array.symbols.end(); ++symbol) {
 				Device::MemoryAllocation* allocation = 
-					device->getGlobalAllocation(module->path(),
+					device->getGlobalAllocation(module->id(),
 					it->second.name());
 				assert(allocation != 0);
 				
@@ -1224,9 +1224,9 @@ std::string executive::EmulatedKernel::toString() const {
 	return stream.str();
 }
 
-std::string executive::EmulatedKernel::fileName() const {
+void* executive::EmulatedKernel::id() const {
 	assert(module != 0);
-	return module->path();
+	return module->id();
 }
 
 std::string executive::EmulatedKernel::location( unsigned int PC ) const {

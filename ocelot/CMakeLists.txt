@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
 project(gpuocelot C CXX CUDA)
 
-set(CMAKE_CUDA_ARCHITECTURES 35)
+# in order to retain the PTX code in the text executables,
+# the target GPU architecture has to be virtual.
+set(CMAKE_CUDA_ARCHITECTURES 35-virtual)
+
 set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -48,6 +51,7 @@ endforeach()
 set(${PROJECT_NAME}_INCLUDE_DIRS
 	${LLVM_INCLUDE_DIRS}
 	${GLEW_INCLUDE_DIRS}
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/cuda-fatbin-decompression
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_BINARY_DIR})
 
@@ -79,6 +83,7 @@ function(ocelot_add_tests name)
 		    target_link_libraries(${TEST_NAME} PRIVATE ${PROJECT_NAME})
 			target_link_directories(${TEST_NAME} PRIVATE ${${PROJECT_NAME}_LIBRARY_DIRS})
 		    add_test(NAME ${TEST_NAME} COMMAND $<TARGET_FILE:${TEST_NAME}> -v)
+		    set_property(TEST ${TEST_NAME} PROPERTY ENVIRONMENT LD_PRELOAD=$<TARGET_FILE:${PROJECT_NAME}>)
 	endforeach()
 endfunction()
 
@@ -184,8 +189,12 @@ add_library(${PROJECT_NAME}_cuda STATIC
 	src/cuda/CudaRuntimeInterface.cpp
 	src/cuda/CudaWorkerThread.cpp
 	src/cuda/FatBinaryContext.cpp
-	src/cuda/cuda_runtime.cpp)
+	src/cuda/FatBinaryPTXLoader.cpp
+	src/cuda/cuda_runtime.cpp
+	ThirdParty/cuda-fatbin-decompression/fatbin-decompress.c
+	ThirdParty/cuda-fatbin-decompression/utils.c)
 set_property(TARGET ${PROJECT_NAME}_cuda PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME}_cuda PROPERTY C_STANDARD 99)
 set_property(TARGET ${PROJECT_NAME}_cuda PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_cuda PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_cuda PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
@@ -359,10 +368,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 add_executable(LoadPtx src/tools/LoadPtx.cpp)
 set_property(TARGET LoadPtx PROPERTY CXX_STANDARD 11)
 target_link_libraries(LoadPtx ${PROJECT_NAME} hydrazine)
-
-#add_executable(OcelotConfig src/tools/OcelotConfig.cpp)
-#set_property(TARGET OcelotConfig PROPERTY CXX_STANDARD 11)
-#target_link_libraries(OcelotConfig ${PROJECT_NAME} hydrazine)
 
 add_executable(OcelotKernelTestHarness src/tools/KernelTestHarness.cpp)
 set_property(TARGET OcelotKernelTestHarness PROPERTY CXX_STANDARD 11)

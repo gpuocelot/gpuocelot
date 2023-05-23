@@ -50,7 +50,7 @@ namespace util {
 		class GlobalAllocation {
 		public:
 			GlobalAllocation(const void *ptr = 0, size_t size = 0,
-				const std::string& moduleName = "",
+				void* id = nullptr,
 				const std::string& globalName = "");
 			
 			void serialize(std::ostream &out) const;
@@ -62,7 +62,7 @@ namespace util {
 			
 		public:
 			//! \brief The module that the allocation is stored in
-			std::string module;
+			void* id;
 			
 			//! \brief The name of the global allocation
 			std::string name;
@@ -99,8 +99,8 @@ namespace util {
 				const hydrazine::json::Visitor &visitor);
 		
 		public:
-			//! \brief module loaded into this name
-			std::string name;
+			//! \brief module id
+			void* id;
 			
 			//! \brief file to which PTX representation of module is written
 			std::string ptx;
@@ -116,8 +116,8 @@ namespace util {
 			void deserialize(const hydrazine::json::Visitor &visitor);
 
 		public:
-			//! \brief name of module owning kernel
-			std::string moduleName;
+			//! \brief id of module owning kernel
+			void* id;
 			
 			//! \brief name of kernel
 			std::string kernelName;
@@ -155,7 +155,7 @@ namespace util {
 			
 		};
 	
-		typedef std::map<std::string, Module*> ModuleMap;
+		typedef std::map<void*, Module*> ModuleMap;
 	
 	public:
 	

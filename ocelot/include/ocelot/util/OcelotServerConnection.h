@@ -25,7 +25,7 @@
 namespace remote {
 
 	typedef executive::DeviceVector DeviceVector;
-	typedef std::unordered_map<std::string, ir::Module*> ModuleMap;
+	typedef std::unordered_map<void*, ir::Module*> ModuleMap;
 
 	class OcelotServerConnection {
 	public:
