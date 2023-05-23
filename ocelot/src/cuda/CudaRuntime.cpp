@@ -575,6 +575,7 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubinHandle) {
 	auto i = _fatBinaries.emplace(std::make_pair(id,
 		FatBinaryContext(fatCubinHandle)));
 	auto& ctx = i.first->second;
+	ctx.load();
 	
 	// TODO Register associated PTX module or modules - in case of separable compilation.
 	// Currently, Ocelot assumes on module per fat binary, and needs a lot of changes

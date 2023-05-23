@@ -155,11 +155,11 @@ void FatBinaryPTXLoader::load()
 		auto binary = (__cudaFatCudaBinary2*) cubin;
 
 		auto header = (fat_elf_header*) binary->fatbinData;
-		if (header->magic != __cudaFatMAGIC2)
+		if (header->magic != __cudaFatMAGIC3)
 		{
 			fprintf(stderr, "CUBIN magic does not match the header info: 0x%x != 0x%x\n",
-				header->magic, __cudaFatMAGIC2);
-			assert(header->magic == __cudaFatMAGIC2);
+				header->magic, __cudaFatMAGIC3);
+			assert(header->magic == __cudaFatMAGIC3);
 			return;
 		}
 
