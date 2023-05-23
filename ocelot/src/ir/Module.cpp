@@ -103,11 +103,11 @@ ir::Module::Module(void* id, const StatementVector& statements) : _id(id)
 const ir::Module& ir::Module::operator=(const Module& m)
 {
 	unload();
-	
+
+	_id = m.id();	
 	_loaded     = m.loaded();
 
 	if(loaded()) {
-		_id = m.id();
 		_statements = m._statements;
 		
 		_textures   = m._textures;
@@ -302,9 +302,9 @@ bool ir::Module::lazyLoadEmbedded(void* id, const std::string& name)
 }
 
 void ir::Module::loadNow() {
-	if( loaded() ) return;
-	_loaded = true;
-	if( !_ptx.empty() )
+	if (loaded()) return;
+	
+	if (_ptx.empty())
 	{
 		report("Module::loadNow() - id: '" << id()
 			<< "' contains no PTX");
@@ -319,6 +319,8 @@ void ir::Module::loadNow() {
 	parser.parse( stream );
 	_statements = std::move( parser.statements() );
 	extractPTXKernels();
+
+	_loaded = true;
 }	
 	
 bool ir::Module::loaded() const {
@@ -544,7 +546,6 @@ void ir::Module::insertGlobalAsStatement(const PTXStatement &statement) {
 }   
 
 void* ir::Module::id() const {
-	assert( loaded() );
 	return _id;
 }
 

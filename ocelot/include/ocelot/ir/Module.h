@@ -275,7 +275,7 @@ namespace ir {
 		unsigned int _addressSize = 64;
 		
 		/*! Is the module currently loaded? */
-		bool _loaded = true;
+		bool _loaded = false;
 		
 		friend class executive::Executive;
 	};
