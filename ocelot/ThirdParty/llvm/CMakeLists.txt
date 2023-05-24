@@ -4,7 +4,7 @@ project(gpuocelot_llvm CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-#set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(LLVM 3.4 REQUIRED)
 
@@ -91,7 +91,5 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_DEFINITIONS
 target_compile_options(${PROJECT_NAME} PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES} res::embed::static)
-	#-Wl,--allow-shlib-undefined
-        #-Wl,-zundefs
-	#-static-libgcc -static-libstdc++ -Wl,-Bstatic)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES} res::embed::static
+	-static-libgcc -static-libstdc++ -Wl,-Bstatic)
