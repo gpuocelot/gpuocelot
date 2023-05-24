@@ -49,7 +49,7 @@ public:
 
 		bool result = true;
 
-		string ptx = "sequence_ptx";
+		const std::string ptx = "TestEmulator_ptx";
 		
 		bool loaded = false;
 		

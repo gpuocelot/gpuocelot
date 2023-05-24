@@ -2960,7 +2960,12 @@ namespace parser
 	{
 		return std::move( state.statements );
 	}
-		
+
+	Parser* getPTXParser()
+	{
+		static PTXParser parser;
+		return dynamic_cast<Parser*>(&parser);
+	}
 }
 
 #endif

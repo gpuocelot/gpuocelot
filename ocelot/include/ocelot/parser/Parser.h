@@ -9,6 +9,7 @@
 #define PARSER_H_INCLUDED
 
 #include <ocelot/ir/Instruction.h>
+#include <ocelot/ir/Module.h>
 
 /*!
 	\brief A namespace for parser related classes
@@ -47,9 +48,11 @@ namespace parser
 			virtual void parse( std::istream& input, 
 				ir::Instruction::Architecture 
 				language = ir::Instruction::PTX ) = 0;
-	
+
+			virtual ir::Module::StatementVector&& statements() = 0;
 	};
 
+	Parser* getPTXParser();
 }
 
 #endif

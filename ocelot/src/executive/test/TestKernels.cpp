@@ -93,17 +93,17 @@ public:
 		
 		bool loaded = false;
 
-		string path = "ocelot/executive/test/kernels.ptx";
+		const std::string ptx = "TestKernels_ptx";
 		
 		try {
-			loaded = module.load(path);
+			loaded = module.loadEmbedded(ptx);
 		}
 		catch(const hydrazine::Exception& e) {
 			status << " error - " << e.what() << "\n";
 		}
 
 		if(!loaded) {
-			status << "failed to load module '" << path << "'\n";
+			status << "failed to load module '" << ptx << "'\n";
 			return (result = false);
 		}
 

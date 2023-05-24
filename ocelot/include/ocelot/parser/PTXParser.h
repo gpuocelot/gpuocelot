@@ -353,9 +353,10 @@ namespace parser
 			
 		public:
 			PTXParser();
-			void parse( std::istream& input, 
+
+			virtual void parse( std::istream& input,
 				ir::Instruction::Architecture language = ir::Instruction::PTX );
-			ir::Module::StatementVector&& statements();	
+			virtual ir::Module::StatementVector&& statements();
 	};
 
 }

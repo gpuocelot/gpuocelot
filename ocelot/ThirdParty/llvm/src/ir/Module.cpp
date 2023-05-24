@@ -7,7 +7,7 @@
 
 #include <ocelot/ir/Module.h>
 #include <ocelot/ir/PTXKernel.h>
-#include <ocelot/parser/PTXParser.h>
+#include <ocelot/parser/Parser.h>
 
 #include <hydrazine/debug.h>
 #include <hydrazine/Exception.h>
@@ -168,12 +168,12 @@ bool ir::Module::load(void* id, const std::string& path)
 	{
 		unload();
 
-		parser::PTXParser parser;
-		parser.fileName = path;
+		auto parser = parser::getPTXParser();
+		parser->fileName = path;
 
-		parser.parse( file );
+		parser->parse( file );
 
-		_statements = std::move( parser.statements() );
+		_statements = std::move( parser->statements() );
 		extractPTXKernels();
 	}
 	else {
@@ -223,11 +223,11 @@ bool ir::Module::loadEmbedded(void* id, const std::string& name)
 		membuf sbuf(ptx, ptx + szptx);
 		std::istream mem(&sbuf);
 
-		parser::PTXParser parser;
+		auto parser = parser::getPTXParser();
 
-		parser.parse( mem );
+		parser->parse( mem );
 
-		_statements = std::move( parser.statements() );
+		_statements = std::move( parser->statements() );
 		extractPTXKernels();
 	}
 	else {
@@ -256,11 +256,11 @@ bool ir::Module::load(void* id, std::istream& stream)
 {	
 	unload();
 	
-	parser::PTXParser parser;
+	auto parser = parser::getPTXParser();
 	_id = id;
 	
-	parser.parse( stream );
-	_statements = std::move( parser.statements() );
+	parser->parse( stream );
+	_statements = std::move( parser->statements() );
 	extractPTXKernels();
 
 	_loaded = true;
@@ -314,10 +314,10 @@ void ir::Module::loadNow() {
 	std::stringstream stream( std::move( _ptx ) );
 	_ptx.clear();
 	
-	parser::PTXParser parser;
+	auto parser = parser::getPTXParser();
 	
-	parser.parse( stream );
-	_statements = std::move( parser.statements() );
+	parser->parse( stream );
+	_statements = std::move( parser->statements() );
 	extractPTXKernels();
 
 	_loaded = true;

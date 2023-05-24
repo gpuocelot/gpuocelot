@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
-project(gpuocelot C CXX CUDA)
+project(gpuocelot C CXX CUDA ASM)
 
 # in order to retain the PTX code in the text executables,
 # the target GPU architecture has to be virtual.
@@ -16,10 +16,14 @@ find_package(FLEX 2.5 REQUIRED)
 find_package(BISON 2.5 REQUIRED)
 find_package(GLEW REQUIRED)
 
-add_subdirectory(ThirdParty/hydrazine)
-add_subdirectory(ThirdParty/res_embed)
+add_subdirectory(ThirdParty/llvm)
+
+if (NOT TARGET ${PROJECT_NAME}_llvm)
+add_subdirectory(ThirdParty/hydrazine EXCLUDE_FROM_ALL)
+add_subdirectory(ThirdParty/res_embed EXCLUDE_FROM_ALL)
 
 include(ResEmbed)
+endif()
 
 function(string_starts_with str search result)
 	string(FIND "${str}" "${search}" out)
@@ -53,15 +57,16 @@ set(${PROJECT_NAME}_INCLUDE_DIRS
 	${GLEW_INCLUDE_DIRS}
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/cuda-fatbin-decompression
 	${CMAKE_CURRENT_SOURCE_DIR}/include
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/include
 	${CMAKE_CURRENT_BINARY_DIR})
 
-set(${PROJECT_NAME}_LIBRARIES
+set(${PROJECT_NAME}_LINK_LIBRARIES
 	${LLVM_LIBRARIES}
-	${GLEW_LIBRARIES}	
+	${GLEW_LIBRARIES}
 	hydrazine
 	Boost::system
 	tinfo
-	dl)
+	${CMAKE_DL_LIBS})
 	
 set(${PROJECT_NAME}_LIBRARY_DIRS
 	${LLVM_LIBRARY_DIRS})
@@ -79,44 +84,13 @@ function(ocelot_add_tests name)
 			target_compile_options(${TEST_NAME} PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 			target_include_directories(${TEST_NAME} PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
 			target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/${name})
-			target_link_libraries(${TEST_NAME} PRIVATE ${${PROJECT_NAME}_LIBRARIES})
+			target_link_libraries(${TEST_NAME} PRIVATE ${${PROJECT_NAME}_LINK_LIBRARIES})
 		    target_link_libraries(${TEST_NAME} PRIVATE ${PROJECT_NAME})
 			target_link_directories(${TEST_NAME} PRIVATE ${${PROJECT_NAME}_LIBRARY_DIRS})
 		    add_test(NAME ${TEST_NAME} COMMAND $<TARGET_FILE:${TEST_NAME}> -v)
 		    set_property(TEST ${TEST_NAME} PROPERTY ENVIRONMENT LD_PRELOAD=$<TARGET_FILE:${PROJECT_NAME}>)
 	endforeach()
 endfunction()
-
-add_library(${PROJECT_NAME}_ir STATIC
-	src/ir/ControlFlowGraph.cpp
-	src/ir/Dim3.cpp
-	src/ir/ExternalFunctionSet.cpp
-	src/ir/Global.cpp
-	src/ir/ILInstruction.cpp
-	src/ir/ILKernel.cpp
-	src/ir/ILOperand.cpp
-	src/ir/ILStatement.cpp
-	src/ir/IRKernel.cpp
-	src/ir/Instruction.cpp
-	src/ir/Kernel.cpp
-	src/ir/LLVMInstruction.cpp
-	src/ir/LLVMKernel.cpp
-	src/ir/LLVMStatement.cpp
-	src/ir/Local.cpp
-	src/ir/Module.cpp
-	src/ir/PTXInstruction.cpp
-	src/ir/PTXKernel.cpp
-	src/ir/PTXOperand.cpp
-	src/ir/PTXStatement.cpp
-	src/ir/Parameter.cpp
-	src/ir/Texture.cpp)
-set_property(TARGET ${PROJECT_NAME}_ir PROPERTY CXX_STANDARD 11)
-set_property(TARGET ${PROJECT_NAME}_ir PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_compile_definitions(${PROJECT_NAME}_ir PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
-target_compile_options(${PROJECT_NAME}_ir PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
-target_include_directories(${PROJECT_NAME}_ir PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_ir PUBLIC ${${PROJECT_NAME}_LIBRARIES} res::embed::static)
-target_link_directories(${PROJECT_NAME}_ir PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME}_analysis STATIC
 	src/analysis/AffineAnalysis.cpp
@@ -153,7 +127,7 @@ set_property(TARGET ${PROJECT_NAME}_analysis PROPERTY POSITION_INDEPENDENT_CODE 
 target_compile_definitions(${PROJECT_NAME}_analysis PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_analysis PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_analysis PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_analysis PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_analysis PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_analysis PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME}_api STATIC
@@ -165,7 +139,7 @@ set_property(TARGET ${PROJECT_NAME}_api PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_api PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_api PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_api PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_api PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_api PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_api PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
 res_embed(TARGET ${PROJECT_NAME}_api NAME "configure_ocelot" PATH ${CMAKE_CURRENT_SOURCE_DIR}/configure.ocelot KEYWORD)
@@ -177,7 +151,7 @@ set_property(TARGET ${PROJECT_NAME}_cal PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_cal PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_cal PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_cal PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_cal PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_cal PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_cal PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 	
 add_library(${PROJECT_NAME}_cuda STATIC
@@ -199,9 +173,9 @@ set_property(TARGET ${PROJECT_NAME}_cuda PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_cuda PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_cuda PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_cuda PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_cuda PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_cuda PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_cuda PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
-	
+
 add_library(${PROJECT_NAME}_executive STATIC
 	src/executive/ATIExecutableKernel.cpp
 	src/executive/ATIGPUDevice.cpp
@@ -219,8 +193,6 @@ add_library(${PROJECT_NAME}_executive STATIC
 	src/executive/LLVMExecutableKernel.cpp
 	src/executive/LLVMExecutionManager.cpp
 	src/executive/LLVMFunctionCallStack.cpp
-	src/executive/LLVMModuleManager.cpp
-	src/executive/LLVMState.cpp
 	src/executive/LLVMWorkerThread.cpp
 	src/executive/MulticoreCPUDevice.cpp
 	src/executive/NVIDIAExecutableKernel.cpp
@@ -235,7 +207,7 @@ set_property(TARGET ${PROJECT_NAME}_executive PROPERTY POSITION_INDEPENDENT_CODE
 target_compile_definitions(${PROJECT_NAME}_executive PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_executive PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_executive PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_executive PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_executive PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_executive PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
 set(LEXER_OUT "${CMAKE_CURRENT_BINARY_DIR}/ptx.cpp")
@@ -256,7 +228,7 @@ target_compile_definitions(${PROJECT_NAME}_parser PRIVATE ${${PROJECT_NAME}_DEFI
 target_compile_options(${PROJECT_NAME}_parser PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_parser PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME}_parser PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(${PROJECT_NAME}_parser PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_parser PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_parser PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME}_trace STATIC
@@ -271,7 +243,7 @@ set_property(TARGET ${PROJECT_NAME}_trace PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_trace PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_trace PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_trace PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_trace PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_trace PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_trace PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME}_transforms STATIC
@@ -319,7 +291,7 @@ set_property(TARGET ${PROJECT_NAME}_transforms PROPERTY POSITION_INDEPENDENT_COD
 target_compile_definitions(${PROJECT_NAME}_transforms PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_transforms PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_transforms PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_transforms PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_transforms PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_transforms PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME}_translator STATIC
@@ -331,7 +303,7 @@ set_property(TARGET ${PROJECT_NAME}_translator PROPERTY POSITION_INDEPENDENT_COD
 target_compile_definitions(${PROJECT_NAME}_translator PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_translator PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_translator PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_translator PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_translator PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_translator PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME}_util STATIC
@@ -343,7 +315,7 @@ set_property(TARGET ${PROJECT_NAME}_util PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_util PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_util PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 target_include_directories(${PROJECT_NAME}_util PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}_util PUBLIC ${${PROJECT_NAME}_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_util PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_util PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME} SHARED src/ocelot.cpp)
@@ -355,7 +327,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	${PROJECT_NAME}_cal
 	${PROJECT_NAME}_cuda
 	${PROJECT_NAME}_executive
-	${PROJECT_NAME}_ir
 	${PROJECT_NAME}_parser
 	${PROJECT_NAME}_trace
 	${PROJECT_NAME}_transforms
@@ -363,7 +334,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	${PROJECT_NAME}_util
 	"-Wl,--no-whole-archive")
 target_link_libraries(${PROJECT_NAME} PUBLIC
-	Boost::system Boost::filesystem)
+	Boost::system Boost::filesystem ${PROJECT_NAME}_llvm)
 
 add_executable(LoadPtx src/tools/LoadPtx.cpp)
 set_property(TARGET LoadPtx PROPERTY CXX_STANDARD 11)
@@ -390,17 +361,22 @@ ocelot_add_tests(api)
 ocelot_add_tests(cal)
 ocelot_add_tests(cuda)
 ocelot_add_tests(executive)
-ocelot_add_tests(ir)
 ocelot_add_tests(parser)
 ocelot_add_tests(trace)
 ocelot_add_tests(transforms)
 ocelot_add_tests(translator)
 ocelot_add_tests(util)
 
-res_embed(TARGET ${PROJECT_NAME}_executive_TestEmulator NAME "sequence_ptx"
+res_embed(TARGET ${PROJECT_NAME}_executive_TestEmulator NAME "TestEmulator_ptx"
 	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestEmulator.ptx KEYWORD)
+
+res_embed(TARGET ${PROJECT_NAME}_executive_TestInstructions NAME "TestInstructions_ptx"
+	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestInstructions.ptx KEYWORD)
+
+res_embed(TARGET ${PROJECT_NAME}_executive_TestKernels NAME "TestKernels_ptx"
+	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestKernels.ptx KEYWORD)
 	
-res_embed(TARGET ${PROJECT_NAME}_executive_TestLLVMKernels NAME "kernels_ptx"
+res_embed(TARGET ${PROJECT_NAME}_executive_TestLLVMKernels NAME "TestLLVMKernels_ptx"
 	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestLLVMKernels.ptx KEYWORD)
 	
 res_embed(TARGET ${PROJECT_NAME}_cuda_TestCudaGenericMemory NAME "generic_ptx"

@@ -1335,7 +1335,7 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 			"\texit;\n"
 			"}\n";
 	
-		_barrierModule.load(ptx, "_ZOcelotBarrierModule");
+		_barrierModule.load(ptx);
 
 		loadModule(&_barrierModule, translator::Translator::NoOptimization, 0);
 	}

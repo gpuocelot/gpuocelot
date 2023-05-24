@@ -44,18 +44,19 @@ public:
 
 		threadCount = 16;
 
-		std::string path = "ocelot/executive/test/sequence.ptx";
+		const std::string ptx = "TestInstructions_ptx";
+
 		bool loaded = false;
 		
 		try {
-			loaded = module.load(path);
+			loaded = module.loadEmbedded(ptx);
 		}
 		catch(const hydrazine::Exception& e) {
 			status << " error - " << e.what() << "\n";
 		}
 
 		if(!loaded) {
-			status << "failed to load module '" << path << "'\n";
+			status << "failed to load module '" << ptx << "'\n";
 			valid = false;
 			return;
 		}

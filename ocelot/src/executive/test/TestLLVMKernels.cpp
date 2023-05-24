@@ -241,7 +241,7 @@ int main( int argc, char** argv )
 
 	parser.description( test.testDescription() );
 
-	test.kernelFile = "kernels_ptx", 
+	test.kernelFile = "TestLLVMKernels_ptx", 
 	
 	parser.parse( "-s", test.seed, 0,
 		"Set the random seed, 0 implies seed with time." );
