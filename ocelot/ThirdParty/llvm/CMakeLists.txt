@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
-project(gpuocelot_llvm CXX)
+project(gpuocelot_llvm CXX ASM)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -92,4 +92,4 @@ target_compile_options(${PROJECT_NAME} PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAG
 target_include_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES} res::embed::static
-	-static-libgcc -static-libstdc++ -Wl,-Bstatic)
+	-static-libgcc -static-libstdc++)

@@ -4,14 +4,18 @@ FROM ubuntu:20.04 AS downloader
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN    apt-get update && apt-get install --no-install-recommends -y \
-        git ca-certificates
+RUN apt-get update && apt-get install --no-install-recommends -y \
+        git ca-certificates wget
 
 WORKDIR /
 RUN git clone https://gitlab.kitware.com/cmake/cmake.git && \
         cd cmake && \
         git checkout v3.21.4 && \
 	rm -rf .git
+
+# Download Boost
+ENV BOOST_VERSION=1_63_0
+RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.63.0/source/boost_${BOOST_VERSION}.tar.gz
 
 FROM ubuntu:14.04 AS builder
 
@@ -31,11 +35,24 @@ RUN ./bootstrap --prefix=/cmake_install --parallel=8 && \
         make -j8 && \
         make install
 
+# Build static boost with -fPIC, so that we could link it statically to libgpuocelot_llvm
+WORKDIR /
+ENV BOOST_VERSION=1_63_0
+COPY --from=downloader /boost_${BOOST_VERSION}.tar.gz /
+RUN tar xfz boost_${BOOST_VERSION}.tar.gz \
+        && rm boost_${BOOST_VERSION}.tar.gz \
+        && cd boost_${BOOST_VERSION} \
+        && ./bootstrap.sh --prefix=/boost_install \
+        && ./b2 cxxflags=-fPIC cflags=-fPIC install \
+        && cd .. \
+        && rm -rf boost_${BOOST_VERSION}
+
 FROM ubuntu:14.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
 COPY --from=builder /cmake_install/ /usr/local/
+COPY --from=builder /boost_install/ /usr/local/
 
 # Avoid ERROR: invoke-rc.d: policy-rc.d denied execution of start.
 RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
@@ -47,14 +64,12 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
         flex \
         freeglut3-dev \
         git \
-        g++-4.8 llvm-3.4-dev \
+        gcc g++ llvm-3.4-dev \
         libbison-dev=1:2.5.dfsg-2.1ubuntu1 \
-        libboost1.49-all-dev libboost1.49-dev \
         libglew-dev \
         libxi-dev \
         libXmu-dev \
         make \
-        scons \
         vim \ 
         wget && \
     apt-mark hold libbison-dev bison
@@ -73,9 +88,4 @@ RUN cd /tmp/cuda_toolkit && \
     ldconfig
 
 ENV PATH /usr/local/cuda/bin:$PATH
-
-WORKDIR /usr/local/src
-COPY . /usr/local/src/gpuocelot
-
-#RUN cd gpuocelot/ocelot && mkdir build && cd build && cmake .. && make -j8
 
