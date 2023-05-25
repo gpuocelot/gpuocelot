@@ -328,8 +328,8 @@ set(${PROJECT_NAME}_llvm ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/build/lib${
 
 # TODO Idiomatic prefix&suffix.
 add_custom_command(OUTPUT ${${PROJECT_NAME}_llvm}
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../Dockerfile
-	COMMAND docker build -f ${CMAKE_CURRENT_SOURCE_DIR}/../Dockerfile -t ${PROJECT_NAME}_llvm .
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile
+	COMMAND docker build -f ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile -t ${PROJECT_NAME}_llvm ./docker
 	COMMAND docker run --rm --user "${UID}:${GID}"
 		-v${CMAKE_CURRENT_SOURCE_DIR}/:/${PROJECT_NAME}_llvm
 		${PROJECT_NAME}_llvm sh /${PROJECT_NAME}_llvm/ThirdParty/llvm/build.sh

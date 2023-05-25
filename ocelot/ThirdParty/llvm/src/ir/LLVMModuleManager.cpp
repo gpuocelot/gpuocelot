@@ -866,13 +866,11 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 	llvmKernel->assemble();
 	llvm::SMDiagnostic error;
 
-	module = new llvm::Module(kernel.name.c_str(), llvm::getGlobalContext());
-
 	reportE(REPORT_ALL_LLVM_ASSEMBLY, llvmKernel->code());
 
 	report("  Parsing LLVM assembly.");
 	module = llvm::parseAssemblyString(llvmKernel->code().c_str(), 
-		module, error, llvm::getGlobalContext());
+		error, llvm::getGlobalContext()).release();
 
 	if(module == 0)
 	{
@@ -900,6 +898,8 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 		throw hydrazine::Exception("LLVM Verifier failed for kernel: " 
 			+ kernel.name + " : \"" + verifyError + "\"");
 	}
+
+	module->setModuleIdentifier(kernel.name.c_str());
 
 	delete llvmKernel;
 }

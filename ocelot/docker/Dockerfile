@@ -63,9 +63,10 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
         freeglut3-dev \
         software-properties-common llvm-3.7-dev \
         libglew-dev \
-	libz-dev \
+        libz-dev \
         make \
-        vim && \ 
+        patch \
+        vim && \
     add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
     apt-get update && apt-get install --no-install-recommends -y \
         gcc-9 g++-9
@@ -73,3 +74,5 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-9 40 && \
 	update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-9 40
 
+COPY llvm-3.7.patch /
+RUN patch -p1 < /llvm-3.7.patch

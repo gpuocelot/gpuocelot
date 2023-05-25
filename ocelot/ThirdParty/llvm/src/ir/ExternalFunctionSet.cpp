@@ -301,7 +301,7 @@ static llvm::Function* jitFunction(
 	llvm::SMDiagnostic error;
 	
 	m = llvm::parseAssemblyString(kernel.code().c_str(), 
-		m, error, llvm::getGlobalContext());
+		error, llvm::getGlobalContext()).release();
 
 	reportE(REPORT_LLVM,
 		"Generated the following LLVM:\n" << kernel.numberedCode());
@@ -435,7 +435,9 @@ void ExternalFunctionSet::remove(const std::string& name)
 		function->second.mangledName());
 	if(llvmFunction != 0)
 	{
+#if 0
 		executive::LLVMState::jit()->freeMachineCodeForFunction(llvmFunction);
+#endif
 		llvmFunction->eraseFromParent();
 		assert(_module->getFunction(function->second.mangledName()) == 0);
 	
