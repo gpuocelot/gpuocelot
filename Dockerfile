@@ -61,7 +61,7 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
     > /etc/apt/sources.list.d/hparch-gpuocelot-trusty.list && \
     apt-get update && apt-get install --no-install-recommends -y \
         freeglut3-dev \
-        software-properties-common llvm-3.5-dev \
+        software-properties-common llvm-3.7-dev \
         libglew-dev \
 	libz-dev \
         make \

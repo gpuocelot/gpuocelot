@@ -30,7 +30,7 @@
 
 // LLVM Includes
 #include <llvm/Transforms/Scalar.h>
-#include <llvm/PassManager.h>
+#include "llvm/IR/LegacyPassManager.h"
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/AsmParser/Parser.h>
 #include <llvm/IR/Verifier.h>
@@ -871,7 +871,7 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 	reportE(REPORT_ALL_LLVM_ASSEMBLY, llvmKernel->code());
 
 	report("  Parsing LLVM assembly.");
-	module = llvm::ParseAssemblyString(llvmKernel->code().c_str(), 
+	module = llvm::parseAssemblyString(llvmKernel->code().c_str(), 
 		module, error, llvm::getGlobalContext());
 
 	if(module == 0)
@@ -960,7 +960,7 @@ static void optimize(llvm::Module& module,
 
 	if(level == 0) return;
 
-	llvm::PassManager manager;
+	llvm::legacy::PassManager manager;
 
 	if(level < 2)
 	{
@@ -1096,7 +1096,7 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 {
 	report(" Generating native code.");
 	
-	LLVMState::jit()->addModule(&module);
+	LLVMState::jit()->addModule(std::unique_ptr<llvm::Module>(&module));
 
 	link(module, kernel, device, externals, database);
 
@@ -1134,9 +1134,9 @@ void LLVMModuleManager::KernelAndTranslation::unload()
 	assert(_module != 0);
 
 	llvm::Function* function = _module->getFunction(_kernel->name);
-
+#if 0
 	LLVMState::jit()->freeMachineCodeForFunction(function);
-
+#endif
 	LLVMState::jit()->removeModule(_module);
 	delete _kernel;
 	delete _module;
@@ -1183,9 +1183,9 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	catch(...)
 	{
 		llvm::Function* function = _module->getFunction(_kernel->name);
-
+#if 0
 		LLVMState::jit()->freeMachineCodeForFunction(function);
-
+#endif
 		LLVMState::jit()->removeModule(_module);
 		delete _module;
 		delete _metadata;

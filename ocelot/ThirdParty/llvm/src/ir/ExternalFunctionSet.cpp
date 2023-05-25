@@ -20,7 +20,7 @@
 
 // LLVM Includes
 #include <llvm/Transforms/Scalar.h>
-#include <llvm/PassManager.h>
+#include "llvm/IR/LegacyPassManager.h"
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/AsmParser/Parser.h>
 #include <llvm/IR/Verifier.h>
@@ -36,6 +36,8 @@
 
 #define REPORT_BASE 0
 #define REPORT_LLVM 0
+
+using namespace llvm::legacy;
 
 namespace ir
 {
@@ -298,7 +300,7 @@ static llvm::Function* jitFunction(
 	// parse the function
 	llvm::SMDiagnostic error;
 	
-	m = llvm::ParseAssemblyString(kernel.code().c_str(), 
+	m = llvm::parseAssemblyString(kernel.code().c_str(), 
 		m, error, llvm::getGlobalContext());
 
 	reportE(REPORT_LLVM,
@@ -394,7 +396,9 @@ ExternalFunctionSet::~ExternalFunctionSet()
 			external->second.mangledName());
 		if(function != 0)
 		{
+#if 0
 			executive::LLVMState::jit()->freeMachineCodeForFunction(function);
+#endif
 		}
 	}
 

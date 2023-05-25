@@ -15,7 +15,7 @@
 
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
-#include <llvm/ExecutionEngine/JIT.h> 
+#include "llvm/ExecutionEngine/MCJIT.h"
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 
@@ -51,7 +51,7 @@ llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
 	
 		llvm::InitializeNativeTarget();
 		
-		_jit = llvm::EngineBuilder(_module).create();
+		_jit = llvm::EngineBuilder(std::unique_ptr<llvm::Module>(_module)).setEngineKind(llvm::EngineKind::JIT).create();
 		_jit->DisableLazyCompilation(true);
 	
 		assertM(_jit != 0, "Creating the JIT failed.");
