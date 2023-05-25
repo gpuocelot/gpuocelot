@@ -11,19 +11,19 @@ set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package(Boost COMPONENTS system filesystem REQUIRED)
-find_package(LLVM 3.4 REQUIRED)
 find_package(FLEX 2.5 REQUIRED)
 find_package(BISON 2.5 REQUIRED)
 find_package(GLEW REQUIRED)
 
-add_subdirectory(ThirdParty/llvm)
+#add_subdirectory(ThirdParty/llvm)
 
 if (NOT TARGET ${PROJECT_NAME}_llvm)
-add_subdirectory(ThirdParty/hydrazine EXCLUDE_FROM_ALL)
+add_subdirectory(ThirdParty/hydrazine)
 add_subdirectory(ThirdParty/res_embed EXCLUDE_FROM_ALL)
 
 include(ResEmbed)
-endif()
+else()
+find_package(LLVM 3.4 REQUIRED)
 
 function(string_starts_with str search result)
 	string(FIND "${str}" "${search}" out)
@@ -52,12 +52,13 @@ foreach(ARG ${LLVM_FLAGS_LIST})
 	endif()
 endforeach()
 
+endif()
+
 set(${PROJECT_NAME}_INCLUDE_DIRS
 	${LLVM_INCLUDE_DIRS}
 	${GLEW_INCLUDE_DIRS}
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/cuda-fatbin-decompression
 	${CMAKE_CURRENT_SOURCE_DIR}/include
-	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/include
 	${CMAKE_CURRENT_BINARY_DIR})
 
 set(${PROJECT_NAME}_LINK_LIBRARIES
@@ -65,8 +66,13 @@ set(${PROJECT_NAME}_LINK_LIBRARIES
 	${GLEW_LIBRARIES}
 	hydrazine
 	Boost::system
+	Boost::filesystem
 	tinfo
 	${CMAKE_DL_LIBS})
+
+if (NOT TARGET ${PROJECT_NAME}_llvm)
+list(APPEND ${PROJECT_NAME}_LINK_LIBRARIES ${PROJECT_NAME}::llvm)
+endif()
 	
 set(${PROJECT_NAME}_LIBRARY_DIRS
 	${LLVM_LIBRARY_DIRS})
@@ -318,6 +324,27 @@ target_include_directories(${PROJECT_NAME}_util PRIVATE ${${PROJECT_NAME}_INCLUD
 target_link_libraries(${PROJECT_NAME}_util PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_util PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
+set(${PROJECT_NAME}_llvm ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/build/lib${PROJECT_NAME}_llvm.so)
+
+# TODO Idiomatic prefix&suffix.
+add_custom_command(OUTPUT ${${PROJECT_NAME}_llvm}
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../Dockerfile
+	COMMAND docker build -f ${CMAKE_CURRENT_SOURCE_DIR}/../Dockerfile -t ${PROJECT_NAME}_llvm .
+	COMMAND docker run --rm --user "${UID}:${GID}"
+		-v${CMAKE_CURRENT_SOURCE_DIR}/:/${PROJECT_NAME}_llvm
+		${PROJECT_NAME}_llvm sh /${PROJECT_NAME}_llvm/ThirdParty/llvm/build.sh
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	COMMENT "Building ${PROJECT_NAME}_llvm in a Docker container")
+
+add_custom_target(${PROJECT_NAME}_llvm_docker
+	DEPENDS ${${PROJECT_NAME}_llvm})
+
+add_library(${PROJECT_NAME}_llvm SHARED IMPORTED)
+set_target_properties(${PROJECT_NAME}_llvm PROPERTIES IMPORTED_LOCATION ${${PROJECT_NAME}_llvm})
+set_target_properties(${PROJECT_NAME}_llvm PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/include)
+add_library(${PROJECT_NAME}::llvm ALIAS ${PROJECT_NAME}_llvm)
+add_dependencies(${PROJECT_NAME}_llvm ${PROJECT_NAME}_llvm_docker)
+
 add_library(${PROJECT_NAME} SHARED src/ocelot.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -334,7 +361,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	${PROJECT_NAME}_util
 	"-Wl,--no-whole-archive")
 target_link_libraries(${PROJECT_NAME} PUBLIC
-	Boost::system Boost::filesystem ${PROJECT_NAME}_llvm)
+	${${PROJECT_NAME}_LINK_LIBRARIES})
 
 add_executable(LoadPtx src/tools/LoadPtx.cpp)
 set_property(TARGET LoadPtx PROPERTY CXX_STANDARD 11)

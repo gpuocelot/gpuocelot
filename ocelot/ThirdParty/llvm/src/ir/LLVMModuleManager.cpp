@@ -32,8 +32,8 @@
 #include <llvm/Transforms/Scalar.h>
 #include <llvm/PassManager.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
-#include <llvm/Assembly/Parser.h>
-#include <llvm/Analysis/Verifier.h>
+#include <llvm/AsmParser/Parser.h>
+#include <llvm/IR/Verifier.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 #include <llvm/Support/SourceMgr.h>
@@ -888,8 +888,8 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 
 	report("  Checking llvm module for errors.");
 	std::string verifyError;
-	
-	if(llvm::verifyModule(*module, llvm::ReturnStatusAction, &verifyError))
+	llvm::raw_string_ostream verifyOutput(verifyError);	
+	if(llvm::verifyModule(*module, &verifyOutput))
 	{
 		report("   Checking kernel failed, dumping code:\n" 
 			<< llvmKernel->numberedCode());

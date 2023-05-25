@@ -37,6 +37,7 @@ set(llvm_config_names llvm-config-9.0 llvm-config90
                       llvm-config-5.0 llvm-config50
                       llvm-config-4.0 llvm-config40
                       llvm-config-3.9 llvm-config39
+		      llvm-config-3.5 llvm-config35
                       llvm-config-3.4 llvm-config34
                       llvm-config)
 find_program(LLVM_CONFIG

@@ -6,7 +6,8 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost COMPONENTS system REQUIRED)
-find_package(LLVM 3.4 REQUIRED)
+find_package(LLVM 3.5 REQUIRED)
+find_package(ZLIB REQUIRED)
 
 if (NOT TARGET hydrazine)
 add_subdirectory(ThirdParty/hydrazine EXCLUDE_FROM_ALL)
@@ -54,6 +55,7 @@ set(${PROJECT_NAME}_LINK_LIBRARIES
 	${LLVM_LIBRARIES}
 	hydrazine
 	Boost::system
+	ZLIB::ZLIB
 	tinfo
 	${CMAKE_DL_LIBS})
 	

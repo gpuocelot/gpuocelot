@@ -37,8 +37,11 @@
 
 #define PTX_VERSION_AND_TARGET ".version 3.0\n.target sm_30\n"
 
+using namespace std;
+
 ////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
+#if 0
 template<typename T>
 bool issubnormal(T r0)
 {
@@ -56,6 +59,7 @@ bool issubnormal(double r0)
 	return !std::isnormal(r0) && !std::isnan(r0)
 		&& !std::isinf(r0) && r0 != (double)0;
 }
+#endif
 
 bool compareFloat(float a, float b, int eps)
 {
@@ -680,7 +684,7 @@ void testCvt_REF(void* output, void* input)
 
 	if(isFloat<stype>() && !isFloat<dtype>())
 	{
-		if(isnan(r0)) r0 = (stype)0;
+		if(std::isnan(r0)) r0 = (stype)0;
 	}
 
 	if(ftz)
@@ -753,14 +757,14 @@ void testCvt_REF(void* output, void* input)
 	{
 		if(typeid(float) == typeid(dtype))
 		{
-			if(isnan(r1)) r1 = 0.0f;
+			if(std::isnan(r1)) r1 = 0.0f;
 
 			r1 = std::min((dtype)1.0f, r1);
 			r1 = std::max((dtype)0.0f, r1);
 		}
 		else if(typeid(double) == typeid(dtype))
 		{
-			if(isnan(r1)) r1 = 0.0;
+			if(std::isnan(r1)) r1 = 0.0;
 
 			r1 = std::min((dtype)1.0, r1);
 			r1 = std::max((dtype)0.0, r1);

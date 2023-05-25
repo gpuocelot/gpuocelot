@@ -47,7 +47,7 @@ RUN tar xfz boost_${BOOST_VERSION}.tar.gz \
         && cd .. \
         && rm -rf boost_${BOOST_VERSION}
 
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -60,32 +60,16 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
     printf "deb http://ppa.launchpad.net/hparch/gpuocelot/ubuntu trusty main" \
     > /etc/apt/sources.list.d/hparch-gpuocelot-trusty.list && \
     apt-get update && apt-get install --no-install-recommends -y \
-        bison=1:2.5.dfsg-2.1ubuntu1 \
-        flex \
         freeglut3-dev \
-        git \
-        gcc g++ llvm-3.4-dev \
-        libbison-dev=1:2.5.dfsg-2.1ubuntu1 \
+        software-properties-common llvm-3.5-dev \
         libglew-dev \
-        libxi-dev \
-        libXmu-dev \
+	libz-dev \
         make \
-        vim \ 
-        wget && \
-    apt-mark hold libbison-dev bison
+        vim && \ 
+    add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+    apt-get update && apt-get install --no-install-recommends -y \
+        gcc-9 g++-9
 
-RUN mkdir /tmp/cuda_toolkit && \
-    cd /tmp/cuda_toolkit && \
-    wget http://developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.18_linux.run && \
-    chmod +x cuda_7.5.18_linux.run && \
-    ./cuda_7.5.18_linux.run --tar mxvf
-
-RUN cd /tmp/cuda_toolkit && \
-    ./cuda-installer.pl -silent -toolkit && \
-    cd / && rm -rf /tmp/cuda_toolkit && \
-    printf "/usr/local/cuda/lib64\n/usr/local/cuda/lib" > /etc/ld.so.conf.d/cuda.conf && \
-    sed -i "s|#error -- unsupported GNU version|#warning -- unsupported GNU version|g" /usr/local/cuda/include/host_config.h && \
-    ldconfig
-
-ENV PATH /usr/local/cuda/bin:$PATH
+RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-9 40 && \
+	update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-9 40
 
