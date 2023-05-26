@@ -333,7 +333,7 @@ file(GLOB_RECURSE ${PROJECT_NAME}_llvm_SRCS
 	"${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/src/*")
 add_custom_command(OUTPUT ${${PROJECT_NAME}_llvm}
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile ${${PROJECT_NAME}_llvm_SRCS}
-	COMMAND docker build -f ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile -t ${PROJECT_NAME}_llvm ./docker
+	COMMAND docker build -f ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile -t ${PROJECT_NAME}_llvm ${CMAKE_CURRENT_SOURCE_DIR}/docker
 	COMMAND docker run --rm --user "${UID}:${GID}"
 		-v${CMAKE_CURRENT_SOURCE_DIR}/:/${CMAKE_CURRENT_SOURCE_DIR}
 		${PROJECT_NAME}_llvm sh ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/build.sh
@@ -343,6 +343,12 @@ add_custom_command(OUTPUT ${${PROJECT_NAME}_llvm}
 
 add_custom_target(${PROJECT_NAME}_llvm_docker
 	DEPENDS ${${PROJECT_NAME}_llvm})
+
+add_custom_target(docker
+	COMMAND docker build -f ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile -t ${PROJECT_NAME}_llvm ${CMAKE_CURRENT_SOURCE_DIR}/docker
+	COMMAND COMMAND docker run --rm -it --user "${UID}:${GID}"
+                -v${CMAKE_CURRENT_SOURCE_DIR}/:/${CMAKE_CURRENT_SOURCE_DIR}
+                ${PROJECT_NAME}_llvm fish)
 
 add_library(${PROJECT_NAME}_llvm SHARED IMPORTED)
 set_target_properties(${PROJECT_NAME}_llvm PROPERTIES IMPORTED_LOCATION ${${PROJECT_NAME}_llvm})
