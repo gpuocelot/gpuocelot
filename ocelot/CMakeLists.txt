@@ -331,8 +331,8 @@ add_custom_command(OUTPUT ${${PROJECT_NAME}_llvm}
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile
 	COMMAND docker build -f ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile -t ${PROJECT_NAME}_llvm ./docker
 	COMMAND docker run --rm --user "${UID}:${GID}"
-		-v${CMAKE_CURRENT_SOURCE_DIR}/:/${PROJECT_NAME}_llvm
-		${PROJECT_NAME}_llvm sh /${PROJECT_NAME}_llvm/ThirdParty/llvm/build.sh
+		-v${CMAKE_CURRENT_SOURCE_DIR}/:/${CMAKE_CURRENT_SOURCE_DIR}
+		${PROJECT_NAME}_llvm sh ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/build.sh ${CMAKE_BUILD_TYPE}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	COMMENT "Building ${PROJECT_NAME}_llvm in a Docker container")
 

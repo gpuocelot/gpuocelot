@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Build script for Docker
 set -e
-cd /gpuocelot_llvm/ThirdParty/llvm
+cd $(dirname "$0")
 rm -rf build
 mkdir build
 cd build
-cmake ..
+cmake -DCMAKE_BUILD_TYPE=$1 ..
 make -j8
