@@ -1103,12 +1103,10 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 	report("  Invoking LLVM to Native JIT");
 
 	std::string name = "_Z_ocelotTranslated_" + kernel.name;
-	
-	llvm::Function* llvmFunction = module.getFunction(name);
-	
-	assertM(llvmFunction != 0, "Could not find function " + name);
+
+	// https://stackoverflow.com/a/76343023/4063520	
 	function = hydrazine::bit_cast<LLVMModuleManager::Function>(
-		LLVMState::jit()->getPointerToFunction(llvmFunction));
+		LLVMState::jit()->getFunctionAddress(name));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

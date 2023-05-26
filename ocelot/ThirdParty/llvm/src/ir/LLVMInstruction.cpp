@@ -1265,10 +1265,14 @@ namespace ir
 	
 	std::string LLVMGetelementptr::toString() const
 	{
+		// https://github.com/dfellis/llvm-hello-world/issues/1
+		auto elemType = a.type.toString();
+		elemType.pop_back(); // everything, except the last '*'
+
 		std::stringstream stream;
 		stream << d.toString() << " = " 
 			<< LLVMInstruction::toString( opcode ) << " " 
-			<< a.type.toString() << " " << a.toString();
+			<< elemType << ", " << a.type.toString() << " " << a.toString();
 		for( IndexVector::const_iterator fi = indices.begin(); 
 			fi != indices.end(); ++fi )
 		{
@@ -1516,11 +1520,15 @@ namespace ir
 	
 	std::string LLVMLoad::toString() const
 	{
+		// https://stackoverflow.com/questions/72449648/how-to-fix-error-expected-comma-after-loads-type
+		auto elemType = a.type.toString();
+		elemType.pop_back(); // everything, except the last '*'
+
 		std::stringstream stream;
 		stream << d.toString() << " = ";
-		stream << LLVMInstruction::toString( opcode ) << " " 	
+		stream << LLVMInstruction::toString( opcode ) << " "	
 			<< (isVolatile ? "volatile " : "")
-			<< a.type.toString() << " " << a.toString();
+			<< elemType << ", " << a.type.toString() << " " << a.toString();
 		if( alignment != 1 ) stream << ", align " << alignment;
 		return stream.str();
 	}

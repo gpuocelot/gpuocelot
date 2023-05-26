@@ -16,6 +16,7 @@
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include "llvm/ExecutionEngine/MCJIT.h"
+#include "llvm/ExecutionEngine/SectionMemoryManager.h"
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 
@@ -45,13 +46,22 @@ llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
 	{
 		report("Bringing the LLVM JIT-Compiler online.");
 
-		_module = new llvm::Module("Ocelot-LLVM-JIT-Blank Module", 
-			llvm::getGlobalContext());
-		assertM(_module != 0, "Creating global module failed.");
-	
+		// https://stackoverflow.com/a/38801376/4063520	
 		llvm::InitializeNativeTarget();
-		
-		_jit = llvm::EngineBuilder(std::unique_ptr<llvm::Module>(_module)).setEngineKind(llvm::EngineKind::JIT).create();
+		llvm::InitializeNativeTargetAsmParser();
+		llvm::InitializeNativeTargetAsmPrinter();
+
+		auto m = llvm::make_unique<llvm::Module>("Ocelot-LLVM-JIT-Blank Module", llvm::getGlobalContext());
+		_module = m.get();
+		assertM(_module != 0, "Creating global module failed.");
+
+		llvm::TargetOptions Opts;
+		std::unique_ptr<llvm::SectionMemoryManager> MemMgr(new llvm::SectionMemoryManager());
+		llvm::EngineBuilder factory(std::move(m));
+		factory.setEngineKind(llvm::EngineKind::JIT);
+		factory.setTargetOptions(Opts);
+		factory.setMCJITMemoryManager(std::move(MemMgr));
+		_jit = factory.create();
 		_jit->DisableLazyCompilation(true);
 	
 		assertM(_jit != 0, "Creating the JIT failed.");
