@@ -324,15 +324,20 @@ target_include_directories(${PROJECT_NAME}_util PRIVATE ${${PROJECT_NAME}_INCLUD
 target_link_libraries(${PROJECT_NAME}_util PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_util PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
-set(${PROJECT_NAME}_llvm ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/build/lib${PROJECT_NAME}_llvm.so)
-
 # TODO Idiomatic prefix&suffix.
+set(${PROJECT_NAME}_llvm ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_llvm/lib${PROJECT_NAME}_llvm.so)
+
+file(GLOB_RECURSE ${PROJECT_NAME}_llvm_SRCS
+	"${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/CMakeLists.txt"
+	"${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/include/*"
+	"${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/src/*")
 add_custom_command(OUTPUT ${${PROJECT_NAME}_llvm}
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile ${${PROJECT_NAME}_llvm_SRCS}
 	COMMAND docker build -f ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile -t ${PROJECT_NAME}_llvm ./docker
 	COMMAND docker run --rm --user "${UID}:${GID}"
 		-v${CMAKE_CURRENT_SOURCE_DIR}/:/${CMAKE_CURRENT_SOURCE_DIR}
-		${PROJECT_NAME}_llvm sh ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/build.sh ${CMAKE_BUILD_TYPE}
+		${PROJECT_NAME}_llvm sh ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/build.sh
+			${CMAKE_BUILD_TYPE} ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_llvm
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	COMMENT "Building ${PROJECT_NAME}_llvm in a Docker container")
 
