@@ -27,6 +27,17 @@
 
 #define REPORT_BASE 0
 
+namespace llvm {
+
+// LLVM devs are bored and have nothing else to do: https://reviews.llvm.org/D19094
+LLVMContext &getGlobalContext()
+{
+	static LLVMContext context;
+	return context;
+}
+
+} // namespace llvm
+
 namespace executive
 {
 

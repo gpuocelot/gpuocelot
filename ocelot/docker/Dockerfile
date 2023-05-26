@@ -17,7 +17,7 @@ RUN git clone https://gitlab.kitware.com/cmake/cmake.git && \
 ENV BOOST_VERSION=1_63_0
 RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.63.0/source/boost_${BOOST_VERSION}.tar.gz
 
-FROM ubuntu:14.04 AS builder
+FROM ubuntu:16.04 AS builder
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -61,11 +61,12 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
     > /etc/apt/sources.list.d/hparch-gpuocelot-trusty.list && \
     apt-get update && apt-get install --no-install-recommends -y \
         freeglut3-dev \
-        software-properties-common llvm-3.7-dev \
+        software-properties-common llvm-3.9-dev \
         libglew-dev \
         libz-dev \
         make \
         patch \
+	fish \
         vim && \
     add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
     apt-get update && apt-get install --no-install-recommends -y \
@@ -74,5 +75,5 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-9 40 && \
 	update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-9 40
 
-COPY llvm-3.7.patch /
-RUN patch -p1 < /llvm-3.7.patch
+#COPY llvm-3.7.patch /
+#RUN patch -p1 < /llvm-3.7.patch

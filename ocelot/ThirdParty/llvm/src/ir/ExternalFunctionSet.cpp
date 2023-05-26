@@ -39,6 +39,12 @@
 
 using namespace llvm::legacy;
 
+namespace llvm {
+
+LLVMContext &getGlobalContext();
+
+} // namespace llvm
+
 namespace ir
 {
 

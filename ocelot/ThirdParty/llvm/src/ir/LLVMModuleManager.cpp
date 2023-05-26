@@ -38,6 +38,7 @@
 #include <llvm/IR/Module.h>
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
+#include <llvm/Transforms/Scalar/GVN.h>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -47,6 +48,12 @@
 #define REPORT_BASE 0
 
 #define REPORT_ALL_LLVM_ASSEMBLY 0
+
+namespace llvm {
+
+LLVMContext &getGlobalContext();
+
+} // namespace llvm
 
 namespace executive
 {
@@ -975,7 +982,7 @@ static void optimize(llvm::Module& module,
 		manager.add(llvm::createInstructionCombiningPass());
 		manager.add(llvm::createJumpThreadingPass());
 		manager.add(llvm::createCFGSimplificationPass());
-		manager.add(llvm::createScalarReplAggregatesPass());
+		manager.add(llvm::createSROAPass());
 		manager.add(llvm::createInstructionCombiningPass());
 		manager.add(llvm::createTailCallEliminationPass());
 		manager.add(llvm::createCFGSimplificationPass());
