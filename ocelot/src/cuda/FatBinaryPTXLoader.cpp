@@ -179,7 +179,7 @@ void FatBinaryPTXLoader::load()
 				if (seenPtx)
 				{
 					// TODO Advance from id provided by fat cubin to individual cubins in a good way.
-					consumePTX(const_cast<void*>(cubin) + i, ptx);
+					consumePTX(reinterpret_cast<char*>(const_cast<void*>(cubin)) + i, ptx);
 					continue;
 				}
 				
