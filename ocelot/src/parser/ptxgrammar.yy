@@ -46,7 +46,7 @@
 %parse-param {parser::PTXParser::State& state}
 %lex-param   {parser::PTXLexer& lexer}
 %lex-param   {parser::PTXParser::State& state}
-%pure-parser
+%define api.pure
 
 %token<text> TOKEN_LABEL TOKEN_IDENTIFIER TOKEN_STRING TOKEN_METADATA
 %token<text> TOKEN_INV_PREDICATE_IDENTIFIER TOKEN_PREDICATE_IDENTIFIER
