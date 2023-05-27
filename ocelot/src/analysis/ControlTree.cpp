@@ -19,9 +19,6 @@
 #include <queue>
 #include <iterator>
 
-// Boost includes
-#include <boost/bind.hpp>
-
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif

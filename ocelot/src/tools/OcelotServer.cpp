@@ -15,11 +15,9 @@
 
 // Boost includes
 #include <boost/thread/thread.hpp>
-#include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
-
 
 // Preprocessor Macros
 #define Exception(x) { std::stringstream ss; ss << x; \
