@@ -2,7 +2,7 @@
 
 [Ocelot](http://gpuocelot.gatech.edu/) is a just-in-time compiler, which retargets PTX assembler (used internally by CUDA) for non-NVIDIA hardware.
 
-We make Ocelot great again: yes, you can compile it in Ubuntu 22.04 with recent version of CUDA, and most of the tests are passing (see below).
+We make Ocelot great again: yes, you can compile it in Ubuntu 22.04 with LLVM 15, recent version of CUDA, and most of the tests are passing (see below).
 
 ## Features
 

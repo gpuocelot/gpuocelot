@@ -39,6 +39,7 @@
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Transforms/Scalar/GVN.h>
+#include <llvm/Transforms/Scalar/SimpleLoopUnswitch.h>
 #include <llvm/Transforms/InstCombine/InstCombine.h>
 
 // Preprocessor Macros
@@ -990,7 +991,7 @@ static void optimize(llvm::Module& module,
 		manager.add(llvm::createReassociatePass());
 		manager.add(llvm::createLoopRotatePass());
 		manager.add(llvm::createLICMPass());
-		manager.add(llvm::createLoopUnswitchPass(space || level < 3));
+		manager.add(llvm::createSimpleLoopUnswitchLegacyPass(space || level < 3));
 		manager.add(llvm::createInstructionCombiningPass());
 		manager.add(llvm::createIndVarSimplifyPass());
 		manager.add(llvm::createLoopDeletionPass());
