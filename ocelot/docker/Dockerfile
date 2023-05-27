@@ -53,7 +53,7 @@ COPY --from=builder /boost_install/ /usr/local/
 # Avoid ERROR: invoke-rc.d: policy-rc.d denied execution of start.
 RUN apt-get update && apt-get install --no-install-recommends -y \
         freeglut3-dev \
-        software-properties-common llvm-9-dev \
+        software-properties-common \
         libglew-dev \
         libz-dev \
         make \
@@ -63,8 +63,11 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
         vim && \
     add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
     apt-get update && apt-get install --no-install-recommends -y \
-        gcc-9 g++-9
+        gcc-10 g++-10
 
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-9 40 && \
-	update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-9 40
+RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-10 40 && \
+	update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-10 40
+
+RUN apt-get install --no-install-recommends -y \
+	llvm-10-dev
 

@@ -64,7 +64,7 @@ add_library(${PROJECT_NAME} SHARED
 	src/ir/PTXStatement.cpp
 	src/ir/Parameter.cpp
 	src/ir/Texture.cpp)
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME} PRIVATE PRIVATE -fexceptions)

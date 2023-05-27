@@ -11,7 +11,7 @@ git submodule init
 git submodule update
 mkdir build
 cd build
-cmake -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_CXX_COMPILER=g++-9 ..
+cmake -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_CXX_COMPILER=g++-10 ..
 make -j12
 ```
 

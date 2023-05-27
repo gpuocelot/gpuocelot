@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
 project(gpuocelot C CXX CUDA ASM)
 
+if ("x${CMAKE_BUILD_TYPE}" STREQUAL "x")
+set(CMAKE_BUILD_TYPE "Release")
+endif()
+
 # in order to retain the PTX code in the text executables,
 # the target GPU architecture has to be virtual.
 set(CMAKE_CUDA_ARCHITECTURES 35-virtual)
@@ -85,7 +89,7 @@ function(ocelot_add_tests name)
 		    get_filename_component(TEST_WE ${TEST} NAME_WE)
 		    set(TEST_NAME ${PROJECT_NAME}_${name}_${TEST_WE})
 		    add_executable(${TEST_NAME} ${TEST})
-		    set_property(TARGET ${TEST_NAME} PROPERTY CXX_STANDARD 11)
+		    set_property(TARGET ${TEST_NAME} PROPERTY CXX_STANDARD 14)
 		    target_compile_definitions(${TEST_NAME} PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 			target_compile_options(${TEST_NAME} PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
 			target_include_directories(${TEST_NAME} PRIVATE ${${PROJECT_NAME}_INCLUDE_DIRS})
@@ -128,7 +132,7 @@ add_library(${PROJECT_NAME}_analysis STATIC
 	src/analysis/StructuralAnalysis.cpp
 	src/analysis/SuperblockAnalysis.cpp
 	src/analysis/ThreadFrontierAnalysis.cpp)
-set_property(TARGET ${PROJECT_NAME}_analysis PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME}_analysis PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME}_analysis PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_analysis PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_analysis PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
@@ -140,7 +144,7 @@ add_library(${PROJECT_NAME}_api STATIC
 	src/api/OcelotConfiguration.cpp
 	src/api/OcelotRuntime.cpp
 	src/api/ocelot.cpp)
-set_property(TARGET ${PROJECT_NAME}_api PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME}_api PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME}_api PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_api PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_api PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
@@ -152,7 +156,7 @@ res_embed(TARGET ${PROJECT_NAME}_api NAME "configure_ocelot" PATH ${CMAKE_CURREN
 
 add_library(${PROJECT_NAME}_cal STATIC
 	src/cal/CalDriver.cpp)
-set_property(TARGET ${PROJECT_NAME}_cal PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME}_cal PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME}_cal PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_cal PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_cal PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
@@ -173,7 +177,7 @@ add_library(${PROJECT_NAME}_cuda STATIC
 	src/cuda/cuda_runtime.cpp
 	ThirdParty/cuda-fatbin-decompression/fatbin-decompress.c
 	ThirdParty/cuda-fatbin-decompression/utils.c)
-set_property(TARGET ${PROJECT_NAME}_cuda PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME}_cuda PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME}_cuda PROPERTY C_STANDARD 99)
 set_property(TARGET ${PROJECT_NAME}_cuda PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_cuda PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
@@ -208,7 +212,7 @@ add_library(${PROJECT_NAME}_executive STATIC
 	src/executive/RemoteDevice.cpp
 	src/executive/RuntimeException.cpp
 	src/executive/TextureOperations.cpp)
-set_property(TARGET ${PROJECT_NAME}_executive PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME}_executive PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME}_executive PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_executive PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_executive PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
@@ -228,7 +232,7 @@ add_library(${PROJECT_NAME}_parser STATIC
 	src/parser/PTXParser.cpp
 	"${LEXER_OUT}"
 	"${PARSER_OUT}")
-set_property(TARGET ${PROJECT_NAME}_parser PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME}_parser PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME}_parser PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_parser PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_parser PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
@@ -244,7 +248,7 @@ add_library(${PROJECT_NAME}_trace STATIC
 	src/trace/MemoryRaceDetector.cpp
 	src/trace/TraceEvent.cpp
 	src/trace/TraceGenerator.cpp)
-set_property(TARGET ${PROJECT_NAME}_trace PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME}_trace PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME}_trace PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_trace PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_trace PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
@@ -292,7 +296,7 @@ add_library(${PROJECT_NAME}_transforms STATIC
 	src/transforms/SubkernelFormationPass.cpp
 	src/transforms/SyncEliminationPass.cpp
 	src/transforms/ThreadFrontierReconvergencePass.cpp)
-set_property(TARGET ${PROJECT_NAME}_transforms PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME}_transforms PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME}_transforms PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_transforms PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_transforms PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
@@ -304,7 +308,7 @@ add_library(${PROJECT_NAME}_translator STATIC
 	src/translator/PTXToILTranslator.cpp
 	src/translator/PTXToLLVMTranslator.cpp
 	src/translator/Translator.cpp)
-set_property(TARGET ${PROJECT_NAME}_translator PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME}_translator PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME}_translator PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_translator PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_translator PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
@@ -316,7 +320,7 @@ add_library(${PROJECT_NAME}_util STATIC
 	src/util/ExtractedDeviceState.cpp
 	src/util/OcelotServerConnection.cpp
 	src/util/RemoteDeviceMessage.cpp)
-set_property(TARGET ${PROJECT_NAME}_util PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME}_util PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME}_util PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_util PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
 target_compile_options(${PROJECT_NAME}_util PRIVATE PRIVATE ${${PROJECT_NAME}_CXXFLAGS})
@@ -375,23 +379,23 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 	${${PROJECT_NAME}_LINK_LIBRARIES})
 
 add_executable(LoadPtx src/tools/LoadPtx.cpp)
-set_property(TARGET LoadPtx PROPERTY CXX_STANDARD 11)
+set_property(TARGET LoadPtx PROPERTY CXX_STANDARD 14)
 target_link_libraries(LoadPtx ${PROJECT_NAME} hydrazine)
 
 add_executable(OcelotKernelTestHarness src/tools/KernelTestHarness.cpp)
-set_property(TARGET OcelotKernelTestHarness PROPERTY CXX_STANDARD 11)
+set_property(TARGET OcelotKernelTestHarness PROPERTY CXX_STANDARD 14)
 target_link_libraries(OcelotKernelTestHarness ${PROJECT_NAME} hydrazine)
 
 add_executable(OcelotLinker src/tools/OcelotLinker.cpp)
-set_property(TARGET OcelotLinker PROPERTY CXX_STANDARD 11)
+set_property(TARGET OcelotLinker PROPERTY CXX_STANDARD 14)
 target_link_libraries(OcelotLinker ${PROJECT_NAME} hydrazine)
 
 add_executable(OcelotServer src/tools/OcelotServer.cpp)
-set_property(TARGET OcelotServer PROPERTY CXX_STANDARD 11)
+set_property(TARGET OcelotServer PROPERTY CXX_STANDARD 14)
 target_link_libraries(OcelotServer ${PROJECT_NAME} hydrazine)
 
 add_executable(PTXOptimizer src/tools/PTXOptimizer.cpp)
-set_property(TARGET PTXOptimizer PROPERTY CXX_STANDARD 11)
+set_property(TARGET PTXOptimizer PROPERTY CXX_STANDARD 14)
 target_link_libraries(PTXOptimizer ${PROJECT_NAME} hydrazine)
 
 ocelot_add_tests(analysis)

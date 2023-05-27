@@ -62,7 +62,7 @@ llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
 		llvm::InitializeNativeTargetAsmParser();
 		llvm::InitializeNativeTargetAsmPrinter();
 
-		auto m = llvm::make_unique<llvm::Module>("Ocelot-LLVM-JIT-Blank Module", llvm::getGlobalContext());
+		auto m = std::make_unique<llvm::Module>("Ocelot-LLVM-JIT-Blank Module", llvm::getGlobalContext());
 		_module = m.get();
 		assertM(_module != 0, "Creating global module failed.");
 
