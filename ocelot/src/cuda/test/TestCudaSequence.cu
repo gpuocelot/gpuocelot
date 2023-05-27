@@ -68,9 +68,9 @@ int main(int argc, char *arg[]) {
 
 	size_t bytes = sizeof(int)*N;
 	
-	cudaError_t result = cudaThreadSynchronize();
+	cudaError_t result = cudaDeviceSynchronize();
 	if (result != cudaSuccess) {
-		printf("cudaThreadSynchronize() = %s\n", cudaGetErrorString(result));
+		printf("cudaDeviceSynchronize() = %s\n", cudaGetErrorString(result));
 		printf("Failed to load CUDA library:\n%s\n", dlerror());
 		return 0;
 	}

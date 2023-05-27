@@ -189,7 +189,7 @@ int main(int argc, char **arg) {
 	dim3 block(width, height, 1);
 	kernelMemset<<< grid, block >>>(out_data_gpu, width, height, 0.0f);
 	kernel<<< grid, block >>>(out_data_gpu, width, height);
-	cudaThreadSynchronize();
+	cudaDeviceSynchronize();
 	
 	result = cudaMemcpy(out_data_host, out_data_gpu, bytes, cudaMemcpyDeviceToHost);
 	if (result != cudaSuccess) {

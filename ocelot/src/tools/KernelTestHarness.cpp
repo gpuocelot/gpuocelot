@@ -103,7 +103,7 @@ void util::KernelTestHarness::execute() {
 	
 	ocelot::launch(state.launch.id, state.launch.kernelName);
 	
-	result = cudaThreadSynchronize();
+	result = cudaDeviceSynchronize();
 	if (result != cudaSuccess) {
 		report("Kernel execution FAILED");
 	}

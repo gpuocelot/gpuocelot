@@ -115,7 +115,7 @@ int main(int argc, char **arg) {
 	
 	kernel<<< grid, block >>>(out_data_gpu, width);
 
-	cudaThreadSynchronize();
+	cudaDeviceSynchronize();
 
 	cudaMemcpy(out_data_host, out_data_gpu, bytes, cudaMemcpyDeviceToHost);
 	cudaFreeArray(in_data_gpu);

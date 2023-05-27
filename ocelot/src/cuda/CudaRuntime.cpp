@@ -3138,8 +3138,8 @@ cudaError_t cuda::CudaRuntime::cudaDeviceReset(void) {
     return _setLastError(cudaSuccess);
 }
 
-cudaError_t cuda::CudaRuntime::cudaDeviceSynchronize(void) {
-	return cudaThreadSynchronize();
+cudaError_t cuda::CudaRuntime::cudaThreadSynchronize(void) {
+	return cudaDeviceSynchronize();
 }
 
 cudaError_t cuda::CudaRuntime::cudaDeviceSetLimit(enum cudaLimit limit,
@@ -3189,7 +3189,7 @@ cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaThreadSynchronize(void) {
+cudaError_t cuda::CudaRuntime::cudaDeviceSynchronize(void) {
 	cudaError_t result = cudaSuccess;
 	_wait();
 	_acquire();

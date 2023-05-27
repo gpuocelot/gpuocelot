@@ -4944,7 +4944,7 @@ namespace test
 				dim3( test.threads, 1, 1 ), 0, 0 );
 			ocelot::launch(test.name, "test");
 			
-			cudaThreadSynchronize();
+			cudaDeviceSynchronize();
 			
 			cudaMemcpy(outputBlock, (void*)deviceOutput, 
 				outputSize, cudaMemcpyDeviceToHost);

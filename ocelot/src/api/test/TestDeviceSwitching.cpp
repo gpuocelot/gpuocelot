@@ -189,7 +189,7 @@ namespace test
 			cudaConfigureCall( dim3( 1, 1, 1 ), dim3( 1, 1, 1 ), 0, 0 );
 			cudaSetupArgument( &p, sizeof( long long unsigned int ), 0 );
 			ocelot::launch( "simpleKernels", "increment" );
-			cudaThreadSynchronize();
+			cudaDeviceSynchronize();
 		}
 		
 		if( devices > 0 )

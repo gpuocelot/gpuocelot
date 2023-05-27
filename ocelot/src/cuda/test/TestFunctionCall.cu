@@ -34,7 +34,7 @@ int main() {
 	}
 	cudaMemcpy(A_gpu, A_cpu, bytes, cudaMemcpyHostToDevice);
 	kernel<<< grid, block >>>(A_gpu, N);
-	cudaThreadSynchronize();
+	cudaDeviceSynchronize();
 	cudaMemcpy(A_cpu, A_gpu, bytes, cudaMemcpyDeviceToHost);
 	
 	for (int i = 0; i < N; i++) {
