@@ -69,5 +69,5 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-10 40 && \
 	update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-10 40
 
 RUN apt-get install --no-install-recommends -y \
-	llvm-10-dev
+	llvm-11-dev
 
