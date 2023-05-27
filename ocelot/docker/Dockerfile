@@ -17,17 +17,13 @@ RUN git clone https://gitlab.kitware.com/cmake/cmake.git && \
 ENV BOOST_VERSION=1_63_0
 RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.63.0/source/boost_${BOOST_VERSION}.tar.gz
 
-FROM ubuntu:16.04 AS builder
+FROM ubuntu:18.04 AS builder
 
 ENV DEBIAN_FRONTEND noninteractive
 
 COPY --from=downloader /cmake /cmake
 
-RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C69C6EC64E1C6DA && \
-    printf "deb http://ppa.launchpad.net/hparch/gpuocelot/ubuntu trusty main" \
-    > /etc/apt/sources.list.d/hparch-gpuocelot-trusty.list && \
-    apt-get update && apt-get install --no-install-recommends -y \
+RUN apt-get update && apt-get install --no-install-recommends -y \
         libssl-dev build-essential
 
 WORKDIR /cmake
@@ -47,7 +43,7 @@ RUN tar xfz boost_${BOOST_VERSION}.tar.gz \
         && cd .. \
         && rm -rf boost_${BOOST_VERSION}
 
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -55,11 +51,7 @@ COPY --from=builder /cmake_install/ /usr/local/
 COPY --from=builder /boost_install/ /usr/local/
 
 # Avoid ERROR: invoke-rc.d: policy-rc.d denied execution of start.
-RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C69C6EC64E1C6DA && \
-    printf "deb http://ppa.launchpad.net/hparch/gpuocelot/ubuntu trusty main" \
-    > /etc/apt/sources.list.d/hparch-gpuocelot-trusty.list && \
-    apt-get update && apt-get install --no-install-recommends -y \
+RUN apt-get update && apt-get install --no-install-recommends -y \
         freeglut3-dev \
         software-properties-common llvm-3.9-dev \
         libglew-dev \
@@ -67,6 +59,7 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
         make \
         patch \
 	fish \
+        less \
         vim && \
     add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
     apt-get update && apt-get install --no-install-recommends -y \
@@ -75,5 +68,3 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-9 40 && \
 	update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-9 40
 
-#COPY llvm-3.7.patch /
-#RUN patch -p1 < /llvm-3.7.patch
