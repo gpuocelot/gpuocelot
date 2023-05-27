@@ -49,7 +49,7 @@ int main(int argc, char *arg[]) {
 		}
 	
 		float pi = 3.14159f;
-		if (cudaMemcpyToSymbol("Pi", &pi, sizeof(float), 0, 
+		if (cudaMemcpyToSymbol(Pi, &pi, sizeof(float), 0, 
 			cudaMemcpyHostToDevice) != cudaSuccess) {
 		
 			printf("cudaMemcpyToSymbol() failed to copy 4 bytes to symbol 'Pi'\n");
@@ -64,7 +64,7 @@ int main(int argc, char *arg[]) {
 			printf(" [3]\n");
 		}
 		float copy_pi = 0;
-		if (cudaMemcpyFromSymbol(&copy_pi, "Pi", sizeof(float), 0,
+		if (cudaMemcpyFromSymbol(&copy_pi, Pi, sizeof(float), 0,
 			cudaMemcpyDeviceToHost) != cudaSuccess) {
 		
 			printf("cudaMemcpyFromSymbol() failed to copy 4 bytes from symbol 'Pi'\n");
@@ -106,7 +106,7 @@ int main(int argc, char *arg[]) {
 			printf("[5]\n");
 		}
 		float *pi_gpu = 0;
-		if (cudaGetSymbolAddress((void **)&pi_gpu, "Pi") != cudaSuccess) {
+		if (cudaGetSymbolAddress((void **)&pi_gpu, Pi) != cudaSuccess) {
 			printf("failed to get address of global variable 'Pi'\n");
 			cudaFree(results_gpu);
 			free(results_cpu);
