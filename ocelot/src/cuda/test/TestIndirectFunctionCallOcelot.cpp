@@ -44,16 +44,15 @@ int main(int argc, char *arg[]) {
 			(int)bytes);
 		return 2;
 	}
-	
-	std::ifstream file("ocelot/cuda/test/functions/indirectCall.ptx");
-	ocelot::registerPTXModule(file, "indirectCall.cu");
+
+	ocelot::registerPTXModuleEmbedded("IndirectCallDriver_ptx");
 	
 	dim3 block(32, 1);
 	dim3 grid((N + block.x - 1) / block.x, 1);
 	cudaConfigureCall(grid, block);
 	cudaSetupArgument(&A_gpu, sizeof(A_gpu), 0);
 	cudaSetupArgument(&P, sizeof(P), sizeof(A_gpu));
-	ocelot::launch("indirectCall.cu", "kernelEntry");
+	ocelot::launch("IndirectCallDriver_ptx", "kernelEntry");
 	
 	result = cudaDeviceSynchronize();
 	if (result != cudaSuccess) {

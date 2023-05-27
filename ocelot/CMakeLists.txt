@@ -400,6 +400,9 @@ res_embed(TARGET ${PROJECT_NAME}_cuda_TestCudaGenericMemory NAME "generic_ptx"
 res_embed(TARGET ${PROJECT_NAME}_cuda_TestIndirectFunctionCallDriver NAME "IndirectCallDriver_ptx"
 	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestIndirectFunctionCallDriver.ptx KEYWORD)
 
+res_embed(TARGET ${PROJECT_NAME}_cuda_TestIndirectFunctionCallOcelot NAME "IndirectCallDriver_ptx"
+	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestIndirectFunctionCallDriver.ptx KEYWORD)
+
 #++ -o .release_build/ocelot/TestCudaGenericMemory
 #++ -o .release_build/ocelot/TestCudaGlobals
 #++ -o .release_build/ocelot/TestCudaMalloc
