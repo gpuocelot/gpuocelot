@@ -7,9 +7,3 @@
 [submodule "ocelot/ThirdParty/cuda-fatbin-decompression"]
 	path = ocelot/ThirdParty/cuda-fatbin-decompression
 	url = https://github.com/gpuocelot/cuda-fatbin-decompression.git
-[submodule "ocelot/ThirdParty/llvm/hydrazine"]
-	path = ocelot/ThirdParty/llvm/ThirdParty/hydrazine
-	url = https://github.com/gpuocelot/hydrazine.git
-[submodule "ocelot/ThirdParty/llvm/ThirdParty/res_embed"]
-	path = ocelot/ThirdParty/llvm/ThirdParty/res_embed
-	url = https://github.com/dmikushin/res_embed.git

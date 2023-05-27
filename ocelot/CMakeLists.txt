@@ -6,57 +6,29 @@ if ("x${CMAKE_BUILD_TYPE}" STREQUAL "x")
 set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+list(APPEND CMAKE_CXX_FLAGS -fexceptions)
+
+list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
+
 # in order to retain the PTX code in the text executables,
 # the target GPU architecture has to be virtual.
 set(CMAKE_CUDA_ARCHITECTURES 35-virtual)
 
 set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 find_package(FLEX 2.5 REQUIRED)
 find_package(BISON 2.5 REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(LLVM REQUIRED CONFIG)
+find_package(ZLIB REQUIRED)
 
-#add_subdirectory(ThirdParty/llvm)
-
-if (NOT TARGET ${PROJECT_NAME}_llvm)
 add_subdirectory(ThirdParty/hydrazine)
 add_subdirectory(ThirdParty/res_embed EXCLUDE_FROM_ALL)
 
 include(ResEmbed)
-else()
-find_package(LLVM 3.4 REQUIRED)
 
-function(string_starts_with str search result)
-	string(FIND "${str}" "${search}" out)
-	if("${out}" EQUAL 0)
-		set(${result} TRUE PARENT_SCOPE)
-	else()
-		set(${result} FALSE PARENT_SCOPE)
-	endif()
-endfunction()
-
-string(REPLACE " " ";" LLVM_FLAGS_LIST "${LLVM_CXXFLAGS}")
-
-foreach(ARG ${LLVM_FLAGS_LIST})
-	set(STARTS FALSE)
-	string_starts_with("${ARG}" "-D" STARTS)
-	if (STARTS)
-		# Must ignore -DNDEBUG, otherwise our assertions in Ocelot
-		# will always be disabled.
-		string_starts_with("${ARG}" "-DNDEBUG" STARTS)
-		if (NOT STARTS)
-			list(APPEND ${PROJECT_NAME}_DEFINITIONS ${ARG})
-		endif()
-	else()
-		# TODO Currently, Ocelot uses typeid, while LLVM comes with -fno-rtti
-		# list(APPEND ${PROJECT_NAME}_CXXFLAGS ${ARG})
-	endif()
-endforeach()
-
-endif()
+separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${PROJECT_NAME}_DEFINITIONS)
 
 set(${PROJECT_NAME}_INCLUDE_DIRS
 	${LLVM_INCLUDE_DIRS}
@@ -65,19 +37,18 @@ set(${PROJECT_NAME}_INCLUDE_DIRS
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_BINARY_DIR})
 
+file(GLOB LLVM_LIBRARIES ${LLVM_LIBRARY_DIR}/*.a)
+
 set(${PROJECT_NAME}_LINK_LIBRARIES
-	${LLVM_LIBRARIES}
+	-Wl,--gc-sections -Wl,--start-group ${LLVM_LIBRARIES} -Wl,--end-group
 	${GLEW_LIBRARIES}
 	hydrazine
 	Boost::system
 	Boost::filesystem
+	ZLIB::ZLIB
 	tinfo
 	${CMAKE_DL_LIBS})
 
-if (NOT TARGET ${PROJECT_NAME}_llvm)
-list(APPEND ${PROJECT_NAME}_LINK_LIBRARIES ${PROJECT_NAME}::llvm)
-endif()
-	
 set(${PROJECT_NAME}_LIBRARY_DIRS
 	${LLVM_LIBRARY_DIRS})
 
@@ -220,6 +191,38 @@ target_include_directories(${PROJECT_NAME}_executive PRIVATE ${${PROJECT_NAME}_I
 target_link_libraries(${PROJECT_NAME}_executive PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_executive PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
+add_library(${PROJECT_NAME}_ir STATIC
+        src/ir/ControlFlowGraph.cpp
+        src/ir/Dim3.cpp
+        src/ir/ExternalFunctionSet.cpp
+        src/ir/Global.cpp
+        src/ir/ILInstruction.cpp
+        src/ir/ILKernel.cpp
+        src/ir/ILOperand.cpp
+        src/ir/ILStatement.cpp
+        src/ir/IRKernel.cpp
+        src/ir/Instruction.cpp
+        src/ir/Kernel.cpp
+        src/ir/LLVMInstruction.cpp
+        src/ir/LLVMKernel.cpp
+        src/ir/LLVMModuleManager.cpp
+        src/ir/LLVMState.cpp
+        src/ir/LLVMStatement.cpp
+        src/ir/Local.cpp
+        src/ir/Module.cpp
+        src/ir/PTXInstruction.cpp
+        src/ir/PTXKernel.cpp
+        src/ir/PTXOperand.cpp
+        src/ir/PTXStatement.cpp
+        src/ir/Parameter.cpp
+        src/ir/Texture.cpp)
+set_property(TARGET ${PROJECT_NAME}_ir PROPERTY CXX_STANDARD 14)
+set_property(TARGET ${PROJECT_NAME}_ir PROPERTY POSITION_INDEPENDENT_CODE ON)
+target_compile_definitions(${PROJECT_NAME}_ir PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
+target_include_directories(${PROJECT_NAME}_ir PUBLIC ${${PROJECT_NAME}_INCLUDE_DIRS})
+target_link_directories(${PROJECT_NAME}_ir PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
+target_link_libraries(${PROJECT_NAME}_ir PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES} res::embed::static)
+
 set(LEXER_OUT "${CMAKE_CURRENT_BINARY_DIR}/ptx.cpp")
 set(PARSER_OUT "${CMAKE_CURRENT_BINARY_DIR}/ptxgrammar.cpp")
 
@@ -328,38 +331,6 @@ target_include_directories(${PROJECT_NAME}_util PRIVATE ${${PROJECT_NAME}_INCLUD
 target_link_libraries(${PROJECT_NAME}_util PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_util PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
-# TODO Idiomatic prefix&suffix.
-set(${PROJECT_NAME}_llvm ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_llvm/lib${PROJECT_NAME}_llvm.so)
-
-file(GLOB_RECURSE ${PROJECT_NAME}_llvm_SRCS
-	"${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/CMakeLists.txt"
-	"${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/include/*"
-	"${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/src/*")
-add_custom_command(OUTPUT ${${PROJECT_NAME}_llvm}
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile ${${PROJECT_NAME}_llvm_SRCS}
-	COMMAND docker build -f ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile -t ${PROJECT_NAME}_llvm ${CMAKE_CURRENT_SOURCE_DIR}/docker
-	COMMAND docker run --rm --user "${UID}:${GID}"
-		-v${CMAKE_CURRENT_SOURCE_DIR}/:/${CMAKE_CURRENT_SOURCE_DIR}
-		${PROJECT_NAME}_llvm sh ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/build.sh
-			${CMAKE_BUILD_TYPE} ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_llvm
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	COMMENT "Building ${PROJECT_NAME}_llvm in a Docker container")
-
-add_custom_target(${PROJECT_NAME}_llvm_docker
-	DEPENDS ${${PROJECT_NAME}_llvm})
-
-add_custom_target(docker
-	COMMAND docker build -f ${CMAKE_CURRENT_SOURCE_DIR}/docker/Dockerfile -t ${PROJECT_NAME}_llvm ${CMAKE_CURRENT_SOURCE_DIR}/docker
-	COMMAND COMMAND docker run --rm -it --user "${UID}:${GID}"
-                -v${CMAKE_CURRENT_SOURCE_DIR}/:/${CMAKE_CURRENT_SOURCE_DIR}
-                ${PROJECT_NAME}_llvm fish)
-
-add_library(${PROJECT_NAME}_llvm SHARED IMPORTED)
-set_target_properties(${PROJECT_NAME}_llvm PROPERTIES IMPORTED_LOCATION ${${PROJECT_NAME}_llvm})
-set_target_properties(${PROJECT_NAME}_llvm PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/llvm/include)
-add_library(${PROJECT_NAME}::llvm ALIAS ${PROJECT_NAME}_llvm)
-add_dependencies(${PROJECT_NAME}_llvm ${PROJECT_NAME}_llvm_docker)
-
 add_library(${PROJECT_NAME} SHARED src/ocelot.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -369,6 +340,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	${PROJECT_NAME}_cal
 	${PROJECT_NAME}_cuda
 	${PROJECT_NAME}_executive
+	${PROJECT_NAME}_ir
 	${PROJECT_NAME}_parser
 	${PROJECT_NAME}_trace
 	${PROJECT_NAME}_transforms
@@ -403,6 +375,7 @@ ocelot_add_tests(api)
 ocelot_add_tests(cal)
 ocelot_add_tests(cuda)
 ocelot_add_tests(executive)
+ocelot_add_tests(ir)
 ocelot_add_tests(parser)
 ocelot_add_tests(trace)
 ocelot_add_tests(transforms)

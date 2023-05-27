@@ -667,7 +667,7 @@ namespace test
 		i.indices.push_back( 1 );
 
 		std::string reference = 
-			std::string( "%vptr = getelementptr { i32, < 2 x i8 > }* %svptr" ) 
+			std::string( "%vptr = getelementptr { i32, < 2 x i8 > }, { i32, < 2 x i8 > }* %svptr" ) 
 			+ ", i32 0, i32 1, i32 1";
 		if( !check( i, reference ) ) return false;
 		
@@ -681,7 +681,7 @@ namespace test
 		i.indices.push_back( 0 );
 		i.indices.push_back( 1 );
 				
-		reference = "%eptr = getelementptr [ 12 x i8 ]* %aptr, i32 0, i32 1";
+		reference = "%eptr = getelementptr [ 12 x i8 ], [ 12 x i8 ]* %aptr, i32 0, i32 1";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Getelementptr Instruction Passed\n";
@@ -825,7 +825,7 @@ namespace test
 		i.a.type.category = Type::Pointer;
 		i.a.type.type = Instruction::I32;
 		
-		std::string reference = "%val = load i32* %ptr";
+		std::string reference = "%val = load i32, i32* %ptr";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Load Instruction Passed\n";
