@@ -682,8 +682,7 @@ CUresult cuda::CudaDriverFrontend::cuModuleLoad(CUmodule *cuModule, const char *
 
 CUresult cuda::CudaDriverFrontend::cuModuleLoadData(CUmodule *module, 
 	const void *image) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+	return cuModuleLoadDataEx(module, image, 0, nullptr, nullptr);
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleLoadDataEx(CUmodule *cuModule, 

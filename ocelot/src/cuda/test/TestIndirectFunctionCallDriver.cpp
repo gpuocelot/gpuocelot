@@ -10,6 +10,8 @@
 #include <cstdio>
 #include <ocelot/cuda/cuda.h>
 
+#include "res_embed.h"
+
 int main(int argc, char *arg[]) {
 
 	const int P = 0;
@@ -43,8 +45,10 @@ int main(int argc, char *arg[]) {
 		return 1;
 	}
 
-	// TODO cuModuleLoadEx	
-	result = cuModuleLoad(&module, "ocelot/cuda/test/functions/indirectCallDriver.ptx");
+	size_t size = 0;
+	auto IndirectCallDriver_ptx = res::embed::get("IndirectCallDriver_ptx", &size);
+	std::string ptx(IndirectCallDriver_ptx, size);
+	result = cuModuleLoadData(&module, ptx.c_str());
 	if (result != CUDA_SUCCESS) {
 		printf("cuModuleLoad() failed: %d\n", (int)result);
 		return 1;
