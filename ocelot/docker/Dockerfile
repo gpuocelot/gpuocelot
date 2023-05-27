@@ -53,7 +53,7 @@ COPY --from=builder /boost_install/ /usr/local/
 # Avoid ERROR: invoke-rc.d: policy-rc.d denied execution of start.
 RUN apt-get update && apt-get install --no-install-recommends -y \
         freeglut3-dev \
-        software-properties-common llvm-7-dev \
+        software-properties-common llvm-8-dev \
         libglew-dev \
         libz-dev \
         make \
