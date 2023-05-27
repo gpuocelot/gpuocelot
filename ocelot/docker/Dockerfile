@@ -17,7 +17,7 @@ RUN git clone https://gitlab.kitware.com/cmake/cmake.git && \
 ENV BOOST_VERSION=1_63_0
 RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.63.0/source/boost_${BOOST_VERSION}.tar.gz
 
-FROM ubuntu:18.04 AS builder
+FROM ubuntu:20.04 AS builder
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -43,7 +43,7 @@ RUN tar xfz boost_${BOOST_VERSION}.tar.gz \
         && cd .. \
         && rm -rf boost_${BOOST_VERSION}
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -53,7 +53,7 @@ COPY --from=builder /boost_install/ /usr/local/
 # Avoid ERROR: invoke-rc.d: policy-rc.d denied execution of start.
 RUN apt-get update && apt-get install --no-install-recommends -y \
         freeglut3-dev \
-        software-properties-common llvm-6.0-dev \
+        software-properties-common llvm-7-dev \
         libglew-dev \
         libz-dev \
         make \

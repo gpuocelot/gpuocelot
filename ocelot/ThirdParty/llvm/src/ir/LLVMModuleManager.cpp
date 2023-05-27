@@ -39,6 +39,7 @@
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Transforms/Scalar/GVN.h>
+#include <llvm/Transforms/InstCombine/InstCombine.h>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
