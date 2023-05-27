@@ -4,6 +4,20 @@
 
 We make Ocelot great again: yes, you can compile it in Ubuntu 22.04 with recent version of CUDA, and most of the tests are passing (see below).
 
+## Features
+
+* PTX 2.2 and Fermi device architecture: Floating point results should be within the ULP limits in the PTX ISA manual. Over 500 unit tests verify that the behaviour matches NVIDIA devices.
+
+* Four backends: A functional PTX emulator. A PTX to LLVM to x86/ARM JIT. A PTX to CAL JIT for AMD devices (beta). A PTX to PTX JIT for NVIDIA devices.
+
+* A full-featured PTX 2.2 IR: An analysis/optimization pass interface over PTX (Control flow graph, dataflow graph, dominator/postdominator trees, structured control tree). Optimizations can be plugged in as modules.
+
+* Correctness checking tools: A memory checker (detects unaligned and out of bounds accesses). A race detector. An interactive debugger (allows stepping through PTX instructions).
+
+* An instruction trace analyzer interface: Allows user-defined modules to receive callbacks when PTX instructions are executed. Can be used to compute metrics over applications or perform correctness checks.
+
+* A CUDA API frontend: Existing CUDA programs can be directly linked against Ocelot. Device pointers can be shared across host threads. Multiple devices can be controlled from the same host thread (cudaSetDevice can be called multiple times).
+
 ## Building
 
 ```
