@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
 project(gpuocelot C CXX CUDA ASM)
 
+option(BUILD_LLVM "Use LLVM compiled from sources: default OFF" OFF)
+
 if ("x${CMAKE_BUILD_TYPE}" STREQUAL "x")
 set(CMAKE_BUILD_TYPE "Release")
 endif()
 
 list(APPEND CMAKE_CXX_FLAGS -fexceptions)
-
-list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
 
 # in order to retain the PTX code in the text executables,
 # the target GPU architecture has to be virtual.
@@ -20,8 +20,195 @@ find_package(Boost COMPONENTS system filesystem REQUIRED)
 find_package(FLEX 2.5 REQUIRED)
 find_package(BISON 2.5 REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(LLVM REQUIRED CONFIG)
 find_package(ZLIB REQUIRED)
+
+if ("x${BUILD_LLVM}" STREQUAL "xOFF")
+find_package(LLVM REQUIRED CONFIG)
+
+file(GLOB LLVM_LIBRARIES ${LLVM_LIBRARY_DIR}/*.a)
+else()
+include(ExternalProject)
+
+find_package(Python3 3.4 REQUIRED)
+set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
+
+set(LLVM_SOURCE_DIR "")
+set(LLVM_URL
+    "https://github.com/gpuocelot/gpuocelot/releases/download/llvm15/llvm-15.0.7.src.tar.xz"
+    CACHE STRING "URL of LLVM archive to use."
+)
+set(LLVM_ARCHIVE_SHA256
+    "3734b39bcdc6cff0c77cb2276ee5714b50ce6b95565b289bcfaa85f1cd1ec54a"
+    CACHE STRING ""
+)
+set(LLVM_DOWNLOAD_NAME "llvm-15.0.7.src.tar.xz")
+set(LLVM_INSTALL_DIR ${CMAKE_BINARY_DIR}/llvm)
+
+if ("x${CMAKE_BUILD_TYPE}" STREQUAL "xDebug")
+set(IS_DEBUG_BUILD ON)
+else()
+set(IS_DEBUG_BUILD OFF)
+endif()
+
+# https://github.com/avast/retdec/blob/master/CMakeLists.txt
+ExternalProject_Add(llvm-project
+	SOURCE_DIR ${LLVM_SOURCE_DIR}
+	URL ${LLVM_URL}
+	URL_HASH SHA256=${LLVM_ARCHIVE_SHA256}
+	DOWNLOAD_NAME ${LLVM_DOWNLOAD_NAME}
+	CMAKE_ARGS
+		-DCMAKE_INSTALL_PREFIX=${LLVM_INSTALL_DIR}
+		-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+		-DCMAKE_CXX_FLAGS_RELEASE=${CMAKE_CXX_FLAGS_RELEASE}
+		-DCMAKE_CXX_FLAGS_DEBUG=${CMAKE_CXX_FLAGS_DEBUG}
+
+		# Force Python3.
+		-DPYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}
+
+		# Use provided libtool
+		-DCMAKE_LIBTOOL=${CMAKE_LIBTOOL}
+
+		# Targets to be build.
+		-DLLVM_TARGETS_TO_BUILD=host
+
+		# Our tools depending on LLVM require RTTI, so build LLVM with it.
+		-DLLVM_REQUIRES_RTTI=YES
+
+		# When building in the debug mode (=> assertions are enabled), we
+		# have to build LLVM with assertions. This prevents link errors
+		# when building the middle-end and back-end (see
+		# https://github.com/oclint/oclint/issues/129).
+		-DLLVM_ENABLE_ASSERTIONS=${IS_DEBUG_BUILD}
+
+		# Disable the emission of warnings, which are useless since we do
+		# not modify the LLVM sources (of course, except for a few
+		# exceptions).
+		-DLLVM_ENABLE_WARNINGS=NO
+
+		# Enable exceptions. We want to get std::bad_alloc().
+		# Without this, LLVM aborts instead of throwing.
+		-DLLVM_ENABLE_RTTI=ON
+		-DLLVM_ENABLE_EH=ON
+
+		# Disable the generation of targets for tests (we don't need them).
+		-DLLVM_INCLUDE_TOOLS=OFF
+		-DLLVM_INCLUDE_UTILS=OFF
+		-DLLVM_INCLUDE_RUNTIMES=OFF
+		-DLLVM_INCLUDE_EXAMPLES=OFF
+		-DLLVM_INCLUDE_TESTS=OFF
+		-DLLVM_INCLUDE_GO_TESTS=OFF
+		-DLLVM_INCLUDE_BENCHMARKS=OFF
+		-DLLVM_INCLUDE_DOCS=OFF
+
+		# Disable build of unnecessary LLVM parts.
+		-DLLVM_BUILD_TOOLS=OFF
+		-DLLVM_BUILD_UTILS=OFF
+		-DLLVM_BUILD_RUNTIMES=OFF
+		-DLLVM_BUILD_RUNTIME=OFF
+		-DLLVM_BUILD_EXAMPLES=OFF
+		-DLLVM_BUILD_TESTS=OFF
+		-DLLVM_BUILD_BENCHMARKS=OFF
+		-DLLVM_BUILD_DOCS=OFF
+		-DLLVM_ENABLE_BINDINGS=OFF
+		# We don't want this so that we don't have to link with tinfo.
+		# It looks like terminal colors are working even without this.
+		-DLLVM_ENABLE_TERMINFO=OFF
+
+		# Force the use of the same compiler as used to build the top-level
+		# project. Otherwise, the external project may pick up a different
+		# compiler, which may result in link errors.
+		"${CMAKE_C_COMPILER_OPTION}"
+		"${CMAKE_CXX_COMPILER_OPTION}"
+		-DCMAKE_POSITION_INDEPENDENT_CODE=${CMAKE_POSITION_INDEPENDENT_CODE})
+
+set(LLVM_INCLUDE_DIRS ${LLVM_INSTALL_DIR}/include)
+set(LLVM_LIBRARY_DIR ${LLVM_INSTALL_DIR}/lib)
+set(LLVM_DEFINITIONS_LIST "")
+
+set(LLVM_LIBRARIES
+	LLVMMIRParser
+	LLVMInterfaceStub
+	LLVMFrontendOpenACC
+	LLVMDWARFLinker
+	LLVMLinker
+	LLVMDebugInfoGSYM
+	LLVMAsmPrinter
+	LLVMProfileData
+	LLVMFuzzerCLI
+	LLVMOption
+	LLVMX86Disassembler
+	LLVMRemarks
+	LLVMCodeGen
+	LLVMCore
+	LLVMX86CodeGen
+	LLVMAggressiveInstCombine
+	LLVMRuntimeDyld
+	LLVMInterpreter
+	LLVMMCA
+	LLVMDebuginfod
+	LLVMBitReader
+	LLVMSupport
+	LLVMCFGuard
+	LLVMTableGenGlobalISel
+	LLVMObjCARCOpts
+	LLVMX86Info
+	LLVMLineEditor
+	LLVMCoverage
+	LLVMFuzzMutate
+	LLVMX86Desc
+	LLVMDlltoolDriver
+	LLVMBinaryFormat
+	LLVMOrcJIT
+	LLVMExtensions
+	LLVMBitWriter
+	LLVMGlobalISel
+	LLVMFileCheck
+	LLVMAnalysis
+	LLVMSelectionDAG
+	LLVMWindowsManifest
+	LLVMJITLink
+	LLVMTarget
+	LLVMPasses
+	LLVMipo
+	LLVMMCDisassembler
+	LLVMIRReader
+	LLVMSymbolize
+	LLVMMC
+	LLVMX86TargetMCA
+	LLVMObjCopy
+	LLVMMCJIT
+	LLVMLTO
+	LLVMInstrumentation
+	LLVMCoroutines
+	LLVMDebugInfoMSF
+	LLVMDebugInfoPDB
+	LLVMDWP
+	LLVMMCParser
+	LLVMXRay
+	LLVMInstCombine
+	LLVMScalarOpts
+	LLVMLibDriver
+	LLVMVectorize
+	LLVMAsmParser
+	LLVMTableGen
+	LLVMOrcTargetProcess
+	LLVMObjectYAML
+	LLVMDebugInfoDWARF
+	LLVMExecutionEngine
+	LLVMDebugInfoCodeView
+	LLVMFrontendOpenMP
+	LLVMOrcShared
+	LLVMTextAPI
+	LLVMX86AsmParser
+	LLVMDemangle
+	LLVMTransformUtils
+	LLVMBitstreamReader
+	LLVMWindowsDriver
+	LLVMObject)
+
+add_library(llvm INTERFACE)
+add_dependencies(llvm llvm-project)
+endif()
 
 add_subdirectory(ThirdParty/hydrazine)
 add_subdirectory(ThirdParty/res_embed EXCLUDE_FROM_ALL)
@@ -37,10 +224,7 @@ set(${PROJECT_NAME}_INCLUDE_DIRS
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_BINARY_DIR})
 
-file(GLOB LLVM_LIBRARIES ${LLVM_LIBRARY_DIR}/*.a)
-
 set(${PROJECT_NAME}_LINK_LIBRARIES
-	-Wl,--gc-sections -Wl,--start-group ${LLVM_LIBRARIES} -Wl,--end-group
 	${GLEW_LIBRARIES}
 	hydrazine
 	Boost::system
@@ -49,8 +233,11 @@ set(${PROJECT_NAME}_LINK_LIBRARIES
 	tinfo
 	${CMAKE_DL_LIBS})
 
-set(${PROJECT_NAME}_LIBRARY_DIRS
-	${LLVM_LIBRARY_DIRS})
+if ("x${BUILD_LLVM}" STREQUAL "xON")
+list(APPEND ${PROJECT_NAME}_LINK_LIBRARIES llvm)
+endif()
+
+set(${PROJECT_NAME}_LIBRARY_DIRS ${LLVM_LIBRARY_DIR})
 
 include(CTest)
 
@@ -347,8 +534,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	${PROJECT_NAME}_translator
 	${PROJECT_NAME}_util
 	"-Wl,--no-whole-archive")
-target_link_libraries(${PROJECT_NAME} PUBLIC
-	${${PROJECT_NAME}_LINK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE -Wl,--gc-sections -Wl,--start-group ${LLVM_LIBRARIES} -Wl,--end-group)
+target_link_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 
 add_executable(LoadPtx src/tools/LoadPtx.cpp)
 set_property(TARGET LoadPtx PROPERTY CXX_STANDARD 14)
