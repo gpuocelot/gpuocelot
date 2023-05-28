@@ -4,9 +4,6 @@
 	\brief The header file for the LLVMState class.
 */
 
-#ifndef LLVM_STATE_CPP_INCLUDED
-#define LLVM_STATE_CPP_INCLUDED
-
 // Ocelot Includes
 #include <ocelot/executive/LLVMState.h>
 
@@ -43,52 +40,35 @@ namespace executive
 
 llvm::ExecutionEngine* LLVMState::jit()
 {
-	return _wrapper.jit();
+	static LLVMState sw;
+	return sw._jit;
 }
 
-LLVMState::StateWrapper::StateWrapper() : _jit(0), _module(0)
+LLVMState::LLVMState() : _jit(0), _module(0)
 {
+	report("Bringing the LLVM JIT-Compiler online.");
 
-}
+	// https://stackoverflow.com/a/38801376/4063520	
+	llvm::InitializeNativeTarget();
+	llvm::InitializeNativeTargetAsmParser();
+	llvm::InitializeNativeTargetAsmPrinter();
 
-llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
-{
-	if(_jit == 0)
-	{
-		report("Bringing the LLVM JIT-Compiler online.");
+	auto m = std::make_unique<llvm::Module>("Ocelot-LLVM-JIT-Blank Module", llvm::getGlobalContext());
+	_module = m.get();
+	assertM(_module != 0, "Creating global module failed.");
 
-		// https://stackoverflow.com/a/38801376/4063520	
-		llvm::InitializeNativeTarget();
-		llvm::InitializeNativeTargetAsmParser();
-		llvm::InitializeNativeTargetAsmPrinter();
-
-		auto m = std::make_unique<llvm::Module>("Ocelot-LLVM-JIT-Blank Module", llvm::getGlobalContext());
-		_module = m.get();
-		assertM(_module != 0, "Creating global module failed.");
-
-		llvm::TargetOptions Opts;
-		std::unique_ptr<llvm::SectionMemoryManager> MemMgr(new llvm::SectionMemoryManager());
-		llvm::EngineBuilder factory(std::move(m));
-		factory.setEngineKind(llvm::EngineKind::JIT);
-		factory.setTargetOptions(Opts);
-		factory.setMCJITMemoryManager(std::move(MemMgr));
-		_jit = factory.create();
-		_jit->DisableLazyCompilation(true);
+	llvm::TargetOptions Opts;
+	std::unique_ptr<llvm::SectionMemoryManager> MemMgr(new llvm::SectionMemoryManager());
+	llvm::EngineBuilder factory(std::move(m));
+	factory.setEngineKind(llvm::EngineKind::JIT);
+	factory.setTargetOptions(Opts);
+	factory.setMCJITMemoryManager(std::move(MemMgr));
+	_jit = factory.create();
+	_jit->DisableLazyCompilation(true);
 	
-		assertM(_jit != 0, "Creating the JIT failed.");
-		report(" The JIT is alive.");
-	}
-	return _jit;
+	assertM(_jit != 0, "Creating the JIT failed.");
+	report(" The JIT is alive.");
 }
 
-LLVMState::StateWrapper::~StateWrapper()
-{
-	// no need to delete anything, llvm will handle it for us
-}
-
-LLVMState::StateWrapper LLVMState::_wrapper;
-
-}
-
-#endif
+} // namespace executive
 

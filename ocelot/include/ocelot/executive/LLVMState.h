@@ -23,32 +23,18 @@ public:
 	/*! \brief Get a reference to the jit */
 	static llvm::ExecutionEngine* jit();
 
-public:
-	/*! \brief A global singleton for the LLVM JIT */ 
-	static LLVMState llvmState;
+	LLVMState(LLVMState const&) = delete;
+	LLVMState& operator=(LLVMState const&) = delete;
 
 private:
-	class StateWrapper
-	{
-	public:
-		/*! \brief Build the jit */
-		StateWrapper();
-		/*! \brief Destroy the jit */
-		~StateWrapper();
+	/*! \brief Build the jit */
+	LLVMState();
 
-	public:
-		/*! \brief Get a reference to the jit */
-		llvm::ExecutionEngine* jit();
-
-	private:
-		/*! \brief LLVM JIT Engine */
-		llvm::ExecutionEngine* _jit;
-		/*! \brief LLVM fake mofule */
-		llvm::Module* _module;
-	};
+	/*! \brief LLVM JIT Engine */
+	llvm::ExecutionEngine* _jit;
 	
-private:
-	static StateWrapper _wrapper;
+	/*! \brief LLVM fake mofule */
+	llvm::Module* _module;
 };
 
 }
