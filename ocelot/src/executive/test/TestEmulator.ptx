@@ -1,5 +1,9 @@
 	.version 2.1
 	.target sm_20
+	// This PTX file uses 32-bit pointers, which is no longer used
+	// Therefore, we fix this PX file by hand to use 64-bit pointers,
+	// to make the tests happy.
+	.address_size 64
 	// compiled with /usr/local/cuda/open64/lib//be
 	// nvopencc 3.1 built on 2010-04-27
 
@@ -46,39 +50,11 @@
 	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
 
 
-	.entry _Z10k_sequencePii (
-		.param .u32 __cudaparm__Z10k_sequencePii_A,
-		.param .s32 __cudaparm__Z10k_sequencePii_N)
-	{
-	.reg .u32 %r<13>;
-	.reg .pred %p<3>;
-	.loc	17	5	0
-$LBB1__Z10k_sequencePii:
-	mov.u32 	%r1, %ctaid.x;
-	mov.u32 	%r2, %ntid.x;
-	mul.lo.u32 	%r3, %r1, %r2;
-	mov.u32 	%r4, %tid.x;
-	add.u32 	%r5, %r4, %r3;
-	ld.param.s32 	%r6, [__cudaparm__Z10k_sequencePii_N];
-	setp.le.s32 	%p1, %r6, %r5;
-	@%p1 bra 	$Lt_0_1026;
-	.loc	17	8	0
-	mul.lo.s32 	%r7, %r5, 2;
-	add.s32 	%r8, %r7, 1;
-	ld.param.u32 	%r9, [__cudaparm__Z10k_sequencePii_A];
-	mul.lo.u32 	%r10, %r5, 4;
-	add.u32 	%r11, %r9, %r10;
-	st.global.s32 	[%r11+0], %r8;
-$Lt_0_1026:
-	.loc	17	10	0
-	exit;
-$LDWend__Z10k_sequencePii:
-	} // _Z10k_sequencePii
-
 	.entry _Z17k_simple_sequencePi (
-		.param .u32 __cudaparm__Z17k_simple_sequencePi_A)
+		.param .u64 __cudaparm__Z17k_simple_sequencePi_A)
 	{
-	.reg .u32 %r<12>;
+	.reg .u32 %r<9>;
+	.reg .u64 %rd<4>;
 	.loc	17	12	0
 $LBB1__Z17k_simple_sequencePi:
 	.loc	17	14	0
@@ -89,10 +65,11 @@ $LBB1__Z17k_simple_sequencePi:
 	add.u32 	%r5, %r4, %r3;
 	mul.lo.s32 	%r6, %r5, 2;
 	add.s32 	%r7, %r6, 1;
-	ld.param.u32 	%r8, [__cudaparm__Z17k_simple_sequencePi_A];
-	mul.lo.u32 	%r9, %r5, 4;
-	add.u32 	%r10, %r8, %r9;
-	st.global.s32 	[%r10+0], %r7;
+	ld.param.u64	%rd1, [__cudaparm__Z17k_simple_sequencePi_A];
+	mul.lo.u32	%r8, %r5, 4;
+	cvt.u64.u32	%rd2, %r8;
+	add.u64		%rd3, %rd1, %rd2;
+	st.global.s32 	[%rd3], %r7;
 	.loc	17	15	0
 	exit;
 $LDWend__Z17k_simple_sequencePi:
