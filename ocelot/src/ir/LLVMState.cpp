@@ -75,11 +75,11 @@ LLVMState::LLVMState() : _jit(0), _context(0), _module(0)
 	assertM(_module != 0, "Creating global module failed.");
 
 	llvm::TargetOptions Opts;
-	std::unique_ptr<llvm::SectionMemoryManager> MemMgr(new llvm::SectionMemoryManager());
+	llvm::RTDyldMemoryManager* MemMgr = new llvm::SectionMemoryManager();
 	llvm::EngineBuilder factory(std::move(m));
 	factory.setEngineKind(llvm::EngineKind::JIT);
 	factory.setTargetOptions(Opts);
-	factory.setMCJITMemoryManager(std::move(MemMgr));
+	factory.setMCJITMemoryManager(std::unique_ptr<llvm::RTDyldMemoryManager>(MemMgr));
 	_jit = factory.create();
 	_jit->DisableLazyCompilation(true);
 	

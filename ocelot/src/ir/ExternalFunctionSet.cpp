@@ -118,9 +118,9 @@ static std::string getValueString(unsigned int value)
 	return stream.str();
 }
 
-static llvm::Function* jitFunction(
+static std::unique_ptr<llvm::Module> jitFunction(
 	const ExternalFunctionSet::ExternalFunction& f,
-	const PTXKernel::Prototype& prototype, llvm::Module* m)
+	const PTXKernel::Prototype& prototype)
 {
 	LLVMKernel kernel;
 
@@ -306,8 +306,9 @@ static llvm::Function* jitFunction(
 	// parse the function
 	llvm::SMDiagnostic error;
 	
-	m = llvm::parseAssemblyString(kernel.code().c_str(), 
-		error, llvm::getGlobalContext()).release();
+	auto m = llvm::parseAssemblyString(kernel.code().c_str(), 
+		error, llvm::getGlobalContext());
+	m->setModuleIdentifier("Ocelot-LLVM-JIT-Extra Module for " + f.mangledName());
 
 	reportE(REPORT_LLVM,
 		"Generated the following LLVM:\n" << kernel.numberedCode());
@@ -341,7 +342,7 @@ static llvm::Function* jitFunction(
 	executive::LLVMState::jit()->addGlobalMapping(global, f.functionPointer());
 	
 	// done, the function is now in the module
-	return m->getFunction(f.mangledName());
+	return m;
 }
 
 ExternalFunctionSet::ExternalFunction::ExternalFunction(const std::string& i,
@@ -360,11 +361,15 @@ void ExternalFunctionSet::ExternalFunction::call(void* parameters,
 		
 		llvm::Function* function = _module->getFunction(mangledName());
 
-		if(function == 0) function = jitFunction(*this, p, _module);
+		if(function == 0)
+		{
+			auto module = jitFunction(*this, p);
+			executive::LLVMState::jit()->addModule(std::move(module));
+		}
 
 		// This invokes the jit
 		// https://stackoverflow.com/a/76343023/4063520
-		auto ptr = executive::LLVMState::jit()->getFunctionAddress(name());
+		auto ptr = executive::LLVMState::jit()->getFunctionAddress(mangledName());
 		_externalFunctionPointer = hydrazine::bit_cast<ExternalCallType>(ptr);
 	}
 	
