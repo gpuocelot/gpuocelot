@@ -36,82 +36,86 @@ cd build
 ctest
 ```
 
-Currently, the following status is reported:
+The new version of Ocelot passes 100% of the original test suite:
 
 ```
 Test project /home/marcusmae/gpuocelot/gpuocelot/ocelot/build
       Start  1: gpuocelot_analysis_TestDataflowGraph
- 1/31 Test  #1: gpuocelot_analysis_TestDataflowGraph ............   Passed    0.01 sec
+ 1/32 Test  #1: gpuocelot_analysis_TestDataflowGraph ............   Passed    0.01 sec
       Start  2: gpuocelot_api_TestDeviceSwitching
- 2/31 Test  #2: gpuocelot_api_TestDeviceSwitching ...............   Passed    0.02 sec
+ 2/32 Test  #2: gpuocelot_api_TestDeviceSwitching ...............   Passed    0.02 sec
       Start  3: gpuocelot_api_TestExternalFunctions
- 3/31 Test  #3: gpuocelot_api_TestExternalFunctions .............   Passed    0.03 sec
+ 3/32 Test  #3: gpuocelot_api_TestExternalFunctions .............   Passed    0.03 sec
       Start  4: gpuocelot_cuda_TestCudaGenericMemory
- 4/31 Test  #4: gpuocelot_cuda_TestCudaGenericMemory ............   Passed    0.02 sec
+ 4/32 Test  #4: gpuocelot_cuda_TestCudaGenericMemory ............   Passed    0.01 sec
       Start  5: gpuocelot_cuda_TestCudaGlobals
- 5/31 Test  #5: gpuocelot_cuda_TestCudaGlobals ..................***Failed    0.17 sec
+ 5/32 Test  #5: gpuocelot_cuda_TestCudaGlobals ..................   Passed    0.16 sec
       Start  6: gpuocelot_cuda_TestCudaMalloc
- 6/31 Test  #6: gpuocelot_cuda_TestCudaMalloc ...................   Passed    0.43 sec
+ 6/32 Test  #6: gpuocelot_cuda_TestCudaMalloc ...................   Passed    0.42 sec
       Start  7: gpuocelot_cuda_TestCudaNestedParallelism
- 7/31 Test  #7: gpuocelot_cuda_TestCudaNestedParallelism ........   Passed    0.13 sec
+ 7/32 Test  #7: gpuocelot_cuda_TestCudaNestedParallelism ........   Passed    0.14 sec
       Start  8: gpuocelot_cuda_TestCudaSequence
- 8/31 Test  #8: gpuocelot_cuda_TestCudaSequence .................   Passed    0.14 sec
+ 8/32 Test  #8: gpuocelot_cuda_TestCudaSequence .................   Passed    0.12 sec
       Start  9: gpuocelot_cuda_TestCudaTexture2D
- 9/31 Test  #9: gpuocelot_cuda_TestCudaTexture2D ................   Passed    0.11 sec
+ 9/32 Test  #9: gpuocelot_cuda_TestCudaTexture2D ................   Passed    0.12 sec
       Start 10: gpuocelot_cuda_TestCudaTexture3D
-10/31 Test #10: gpuocelot_cuda_TestCudaTexture3D ................   Passed    0.12 sec
+10/32 Test #10: gpuocelot_cuda_TestCudaTexture3D ................   Passed    0.13 sec
       Start 11: gpuocelot_cuda_TestCudaTextureArray
-11/31 Test #11: gpuocelot_cuda_TestCudaTextureArray .............   Passed    0.12 sec
+11/32 Test #11: gpuocelot_cuda_TestCudaTextureArray .............   Passed    0.12 sec
       Start 12: gpuocelot_cuda_TestCudaTextureCube
-12/31 Test #12: gpuocelot_cuda_TestCudaTextureCube ..............   Passed    0.13 sec
+12/32 Test #12: gpuocelot_cuda_TestCudaTextureCube ..............   Passed    0.13 sec
       Start 13: gpuocelot_cuda_TestFunctionCall
-13/31 Test #13: gpuocelot_cuda_TestFunctionCall .................   Passed    0.13 sec
+13/32 Test #13: gpuocelot_cuda_TestFunctionCall .................   Passed    0.13 sec
       Start 14: gpuocelot_cuda_TestIndirectFunctionCall
-14/31 Test #14: gpuocelot_cuda_TestIndirectFunctionCall .........   Passed    0.12 sec
+14/32 Test #14: gpuocelot_cuda_TestIndirectFunctionCall .........   Passed    0.12 sec
       Start 15: gpuocelot_cuda_TestIndirectFunctionCallDriver
-15/31 Test #15: gpuocelot_cuda_TestIndirectFunctionCallDriver ...***Failed    0.01 sec
+15/32 Test #15: gpuocelot_cuda_TestIndirectFunctionCallDriver ...   Passed    0.01 sec
       Start 16: gpuocelot_cuda_TestIndirectFunctionCallOcelot
-16/31 Test #16: gpuocelot_cuda_TestIndirectFunctionCallOcelot ...Subprocess aborted***Exception:   0.12 sec
+16/32 Test #16: gpuocelot_cuda_TestIndirectFunctionCallOcelot ...   Passed    0.01 sec
       Start 17: gpuocelot_cuda_TestPTXAssembly
-17/31 Test #17: gpuocelot_cuda_TestPTXAssembly ..................   Passed   10.40 sec
+17/32 Test #17: gpuocelot_cuda_TestPTXAssembly ..................   Passed   10.13 sec
       Start 18: gpuocelot_executive_TestEmulator
-18/31 Test #18: gpuocelot_executive_TestEmulator ................***Exception: SegFault  0.11 sec
+18/32 Test #18: gpuocelot_executive_TestEmulator ................   Passed    0.01 sec
       Start 19: gpuocelot_executive_TestInstructions
-19/31 Test #19: gpuocelot_executive_TestInstructions ............   Passed    0.02 sec
+19/32 Test #19: gpuocelot_executive_TestInstructions ............   Passed    0.01 sec
       Start 20: gpuocelot_executive_TestKernels
-20/31 Test #20: gpuocelot_executive_TestKernels .................   Passed    0.04 sec
+20/32 Test #20: gpuocelot_executive_TestKernels .................   Passed    0.02 sec
       Start 21: gpuocelot_executive_TestLLVMKernels
-21/31 Test #21: gpuocelot_executive_TestLLVMKernels .............   Passed    0.09 sec
-      Start 22: gpuocelot_parser_TestLexer
-22/31 Test #22: gpuocelot_parser_TestLexer ......................   Passed    0.01 sec
-      Start 23: gpuocelot_parser_TestParser
-23/31 Test #23: gpuocelot_parser_TestParser .....................   Passed    0.01 sec
-      Start 24: gpuocelot_transforms_TestOptimizations
-24/31 Test #24: gpuocelot_transforms_TestOptimizations ..........   Passed    0.01 sec
-      Start 25: gpuocelot_translator_TestPTXToLLVMTranslator
-25/31 Test #25: gpuocelot_translator_TestPTXToLLVMTranslator ....   Passed    0.01 sec
-      Start 26: hydrazine_TestArgumentParser
-26/31 Test #26: hydrazine_TestArgumentParser ....................   Passed    0.00 sec
-      Start 27: hydrazine_TestMath
-27/31 Test #27: hydrazine_TestMath ..............................   Passed    0.22 sec
-      Start 28: hydrazine_TestThread
-28/31 Test #28: hydrazine_TestThread ............................   Passed    0.03 sec
-      Start 29: hydrazine_TestTimer
-29/31 Test #29: hydrazine_TestTimer .............................   Passed    0.00 sec
-      Start 30: hydrazine_TestXmlArgumentParser
-30/31 Test #30: hydrazine_TestXmlArgumentParser .................   Passed    0.01 sec
-      Start 31: hydrazine_TestXmlParser
-31/31 Test #31: hydrazine_TestXmlParser .........................   Passed    0.01 sec
+21/32 Test #21: gpuocelot_executive_TestLLVMKernels .............   Passed    0.06 sec
+      Start 22: gpuocelot_ir_TestLLVMInstructions
+22/32 Test #22: gpuocelot_ir_TestLLVMInstructions ...............   Passed    0.01 sec
+      Start 23: gpuocelot_parser_TestLexer
+23/32 Test #23: gpuocelot_parser_TestLexer ......................   Passed    0.01 sec
+      Start 24: gpuocelot_parser_TestParser
+24/32 Test #24: gpuocelot_parser_TestParser .....................   Passed    0.01 sec
+      Start 25: gpuocelot_transforms_TestOptimizations
+25/32 Test #25: gpuocelot_transforms_TestOptimizations ..........   Passed    0.01 sec
+      Start 26: gpuocelot_translator_TestPTXToLLVMTranslator
+26/32 Test #26: gpuocelot_translator_TestPTXToLLVMTranslator ....   Passed    0.01 sec
+      Start 27: hydrazine_TestArgumentParser
+27/32 Test #27: hydrazine_TestArgumentParser ....................   Passed    0.00 sec
+      Start 28: hydrazine_TestMath
+28/32 Test #28: hydrazine_TestMath ..............................   Passed    0.04 sec
+      Start 29: hydrazine_TestThread
+29/32 Test #29: hydrazine_TestThread ............................   Passed    0.03 sec
+      Start 30: hydrazine_TestTimer
+30/32 Test #30: hydrazine_TestTimer .............................   Passed    0.00 sec
+      Start 31: hydrazine_TestXmlArgumentParser
+31/32 Test #31: hydrazine_TestXmlArgumentParser .................   Passed    0.01 sec
+      Start 32: hydrazine_TestXmlParser
+32/32 Test #32: hydrazine_TestXmlParser .........................   Passed    0.01 sec
 
-87% tests passed, 4 tests failed out of 31
+100% tests passed, 0 tests failed out of 32
 
-Total Test time (real) =  12.82 sec
+Total Test time (real) =  12.08 sec
+```
 
-The following tests FAILED:
-	  5 - gpuocelot_cuda_TestCudaGlobals (Failed)
-	 15 - gpuocelot_cuda_TestIndirectFunctionCallDriver (Failed)
-	 16 - gpuocelot_cuda_TestIndirectFunctionCallOcelot (Subprocess aborted)
-	 18 - gpuocelot_executive_TestEmulator (SEGFAULT)
+## Debugging
+
+Debugging alongside with LLVM is often desired for fixing Ocelot issues. In order to simplify the process, we offer an option to build LLVM from source. It takes time, but the produced Ocelot shared library will have all debug info:
+
+```
+cmake -DBUILD_LLVM=ON -DCMAKE_BUILD_TYPE=Debug ..
 ```
 
 ## Resources
