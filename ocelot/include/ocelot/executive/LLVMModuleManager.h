@@ -10,6 +10,7 @@
 // Ocelot Includes
 #include <ocelot/translator/Translator.h>
 #include <ocelot/executive/ExecutableKernel.h>
+#include <ocelot/executive/LLVMState.h>
 #include <ocelot/ir/ControlFlowGraph.h>
 #include <ocelot/ir/Module.h>
 
@@ -46,31 +47,30 @@ public:
 
 public:
 	/*! \brief Loads a module into the manager, kernels are now visible */
-	static void loadModule(const ir::Module* m,
+	void loadModule(const ir::Module* m,
 		translator::Translator::OptimizationLevel l, Device* device);
 
 	/*! \brief Is a module loaded? */
-	static bool isModuleLoaded(void* id);
+	bool isModuleLoaded(void* id);
 
 	/*! \brief Gets the total number of functions in all modules */
-	static unsigned int totalFunctionCount();
+	unsigned int totalFunctionCount();
 
 	/*! \brief unLoad module from the database, this invalidates all ids */
-	static void unloadModule(void* id);
+	void unloadModule(void* id);
 
 	/*! \brief Sets the current external function set for linking */
-	static void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
+	void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
 
 	/*! \brief Clears the current external function set for linking */
-	static void clearExternalFunctionSet();
+	void clearExternalFunctionSet();
 
-public:
 	/*! \brief Associate a hydrazine thread with this manager, 
 		allowing it to communicate */
-	static void associate(hydrazine::Thread* thread);
+	void associate(hydrazine::Thread* thread);
 
 	/*! \brief Get the id of the hydrazine thread */
-	static hydrazine::Thread::Id id();
+	hydrazine::Thread::Id id();
 	
 public:
 	class ModuleDatabase;
@@ -232,7 +232,7 @@ public:
 	};
 	
 private:
-	static ModuleDatabase _database;
+	ModuleDatabase _database;
 };
 
 }

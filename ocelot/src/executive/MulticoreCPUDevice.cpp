@@ -37,9 +37,9 @@ namespace executive
 	{
 		assert(ir->loaded());
 		
-		if(!LLVMModuleManager::isModuleLoaded(ir->id())) return;
+		if(!LLVMState::moduleManager()->isModuleLoaded(ir->id())) return;
 
-		LLVMModuleManager::unloadModule(ir->id());
+		LLVMState::moduleManager()->unloadModule(ir->id());
 		LLVMExecutionManager::flushTranslatedKernels();
 	}
 

@@ -141,7 +141,7 @@ LLVMModuleManager::FunctionId LLVMWorkerThread::getFunctionId(
 	message.moduleId = id;
 	message.kernelName = functionName;
 	
-	threadSend(&message, LLVMModuleManager::id());
+	threadSend(&message, LLVMState::moduleManager()->id());
 	
 	LLVMModuleManager::GetFunctionMessage* reply = 0;
 	threadReceive(reply);
@@ -164,7 +164,7 @@ LLVMModuleManager::MetaData* LLVMWorkerThread::getFunctionMetaData(
 	message.type = LLVMModuleManager::DatabaseMessage::GetFunction;
 	message.id   = id;
 	
-	threadSend(&message, LLVMModuleManager::id());
+	threadSend(&message, LLVMState::moduleManager()->id());
 	
 	LLVMModuleManager::GetFunctionMessage* reply = 0;
 	threadReceive(reply);

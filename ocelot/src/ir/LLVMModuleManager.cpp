@@ -1519,9 +1519,6 @@ void LLVMModuleManager::ModuleDatabase::execute()
 
 	threadSend(m, id);
 }
-////////////////////////////////////////////////////////////////////////////////
-
-LLVMModuleManager::ModuleDatabase LLVMModuleManager::_database;
 
 }
 

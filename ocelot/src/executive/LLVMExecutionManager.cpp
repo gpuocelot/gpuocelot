@@ -72,9 +72,9 @@ void LLVMExecutionManager::Manager::launch(const LLVMExecutableKernel& kernel)
 			(unsigned)Config::get().executive.workerThreadLimit));
 	}
 
-	if(!LLVMModuleManager::isModuleLoaded(kernel.module->id()))
+	if(!LLVMState::moduleManager()->isModuleLoaded(kernel.module->id()))
 	{
-		LLVMModuleManager::loadModule(kernel.module, kernel.optimization(),
+		LLVMState::moduleManager()->loadModule(kernel.module, kernel.optimization(),
 			kernel.device);	
 	}
 	
@@ -148,7 +148,7 @@ void LLVMExecutionManager::Manager::setWorkerThreadCount(unsigned int threads)
 		for(unsigned int thread = currentSize; 
 			thread != _workers.size(); ++thread)
 		{
-			LLVMModuleManager::associate(_workers[thread]);
+			LLVMState::moduleManager()->associate(_workers[thread]);
 		}
 	}
 }

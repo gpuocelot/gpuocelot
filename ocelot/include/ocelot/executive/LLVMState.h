@@ -17,15 +17,20 @@ namespace llvm
 namespace executive
 {
 
+class LLVMModuleManager;
+
 /*! \brief A class for managing global llvm state */
 class LLVMState
 {
 public:
-	/*! \brief Get a reference to the jit */
+	/*! \brief Get a reference to the LLVM context */
 	static llvm::LLVMContext* context();
 
 	/*! \brief Get a reference to the jit */
 	static llvm::ExecutionEngine* jit();
+
+	/*! \brief Get a reference to the module manager */
+	static LLVMModuleManager* moduleManager();
 
 	LLVMState(LLVMState const&) = delete;
 	LLVMState& operator=(LLVMState const&) = delete;
@@ -47,6 +52,8 @@ private:
 	
 	/*! \brief LLVM fake mofule */
 	llvm::Module* _module;
+
+	LLVMModuleManager* _manager;
 };
 
 }

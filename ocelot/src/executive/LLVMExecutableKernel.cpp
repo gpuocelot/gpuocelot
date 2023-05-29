@@ -186,12 +186,12 @@ void LLVMExecutableKernel::removeTraceGenerator(
 void LLVMExecutableKernel::setExternalFunctionSet(
 	const ir::ExternalFunctionSet& s)
 {
-	LLVMModuleManager::setExternalFunctionSet(s);
+	LLVMState::moduleManager()->setExternalFunctionSet(s);
 }
 
 void LLVMExecutableKernel::clearExternalFunctionSet()
 {
-	LLVMModuleManager::clearExternalFunctionSet();
+	LLVMState::moduleManager()->clearExternalFunctionSet();
 }
 
 void LLVMExecutableKernel::_allocateMemory()

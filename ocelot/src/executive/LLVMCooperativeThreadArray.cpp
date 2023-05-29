@@ -38,7 +38,7 @@ LLVMCooperativeThreadArray::LLVMCooperativeThreadArray(LLVMWorkerThread* w) :
 void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 {
 	report("Setting up LLVM-CTA to execute kernel " << kernel.name);
-	_functions.resize(LLVMModuleManager::totalFunctionCount(), 0);
+	_functions.resize(LLVMState::moduleManager()->totalFunctionCount(), 0);
 	_queuedThreads.resize(_functions.size());
 
 	_entryPoint = _worker->getFunctionId(kernel.module->id(), kernel.name);

@@ -6,6 +6,7 @@
 
 // Ocelot Includes
 #include <ocelot/executive/LLVMState.h>
+#include <ocelot/executive/LLVMModuleManager.h>
 
 // Hydrazine Includes
 #include <hydrazine/debug.h>
@@ -53,6 +54,11 @@ llvm::LLVMContext* LLVMState::context()
 	return LLVMState::get()._context;
 }
 
+LLVMModuleManager* LLVMState::moduleManager()
+{
+	return LLVMState::get()._manager;
+}
+
 LLVMState::LLVMState() : _jit(0), _context(0), _module(0)
 {
 	_context = new llvm::LLVMContext();
@@ -79,10 +85,13 @@ LLVMState::LLVMState() : _jit(0), _context(0), _module(0)
 	
 	assertM(_jit != 0, "Creating the JIT failed.");
 	report(" The JIT is alive.");
+
+	_manager = new LLVMModuleManager();
 }
 
 LLVMState::~LLVMState()
 {
+	delete _manager;
 	delete _context;
 }
 
