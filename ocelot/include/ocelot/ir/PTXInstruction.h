@@ -370,16 +370,16 @@ namespace ir {
 			return null string if valid, otherwise a description of why 
 				not.
 		*/
-		std::string valid() const;
+		virtual std::string valid() const;
 
 		/*! Returns the guard predicate representation for the instruction */
 		std::string guard() const;
 
 		/*! Returns a parsable string representation of the instruction */
-		std::string toString() const;
+		virtual std::string toString() const;
 
 		/*! \brief Clone the instruction */
-		Instruction* clone( bool copy = true ) const;
+		virtual Instruction* clone( bool copy = true ) const;
 
 	public:
 		/*! \brief Is the instruction a branch */
