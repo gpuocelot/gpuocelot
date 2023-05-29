@@ -393,10 +393,17 @@ std::string ExternalFunctionSet::ExternalFunction::mangledName() const
 }
 
 ExternalFunctionSet::ExternalFunctionSet()
-: _module(0)
+: module(0)
 {
-	_module = new llvm::Module("_ZOcelotExternalFunctionModule",
-		llvm::getGlobalContext());
+}
+
+llvm::Module* ExternalFunctionSet::_module()
+{
+	if (!module)
+		module = new llvm::Module("_ZOcelotExternalFunctionModule",
+                	llvm::getGlobalContext());
+
+	return module;
 }
 
 ExternalFunctionSet::~ExternalFunctionSet()
@@ -404,7 +411,7 @@ ExternalFunctionSet::~ExternalFunctionSet()
 	for(FunctionSet::const_iterator external = _functions.begin();
 		external != _functions.end(); ++external)
 	{
-		llvm::Function* function = _module->getFunction(
+		llvm::Function* function = _module()->getFunction(
 			external->second.mangledName());
 		if(function != 0)
 		{
@@ -414,9 +421,9 @@ ExternalFunctionSet::~ExternalFunctionSet()
 		}
 	}
 
-	executive::LLVMState::jit()->removeModule(_module);
+	executive::LLVMState::jit()->removeModule(_module());
 
-	delete _module;
+	delete _module();
 }
 
 void ExternalFunctionSet::add(const std::string& name, void* pointer)
@@ -433,7 +440,7 @@ void ExternalFunctionSet::add(const std::string& name, void* pointer)
 		<< pointer);
 
 	_functions.insert(std::make_pair(name, 
-		ExternalFunction(name, pointer, _module)));
+		ExternalFunction(name, pointer, _module())));
 }
 
 void ExternalFunctionSet::remove(const std::string& name)
@@ -443,7 +450,7 @@ void ExternalFunctionSet::remove(const std::string& name)
 	
 	report("Removing function " << name);
 
-	llvm::Function* llvmFunction = _module->getFunction(
+	llvm::Function* llvmFunction = _module()->getFunction(
 		function->second.mangledName());
 	if(llvmFunction != 0)
 	{
@@ -451,9 +458,9 @@ void ExternalFunctionSet::remove(const std::string& name)
 		executive::LLVMState::jit()->freeMachineCodeForFunction(llvmFunction);
 #endif
 		llvmFunction->eraseFromParent();
-		assert(_module->getFunction(function->second.mangledName()) == 0);
+		assert(_module()->getFunction(function->second.mangledName()) == 0);
 	
-		llvm::GlobalValue* global = _module->getNamedValue(
+		llvm::GlobalValue* global = _module()->getNamedValue(
 			function->second.name());
 		assertM(global != 0, "Could not find global "
 			<< function->second.name() << " in module.");

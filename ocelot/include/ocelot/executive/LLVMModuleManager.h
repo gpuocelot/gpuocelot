@@ -229,6 +229,7 @@ public:
 		KernelVector                   _kernels;
 		ir::Module                     _barrierModule;
 		const ir::ExternalFunctionSet* _externals;
+		const ir::ExternalFunctionSet _externalsDefault;
 	};
 	
 private:

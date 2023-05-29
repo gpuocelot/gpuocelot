@@ -1283,7 +1283,7 @@ void LLVMModuleManager::Module::shiftId(FunctionId nextId)
 ////////////////////////////////////////////////////////////////////////////////
 // ModuleDatabase
 
-LLVMModuleManager::ModuleDatabase::ModuleDatabase()
+LLVMModuleManager::ModuleDatabase::ModuleDatabase() : _externals(&_externalsDefault)
 {
 	start();
 }
@@ -1469,7 +1469,7 @@ void LLVMModuleManager::ModuleDatabase::setExternalFunctionSet(
 
 void LLVMModuleManager::ModuleDatabase::clearExternalFunctionSet()
 {
-	_externals = 0;
+	_externals = &_externalsDefault;
 }
 
 const ir::ExternalFunctionSet& 

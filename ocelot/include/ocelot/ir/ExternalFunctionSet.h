@@ -72,7 +72,9 @@ public:
 	
 private:
 	FunctionSet   _functions;
-	llvm::Module* _module;
+	llvm::Module* module;
+
+	llvm::Module* _module();
 
 };
 
