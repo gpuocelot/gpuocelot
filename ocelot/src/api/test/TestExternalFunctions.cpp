@@ -185,7 +185,7 @@ bool TestExternalFunctions::testMismatchingTypes()
 	std::string ptx = ".version 2.3\n"
 		".address_size 64\n"
 		"\n"
-		".extern .func hostFunction (.param .u64 bytes, .param .u32 data)\n"
+		".extern .func hostFunction2 (.param .u64 bytes, .param .u32 data)\n"
 		"\n"
 		".entry kernel(.param .u64 result, .param .u32 result2) {\n"
 		"\t.reg .u64 %r<10>;\n"
@@ -196,12 +196,12 @@ bool TestExternalFunctions::testMismatchingTypes()
 		"\tld.param.u32 %r1, [result2];\n"
 		"\tst.param.u64 [value0], %r0;\n"
 		"\tst.param.u32 [value1], %r1;\n"
-		"\tcall.uni hostFunction, (value0, value1);\n"
+		"\tcall.uni hostFunction2, (value0, value1);\n"
 		"\texit;\n"
 		"}\n";
 
 	std::stringstream stream(ptx);
-	ocelot::registerExternalFunction("hostFunction",
+	ocelot::registerExternalFunction("hostFunction2",
 		(void*)(randomHostFunction2));
 
 	ocelot::registerPTXModule(stream, "someModule");
@@ -217,7 +217,7 @@ bool TestExternalFunctions::testMismatchingTypes()
 	ocelot::launch("someModule", "kernel");
 	
 	ocelot::unregisterModule("someModule");
-	ocelot::removeExternalFunction("hostFunction");
+	ocelot::removeExternalFunction("hostFunction2");
 
 	if(data != 0xcaa7f00d)
 	{

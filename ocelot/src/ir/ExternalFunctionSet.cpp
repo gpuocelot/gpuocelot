@@ -339,7 +339,7 @@ static std::unique_ptr<llvm::Module> jitFunction(
 	llvm::GlobalValue* global = m->getNamedValue(f.name());
 	assertM(global != 0, "Global function " << f.name()
 		<< " not found in llvm module.");
-	executive::LLVMState::jit()->addGlobalMapping(global, f.functionPointer());
+	executive::LLVMState::jit()->updateGlobalMapping(global, f.functionPointer());
 	
 	// done, the function is now in the module
 	return m;
