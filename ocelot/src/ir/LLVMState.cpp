@@ -26,11 +26,10 @@
 
 namespace llvm {
 
-// LLVM devs are bored and have nothing else to do: https://reviews.llvm.org/D19094
-LLVMContext &getGlobalContext()
+// https://reviews.llvm.org/D19094
+LLVMContext& getGlobalContext()
 {
-	static LLVMContext context;
-	return context;
+	return *executive::LLVMState::context();
 }
 
 } // namespace llvm
@@ -38,14 +37,26 @@ LLVMContext &getGlobalContext()
 namespace executive
 {
 
-llvm::ExecutionEngine* LLVMState::jit()
+LLVMState& LLVMState::get()
 {
-	static LLVMState sw;
-	return sw._jit;
+	static LLVMState s;
+	return s;
 }
 
-LLVMState::LLVMState() : _jit(0), _module(0)
+llvm::ExecutionEngine* LLVMState::jit()
 {
+	return LLVMState::get()._jit;
+}
+
+llvm::LLVMContext* LLVMState::context()
+{
+	return LLVMState::get()._context;
+}
+
+LLVMState::LLVMState() : _jit(0), _context(0), _module(0)
+{
+	_context = new llvm::LLVMContext();
+
 	report("Bringing the LLVM JIT-Compiler online.");
 
 	// https://stackoverflow.com/a/38801376/4063520	
@@ -53,7 +64,7 @@ LLVMState::LLVMState() : _jit(0), _module(0)
 	llvm::InitializeNativeTargetAsmParser();
 	llvm::InitializeNativeTargetAsmPrinter();
 
-	auto m = std::make_unique<llvm::Module>("Ocelot-LLVM-JIT-Blank Module", llvm::getGlobalContext());
+	auto m = std::make_unique<llvm::Module>("Ocelot-LLVM-JIT-Blank Module", *_context);
 	_module = m.get();
 	assertM(_module != 0, "Creating global module failed.");
 
@@ -68,6 +79,11 @@ LLVMState::LLVMState() : _jit(0), _module(0)
 	
 	assertM(_jit != 0, "Creating the JIT failed.");
 	report(" The JIT is alive.");
+}
+
+LLVMState::~LLVMState()
+{
+	delete _context;
 }
 
 } // namespace executive
