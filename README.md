@@ -23,6 +23,7 @@ We make Ocelot great again: yes, you can compile it in Ubuntu 22.04 with LLVM 15
 ```
 git submodule init
 git submodule update
+cd ocelot
 mkdir build
 cd build
 cmake ..
