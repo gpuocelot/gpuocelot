@@ -13,6 +13,7 @@
 #include <hydrazine/debug.h>
 
 // Standard Library Includes
+#include <climits>
 #include <cstring>
 #include <sstream>
 #include <fstream>
@@ -44,7 +45,7 @@ static bool ptxdump_elf_header(fat_elf_header* header, std::string& ptx)
 {
 	bool seenPtx = false;
 
-	int ptxVersionClosest = 0;
+	int ptxVersionClosest = INT_MAX;
 	int ptxVersionBest = PTX_MAJOR * 10 + PTX_MINOR;
 	
 	char* base = (char*)(header + 1);
@@ -55,14 +56,13 @@ static bool ptxdump_elf_header(fat_elf_header* header, std::string& ptx)
 		if (!(entry->kind & FATBIN_2_PTX))
 			continue;
 
-		seenPtx = true;
-		
 		int ptxVersion = entry->major * 10 + entry->minor;
 
 		// We always save only the best choice ptx.
 		if (std::abs(ptxVersion - ptxVersionBest) >= std::abs(ptxVersionClosest - ptxVersionBest))
 			continue;
 
+		seenPtx = true;
 		ptxVersionClosest = ptxVersion;
 
 		// Deliver uncompressed PTX right away.
@@ -140,12 +140,15 @@ void FatBinaryPTXLoader::load()
 			ptx = binary->ptx[i].ptx;
 		}
 		
-		report(" Selected version " << ptxVersionClosest);
+		report(" Selected version " << std::dec << ptxVersionClosest);
 		
 		if (ptx)
 		{
 			consumePTX(const_cast<void*>(cubin), std::string(ptx));
-			return;
+		}
+		else
+		{
+			report("PTX is not present in the fatbin");
 		}
 	}
 	else if (*(int*)cubin == __cudaFatMAGIC2)
@@ -183,7 +186,7 @@ void FatBinaryPTXLoader::load()
 					continue;
 				}
 				
-				report("PTX is not present for one of prelinked fatbins, "
+				report("PTX is not present for one of prelinked fatbins, the whole "
 					"our PTX-level linking is likely to fail due to missing dependencies");
 			}
 		}
@@ -195,7 +198,7 @@ void FatBinaryPTXLoader::load()
 				consumePTX(const_cast<void*>(cubin), ptx);
 			else
 			{
-				report("PTX is not present for one of prelinked fatbins, "
+				report("PTX is not present for one of prelinked fatbins, the whole "
 					"our PTX-level linking is likely to fail due to missing dependencies");
 			}
 		}
@@ -204,8 +207,6 @@ void FatBinaryPTXLoader::load()
 	{
 		assertM(false, "unknown fat binary magic number " << std::hex << *(int*)cubin);		
 	}
-	
-	report("registered, contains NO PTX");
 }
 
 void* FatBinaryPTXLoader::id() const { return const_cast<void*>(_id); }	
