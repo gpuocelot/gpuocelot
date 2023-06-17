@@ -1037,7 +1037,7 @@ std::string ir::PTXInstruction::valid() const {
 					return "requires a rounding modifier";
 				}
 			}
-			if( a.type != b.type ) {
+			if( a.type != b.type && a.type != PTXOperand::b32) {
 				return "type of operand A " + PTXOperand::toString( a.type ) 
 					+ " does not equal type of operand B " 
 					+ PTXOperand::toString( b.type );
