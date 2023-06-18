@@ -541,6 +541,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PRIVATE -Wl,--gc-sections -Wl,--start-group ${LLVM_LIBRARIES} -Wl,--end-group)
 target_link_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${ZLIB_LIBRARIES} tinfo)
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION /usr/lib)
 install(CODE "execute_process(COMMAND ldconfig)")
 
