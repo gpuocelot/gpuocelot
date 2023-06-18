@@ -8,11 +8,12 @@ if ("x${CMAKE_BUILD_TYPE}" STREQUAL "x")
 set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-list(APPEND CMAKE_CXX_FLAGS -fexceptions)
+list(APPEND CMAKE_CXX_FLAGS "-fexceptions -Wno-return-type -Wno-terminate")
 
 # in order to retain the PTX code in the text executables,
 # the target GPU architecture has to be virtual.
 set(CMAKE_CUDA_ARCHITECTURES 35-virtual)
+list(APPEND CUDA_NVCC_FLAGS "-Wno-deprecated-gpu-targets -Wno-deprecated-declarations")
 
 set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
 
