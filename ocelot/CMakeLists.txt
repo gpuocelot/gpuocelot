@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 project(gpuocelot C CXX CUDA ASM)
 
 option(BUILD_LLVM "Use LLVM compiled from sources: default OFF" OFF)
+option(OCELOT_BUILD_TESTS "Build tests" OFF)
 
 if ("x${CMAKE_BUILD_TYPE}" STREQUAL "x")
 set(CMAKE_BUILD_TYPE "Release")
@@ -559,38 +560,40 @@ add_executable(PTXOptimizer src/tools/PTXOptimizer.cpp)
 set_property(TARGET PTXOptimizer PROPERTY CXX_STANDARD 14)
 target_link_libraries(PTXOptimizer ${PROJECT_NAME} hydrazine)
 
-ocelot_add_tests(analysis)
-ocelot_add_tests(api)
-ocelot_add_tests(cal)
-ocelot_add_tests(cuda)
-ocelot_add_tests(executive)
-ocelot_add_tests(ir)
-ocelot_add_tests(parser)
-ocelot_add_tests(trace)
-ocelot_add_tests(transforms)
-ocelot_add_tests(translator)
-ocelot_add_tests(util)
+if(OCELOT_BUILD_TESTS)
+	ocelot_add_tests(analysis)
+	ocelot_add_tests(api)
+	ocelot_add_tests(cal)
+	ocelot_add_tests(cuda)
+	ocelot_add_tests(executive)
+	ocelot_add_tests(ir)
+	ocelot_add_tests(parser)
+	ocelot_add_tests(trace)
+	ocelot_add_tests(transforms)
+	ocelot_add_tests(translator)
+	ocelot_add_tests(util)
 
-res_embed(TARGET ${PROJECT_NAME}_executive_TestEmulator NAME "TestEmulator_ptx"
-	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestEmulator.ptx KEYWORD)
+	res_embed(TARGET ${PROJECT_NAME}_executive_TestEmulator NAME "TestEmulator_ptx"
+		PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestEmulator.ptx KEYWORD)
 
-res_embed(TARGET ${PROJECT_NAME}_executive_TestInstructions NAME "TestInstructions_ptx"
-	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestInstructions.ptx KEYWORD)
+	res_embed(TARGET ${PROJECT_NAME}_executive_TestInstructions NAME "TestInstructions_ptx"
+		PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestInstructions.ptx KEYWORD)
 
-res_embed(TARGET ${PROJECT_NAME}_executive_TestKernels NAME "TestKernels_ptx"
-	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestKernels.ptx KEYWORD)
-	
-res_embed(TARGET ${PROJECT_NAME}_executive_TestLLVMKernels NAME "TestLLVMKernels_ptx"
-	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestLLVMKernels.ptx KEYWORD)
-	
-res_embed(TARGET ${PROJECT_NAME}_cuda_TestCudaGenericMemory NAME "generic_ptx"
-	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestCudaGenericMemory.ptx KEYWORD)
+	res_embed(TARGET ${PROJECT_NAME}_executive_TestKernels NAME "TestKernels_ptx"
+		PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestKernels.ptx KEYWORD)
 
-res_embed(TARGET ${PROJECT_NAME}_cuda_TestIndirectFunctionCallDriver NAME "IndirectCallDriver_ptx"
-	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestIndirectFunctionCallDriver.ptx KEYWORD)
+	res_embed(TARGET ${PROJECT_NAME}_executive_TestLLVMKernels NAME "TestLLVMKernels_ptx"
+		PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestLLVMKernels.ptx KEYWORD)
 
-res_embed(TARGET ${PROJECT_NAME}_cuda_TestIndirectFunctionCallOcelot NAME "IndirectCallDriver_ptx"
-	PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestIndirectFunctionCallDriver.ptx KEYWORD)
+	res_embed(TARGET ${PROJECT_NAME}_cuda_TestCudaGenericMemory NAME "generic_ptx"
+		PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestCudaGenericMemory.ptx KEYWORD)
+
+	res_embed(TARGET ${PROJECT_NAME}_cuda_TestIndirectFunctionCallDriver NAME "IndirectCallDriver_ptx"
+		PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestIndirectFunctionCallDriver.ptx KEYWORD)
+
+	res_embed(TARGET ${PROJECT_NAME}_cuda_TestIndirectFunctionCallOcelot NAME "IndirectCallDriver_ptx"
+		PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestIndirectFunctionCallDriver.ptx KEYWORD)
+endif()
 
 #++ -o .release_build/ocelot/TestCudaGenericMemory
 #++ -o .release_build/ocelot/TestCudaGlobals
