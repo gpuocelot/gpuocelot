@@ -303,7 +303,8 @@ target_link_directories(${PROJECT_NAME}_analysis PUBLIC ${${PROJECT_NAME}_LIBRAR
 add_library(${PROJECT_NAME}_api STATIC
 	src/api/OcelotConfiguration.cpp
 	src/api/OcelotRuntime.cpp
-	src/api/ocelot.cpp)
+	src/api/ocelot.cpp
+	src/api/interfaces/emulated.cpp)
 set_property(TARGET ${PROJECT_NAME}_api PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME}_api PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME}_api PRIVATE ${${PROJECT_NAME}_DEFINITIONS})
