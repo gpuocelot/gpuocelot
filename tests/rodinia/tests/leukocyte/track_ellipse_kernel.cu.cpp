@@ -10515,7 +10515,7 @@ extern "C" void *malloc_get_state() throw();
 # 156 "/usr/include/malloc.h" 3
 extern "C" int malloc_set_state(void * ) throw();
 # 161 "/usr/include/malloc.h" 3
-extern "C" { extern void (*__malloc_initialize_hook)(void); }
+// extern "C" { extern void (*__malloc_initialize_hook)(void); }
 # 163 "/usr/include/malloc.h" 3
 extern "C" { extern void (*__free_hook)(void * , const void *); }
 # 165 "/usr/include/malloc.h" 3

@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 project(gpuocelot C CXX CUDA ASM)
 
 option(BUILD_LLVM "Use LLVM compiled from sources: default OFF" OFF)
-option(OCELOT_BUILD_TESTS "Build tests: default OFF" OFF)
-option(OCELOT_BUILD_TOOLS "Build tool executables: default ON" ON)
+option(BUILD_TESTS "Build tests: default OFF" OFF)
+option(BUILD_TESTS_CUDA "Build CUDA tests: default ON" ON)
+option(BUILD_TOOLS "Build tool executables: default ON" ON)
 
 if ("x${CMAKE_BUILD_TYPE}" STREQUAL "x")
 set(CMAKE_BUILD_TYPE "Release")
@@ -24,6 +25,7 @@ find_package(FLEX 2.5 REQUIRED)
 find_package(BISON 2.5 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(ZLIB REQUIRED)
+find_library(ZSTD_LIB NAMES zstd libzstd)
 
 if ("x${BUILD_LLVM}" STREQUAL "xOFF")
 find_package(LLVM REQUIRED CONFIG)
@@ -234,6 +236,7 @@ set(${PROJECT_NAME}_LINK_LIBRARIES
 	Boost::filesystem
 	ZLIB::ZLIB
 	tinfo
+	${ZSTD_LIB}
 	${CMAKE_DL_LIBS})
 
 if ("x${BUILD_LLVM}" STREQUAL "xON")
@@ -545,7 +548,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${ZLIB_LIBRARIES} tinfo)
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION /usr/lib)
 install(CODE "execute_process(COMMAND ldconfig)")
 
-if(OCELOT_BUILD_TOOLS)
+if(BUILD_TOOLS)
 	add_executable(LoadPtx src/tools/LoadPtx.cpp)
 	set_property(TARGET LoadPtx PROPERTY CXX_STANDARD 14)
 	target_link_libraries(LoadPtx ${PROJECT_NAME} hydrazine)
@@ -567,11 +570,10 @@ if(OCELOT_BUILD_TOOLS)
 	target_link_libraries(PTXOptimizer ${PROJECT_NAME} hydrazine)
 endif()
 
-if(OCELOT_BUILD_TESTS)
+if(BUILD_TESTS)
 	ocelot_add_tests(analysis)
 	ocelot_add_tests(api)
 	ocelot_add_tests(cal)
-	ocelot_add_tests(cuda)
 	ocelot_add_tests(executive)
 	ocelot_add_tests(ir)
 	ocelot_add_tests(parser)
@@ -592,14 +594,17 @@ if(OCELOT_BUILD_TESTS)
 	res_embed(TARGET ${PROJECT_NAME}_executive_TestLLVMKernels NAME "TestLLVMKernels_ptx"
 		PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/executive/test/TestLLVMKernels.ptx KEYWORD)
 
-	res_embed(TARGET ${PROJECT_NAME}_cuda_TestCudaGenericMemory NAME "generic_ptx"
-		PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestCudaGenericMemory.ptx KEYWORD)
+	if(BUILD_TESTS_CUDA)
+		ocelot_add_tests(cuda)
+		res_embed(TARGET ${PROJECT_NAME}_cuda_TestCudaGenericMemory NAME "generic_ptx"
+			PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestCudaGenericMemory.ptx KEYWORD)
 
-	res_embed(TARGET ${PROJECT_NAME}_cuda_TestIndirectFunctionCallDriver NAME "IndirectCallDriver_ptx"
-		PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestIndirectFunctionCallDriver.ptx KEYWORD)
+		res_embed(TARGET ${PROJECT_NAME}_cuda_TestIndirectFunctionCallDriver NAME "IndirectCallDriver_ptx"
+			PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestIndirectFunctionCallDriver.ptx KEYWORD)
 
-	res_embed(TARGET ${PROJECT_NAME}_cuda_TestIndirectFunctionCallOcelot NAME "IndirectCallDriver_ptx"
-		PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestIndirectFunctionCallDriver.ptx KEYWORD)
+		res_embed(TARGET ${PROJECT_NAME}_cuda_TestIndirectFunctionCallOcelot NAME "IndirectCallDriver_ptx"
+			PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/test/TestIndirectFunctionCallDriver.ptx KEYWORD)
+	endif()
 endif()
 
 #++ -o .release_build/ocelot/TestCudaGenericMemory
