@@ -2377,15 +2377,16 @@ void executive::CooperativeThreadArray::eval_Bfe(CTAContext &context,
 		bool isSigned = (instr.type == ir::PTXOperand::s32
 			|| instr.type == ir::PTXOperand::s64);
 
-		ir::PTXU32 msb    = (size32bit ? 31 : 63);
 		ir::PTXU32 pos    = operandAsU32(tid, instr.b);
 		ir::PTXU32 len    = operandAsU32(tid, instr.c);
 		ir::PTXU64 a      = operandAsU64(tid, instr.a);
 		ir::PTXU64 mask   = ((1 << len) - 1);
+		ir::PTXU32 msb	  = min((pos+len-1), size32bit ? 31 : 63);
+		ir::PTXU32 sign   = ((a>>(msb))&1);
 		ir::PTXU64 result = 0;
 
 		if (isSigned) {
-			result = (msb ? -1 : 0) & (~mask);
+			result = (sign ? -1 : 0) & (~mask);
 		}
 		result |= ((a >> pos) & mask);
 		if (size32bit) {
