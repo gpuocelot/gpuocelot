@@ -21,7 +21,10 @@ We make Ocelot great again: yes, you can compile it in Ubuntu 22.04 with LLVM 15
 ## Building
 
 - installing dependencies (ubuntu 22.04)  
-      ```sudo apt-get install -y g++ cmake ninja-build llvm-15-dev libz-dev libglew-dev flex bison libfl-dev libboost-thread-dev libboost-filesystem-dev nvidia-cuda-toolkit-gcc```
+
+```
+sudo apt-get install -y g++ cmake ninja-build llvm-15-dev libz-dev libglew-dev flex bison libfl-dev libboost-thread-dev libboost-filesystem-dev nvidia-cuda-toolkit-gcc libzstd-dev
+```
 
 ```
 git submodule init
