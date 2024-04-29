@@ -153,8 +153,14 @@ int main() {
 		return 1;
 	}
 	
-	cuModuleUnload(module);
-	cuCtxDestroy(ctx);
+	result = cuModuleUnload(module);
+	if (result != CUDA_SUCCESS) {
+		report("cuModuleUnload() failed: " << result);
+	}
+	result = cuCtxDestroy(ctx);
+	if (result != CUDA_SUCCESS) {
+		report("cuCtxDestroy() failed: " << result);
+	}
 	
 	int errors = 0;
 	for (int i = 0; i < N; i++) {

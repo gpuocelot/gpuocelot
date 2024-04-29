@@ -167,6 +167,11 @@ CUresult Function(cuCtxDestroy)( CUcontext ctx ) {
 	RETURN( CudaApi::get()->cuCtxDestroy(ctx) );
 }
 
+CUresult FunctionV(cuCtxDestroy)( CUcontext ctx ) {
+	trace();
+	RETURN( CudaApi::get()->cuCtxDestroy(ctx) );
+}
+
 CUresult Function(cuCtxAttach)(CUcontext *pctx, unsigned int flags) {
 	trace();	
 	RETURN( CudaApi::get()->cuCtxAttach(pctx, flags) );
