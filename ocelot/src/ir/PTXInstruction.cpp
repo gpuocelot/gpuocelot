@@ -1037,10 +1037,11 @@ std::string ir::PTXInstruction::valid() const {
 					return "requires a rounding modifier";
 				}
 			}
-			if( a.type != b.type && a.type != PTXOperand::b32) {
+			if( !PTXOperand::valid(a.type, b.type) ) {
 				return "type of operand A " + PTXOperand::toString( a.type ) 
-					+ " does not equal type of operand B " 
-					+ PTXOperand::toString( b.type );
+					+ " is not interoperable with type of operand B "
+					+ PTXOperand::toString( b.type )
+					+ ", conversion is required";
 			}
 			if( !( c.bytes() == d.bytes() ) ) {
 				std::stringstream stream;
