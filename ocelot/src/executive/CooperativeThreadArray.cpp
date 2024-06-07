@@ -8338,7 +8338,7 @@ void executive::CooperativeThreadArray::normalStore(int threadID,
 		case ir::PTXOperand::s8:		// fall through
 		case ir::PTXOperand::u8:
 			{
-				ir::PTXU8 word = getRegAsU8(threadID, instr.a.reg);
+				ir::PTXU8 word = operandAsU8(threadID, instr.a);
 #if REPORT_ST
 				report( "    Storing " << word << " to "
 					<< (int*)source );
@@ -8350,7 +8350,7 @@ void executive::CooperativeThreadArray::normalStore(int threadID,
 		case ir::PTXOperand::s16:		// fall through
 		case ir::PTXOperand::u16:
 			{
-				ir::PTXU16 word = getRegAsU16(threadID, instr.a.reg);
+				ir::PTXU16 word = operandAsU16(threadID, instr.a);
 #if REPORT_ST
 				report( "    Storing " << word << " to "
 					<< (int*)source );
@@ -8360,7 +8360,7 @@ void executive::CooperativeThreadArray::normalStore(int threadID,
 			break;
 		case ir::PTXOperand::f32:
 			{
-				ir::PTXF32 word = getRegAsF32(threadID, instr.a.reg);
+				ir::PTXF32 word = operandAsF32(threadID, instr.a);
 #if REPORT_ST
 				report( "    Storing " << word << " to "
 					<< (int*)source );
@@ -8372,7 +8372,7 @@ void executive::CooperativeThreadArray::normalStore(int threadID,
 		case ir::PTXOperand::s32:		// fall through
 		case ir::PTXOperand::u32:
 			{
-				ir::PTXU32 word = getRegAsU32(threadID, instr.a.reg);
+				ir::PTXU32 word = operandAsU32(threadID, instr.a);
 #if REPORT_ST
 				report( "    Storing " << word << " to "
 					<< (int*)source );
@@ -8385,7 +8385,7 @@ void executive::CooperativeThreadArray::normalStore(int threadID,
 		case ir::PTXOperand::s64:		// fall through
 		case ir::PTXOperand::u64:
 			{
-				ir::PTXU64 word = getRegAsU64(threadID, instr.a.reg);
+				ir::PTXU64 word = operandAsU64(threadID, instr.a);
 #if REPORT_ST
 				report( "    Storing " << (void*)word << " to "
 					<< (int*)source );
@@ -8408,7 +8408,7 @@ void executive::CooperativeThreadArray::vectorStore(int threadID,
 			case ir::PTXOperand::s8:		// fall through
 			case ir::PTXOperand::u8:
 				{
-					ir::PTXU8 word = getRegAsU8(threadID, i->reg);
+					ir::PTXU8 word = operandAsU8(threadID, *i);
 #if REPORT_ST
 					report( "    Storing " << word << " to "
 						<< (int*)source );
@@ -8420,7 +8420,7 @@ void executive::CooperativeThreadArray::vectorStore(int threadID,
 			case ir::PTXOperand::s16:		// fall through
 			case ir::PTXOperand::u16:
 				{
-					ir::PTXU16 word = getRegAsU16(threadID, i->reg);
+					ir::PTXU16 word = operandAsU16(threadID, *i);
 #if REPORT_ST
 					report( "    Storing " << word << " to "
 						<< (int*)source );
@@ -8430,7 +8430,7 @@ void executive::CooperativeThreadArray::vectorStore(int threadID,
 				break;
 		case ir::PTXOperand::f32:
 			{
-				ir::PTXF32 word = getRegAsF32(threadID, i->reg);
+				ir::PTXF32 word = operandAsF32(threadID, *i);
 #if REPORT_ST
 				report( "    Storing " << word << " to "
 					<< (int*)source << " - from register " << i->reg );
@@ -8442,7 +8442,7 @@ void executive::CooperativeThreadArray::vectorStore(int threadID,
 			case ir::PTXOperand::s32:		// fall through
 			case ir::PTXOperand::u32:
 				{
-					ir::PTXU32 word = getRegAsU32(threadID, i->reg);
+					ir::PTXU32 word = operandAsU32(threadID, *i);
 #if REPORT_ST
 					report( "    Storing " << word << " to "
 						<< (int*)source );
@@ -8455,7 +8455,7 @@ void executive::CooperativeThreadArray::vectorStore(int threadID,
 			case ir::PTXOperand::s64:		// fall through
 			case ir::PTXOperand::u64:
 				{
-					ir::PTXU64 word = getRegAsU64(threadID, i->reg);
+					ir::PTXU64 word = operandAsU64(threadID, *i);
 #if REPORT_ST
 					report( "    Storing " << (void*)word << " to "
 						<< (int*)source );
