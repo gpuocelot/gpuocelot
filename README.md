@@ -128,6 +128,12 @@ Debugging alongside with LLVM is often desired for fixing Ocelot issues. In orde
 cmake -DBUILD_LLVM=ON -DCMAKE_BUILD_TYPE=Debug ..
 ```
 
+## Issue reporting
+
+If you see a failing test case, please report it to us by creating an issue.
+
+Please include the `ctest -V` (not just `ctest`) output log into your report, so that the detailed errors are visible to us.
+
 ## Resources
 
 * Source code documentation
