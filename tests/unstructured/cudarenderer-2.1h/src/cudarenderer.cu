@@ -22,7 +22,7 @@
 #include <GL/glew.h>
 #else
 #define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
+#include <OpenGL/gl.h>
 #endif
 #include <GL/glut.h>
 

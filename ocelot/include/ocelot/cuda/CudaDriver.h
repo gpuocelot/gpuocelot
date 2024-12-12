@@ -15,7 +15,7 @@
 #endif
 
 // OpenGL Includes
-#include <GL/gl.h>
+#include <OpenGL/gl.h>
 
 // Standard Library Includes
 #include <string>

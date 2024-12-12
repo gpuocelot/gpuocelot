@@ -6873,7 +6873,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
  #include <GL/glew.h>
- #include <GL/gl.h>
+ #include <OpenGL/gl.h>
  #include <GL/glut.h>
 
 int

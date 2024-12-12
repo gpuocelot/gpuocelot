@@ -19,7 +19,7 @@
 #undef min
 #endif
 
-#include <GL/gl.h>
+#include <OpenGL/gl.h>
 
 // Ocelot includes
 #include <ocelot/cuda/cuda_internal.h>

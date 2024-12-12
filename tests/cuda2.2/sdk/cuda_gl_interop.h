@@ -50,7 +50,7 @@
 
 #else /* __APPLE__ */
 
-#include <GL/gl.h>
+#include <OpenGL/gl.h>
 
 #endif /* __APPLE__ */
 

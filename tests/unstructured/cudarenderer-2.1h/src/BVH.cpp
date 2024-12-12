@@ -31,7 +31,7 @@
 #else
 #define GL_GLEXT_PROTOTYPES
 #include <GL/glew.h>
-#include <GL/gl.h>
+#include <OpenGL/gl.h>
 #endif
 #include <GL/glut.h>
 
