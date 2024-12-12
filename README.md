@@ -29,6 +29,7 @@ sudo apt-get install -y g++ cmake ninja-build llvm-15-dev libz-dev libglew-dev f
 ```
 git submodule init
 git submodule update
+git apply hydrazine.patch res_embed.patch
 cd ocelot
 mkdir build
 cd build
