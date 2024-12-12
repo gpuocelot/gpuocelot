@@ -65,7 +65,7 @@
 %token<text> OPCODE_SHR OPCODE_SHL OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
 %token<text> OPCODE_POPC OPCODE_PRMT OPCODE_CLZ OPCODE_BFIND OPCODE_BREV 
 %token<text> OPCODE_BFI OPCODE_BFE OPCODE_TESTP OPCODE_TLD4 OPCODE_BAR
-%token<text> OPCODE_PREFETCH OPCODE_PREFETCHU OPCODE_SHFL
+%token<text> OPCODE_PREFETCH OPCODE_PREFETCHU OPCODE_SHFL OPCODE_SHF
 
 %token<value> PREPROCESSOR_INCLUDE PREPROCESSOR_DEFINE PREPROCESSOR_IF 
 %token<value> PREPROCESSOR_IFDEF PREPROCESSOR_ELSE PREPROCESSOR_ENDIF 
@@ -97,7 +97,7 @@
 %token<value> TOKEN_TAIL TOKEN_UNI TOKEN_ALIGN TOKEN_BYTE TOKEN_WIDE TOKEN_CARRY
 %token<value> TOKEN_RNI TOKEN_RMI TOKEN_RZI TOKEN_RPI
 %token<value> TOKEN_FTZ TOKEN_APPROX TOKEN_FULL TOKEN_SHIFT_AMOUNT
-%token<value> TOKEN_R TOKEN_G TOKEN_B TOKEN_A
+%token<value> TOKEN_R TOKEN_G TOKEN_B TOKEN_A TOKEN_L
 
 %token<value> TOKEN_TO
 
@@ -125,7 +125,7 @@
 %token<value> TOKEN_ADDR_MODE_2
 %token<value> TOKEN_CHANNEL_DATA_TYPE TOKEN_CHANNEL_ORDER
 
-%token<value> TOKEN_TRAP TOKEN_CLAMP TOKEN_ZERO
+%token<value> TOKEN_TRAP TOKEN_CLAMP TOKEN_ZERO TOKEN_WRAP
 
 %token<value> TOKEN_ARRIVE TOKEN_RED TOKEN_POPC TOKEN_SYNC
 
@@ -674,7 +674,7 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_DIV | OPCODE_ABS | OPCODE_NEG | OPCODE_MIN | OPCODE_MAX
 	| OPCODE_MAD | OPCODE_MADC | OPCODE_SET | OPCODE_SETP | OPCODE_SELP
 	| OPCODE_SLCT | OPCODE_MOV | OPCODE_ST | OPCODE_COPYSIGN | OPCODE_SHFL
-	| OPCODE_CVT | OPCODE_CVTA | OPCODE_ISSPACEP 
+	| OPCODE_SHF | OPCODE_CVT | OPCODE_CVTA | OPCODE_ISSPACEP 
 	| OPCODE_AND | OPCODE_XOR | OPCODE_OR
 	| OPCODE_BRA | OPCODE_CALL | OPCODE_RET | OPCODE_EXIT | OPCODE_TRAP 
 	| OPCODE_BRKPT | OPCODE_SUBC | OPCODE_TEX | OPCODE_LD | OPCODE_LDU
@@ -856,9 +856,9 @@ instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2
 	| ld | ldu | mad | mad24 | madc | membar | mov | mul24 | mul | notInstruction
 	| pmevent | popc | prefetch | prefetchu | prmt | rcpSqrtInstruction | red
 	| ret | sad | selp | set | setp | slct | st | suld | suq | sured | sust
-	| testp | tex | tld4 | trap | txq | vote | shfl;
+	| testp | tex | tld4 | trap | txq | vote | shfl | shf;
 
-basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
+basicInstruction3Opcode : OPCODE_AND | OPCODE_OR | OPCODE_SHF 
 	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR | OPCODE_COPYSIGN;
 
 basicInstruction3 : basicInstruction3Opcode dataType operand ',' operand ',' 
@@ -1453,6 +1453,17 @@ setp : OPCODE_SETP comparison boolOperator optionalFtz dataType predicatePair
 {
 	state.instruction( $<text>1, $<value>5 );
 };
+
+shfDirection : TOKEN_L | TOKEN_R;
+
+shfMode : TOKEN_CLAMP | TOKEN_WRAP;
+
+shf : OPCODE_SHF shfDirection shfMode TOKEN_B32 operand ',' operand ',' operand ',' operand ';'
+{
+    state.instruction( $<text>1, $<value>4 );
+    state.shiftDirection( $<value>2 );
+    state.shiftMode( $<value>3 );
+}; 
 
 shuffleModifierId : TOKEN_UP | TOKEN_DOWN | TOKEN_BFLY | TOKEN_IDX;
 

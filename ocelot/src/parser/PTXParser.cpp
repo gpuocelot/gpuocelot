@@ -2052,6 +2052,16 @@ namespace parser
 		statement.instruction.toAddrSpace = true;
 	}
 
+	void PTXParser::State::shiftDirection( int token )
+	{
+		statement.instruction.shiftDirection = tokenToShiftDirection( token );
+	}
+
+	void PTXParser::State::shiftMode( int token )
+	{
+		statement.instruction.shiftMode = tokenToShiftMode( token );
+	}
+
 	void PTXParser::State::convert( int token, YYLTYPE& location )
 	{
 		if( !ir::PTXOperand::valid( tokenToDataType( token ),
@@ -2544,6 +2554,7 @@ namespace parser
 		if( string == "selp" ) return ir::PTXInstruction::SelP;
 		if( string == "set" ) return ir::PTXInstruction::Set;
 		if( string == "setp" ) return ir::PTXInstruction::SetP;
+		if( string == "shf" ) return ir::PTXInstruction::Shf;
 		if( string == "shl" ) return ir::PTXInstruction::Shl;
 		if( string == "shfl" ) return ir::PTXInstruction::Shfl;
 		if( string == "shr" ) return ir::PTXInstruction::Shr;
@@ -2720,12 +2731,12 @@ namespace parser
 	ir::PTXInstruction::ClampOperation PTXParser::tokenToClampOperation(int token) {
 		switch (token)
 		{
-			case TOKEN_TRAP: return ir::PTXInstruction::TrapOOB;
-			case TOKEN_CLAMP: return ir::PTXInstruction::Clamp;
-			case TOKEN_ZERO: return ir::PTXInstruction::Zero;
+			case TOKEN_TRAP: return ir::PTXInstruction::ClampOperation::TrapOOB;
+			case TOKEN_CLAMP: return ir::PTXInstruction::ClampOperation::Clamp;
+			case TOKEN_ZERO: return ir::PTXInstruction::ClampOperation::Zero;
 			default: break;
 		}
-		return ir::PTXInstruction::ClampOperation_Invalid;
+		return ir::PTXInstruction::ClampOperation::ClampOperation_Invalid;
 	}
 	
 	ir::PTXInstruction::FormatMode PTXParser::tokenToFormatMode(int token)
@@ -2905,6 +2916,26 @@ namespace parser
 		return ir::PTXStatement::InvalidSpace;
 	}
 	
+	ir::PTXInstruction::ShiftDirection PTXParser::tokenToShiftDirection( int token )
+	{
+		switch( token )
+		{
+			case TOKEN_L: return ir::PTXInstruction::ShiftLeft;   break;
+			case TOKEN_R:  return ir::PTXInstruction::ShiftRight; break;
+		}
+		return ir::PTXInstruction::ShiftDirection_Invalid;
+	}
+
+	ir::PTXInstruction::ShiftMode PTXParser::tokenToShiftMode( int token )
+	{
+		switch( token )
+		{
+			case TOKEN_CLAMP: return ir::PTXInstruction::ShiftMode::Clamp; break;
+			case TOKEN_WRAP:  return ir::PTXInstruction::ShiftMode::Wrap;  break;
+		}
+		return ir::PTXInstruction::ShiftMode::ShiftMode_Invalid;
+	}
+
 	ir::PTXOperand::DataType PTXParser::smallestType( long long int value )
 	{
 		return ir::PTXOperand::s64;

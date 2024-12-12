@@ -77,6 +77,7 @@ namespace ir {
 			SelP,
 			Set,
 			SetP,
+			Shf,
 			Shfl,
 			Shl,
 			Shr,
@@ -210,7 +211,7 @@ namespace ir {
 			CacheLevel_invalid
 		};
 		
-		enum ClampOperation {
+		enum class ClampOperation {
 			TrapOOB,
 			Clamp,
 			Zero,
@@ -320,7 +321,19 @@ namespace ir {
 			Ballot,
 			VoteMode_Invalid
 		};
-		
+
+		enum ShiftDirection {
+			ShiftLeft,
+			ShiftRight,
+			ShiftDirection_Invalid
+		};
+
+		enum class ShiftMode {
+			Clamp,
+			Wrap,
+			ShiftMode_Invalid
+		};
+
 		enum ShuffleMode {
 			Up,
 			Down,
@@ -353,6 +366,8 @@ namespace ir {
 		static std::string toString( VoteMode );
 		static std::string toString( ColorComponent );
 		static std::string toString( ShuffleMode );
+		static std::string toString( ShiftMode );
+		static std::string toString( ShiftDirection );
 		static std::string toString( Opcode );
 		static bool isPt( const PTXOperand& );
 
@@ -447,6 +462,9 @@ namespace ir {
 			
 			/*! For tld4 instructions, the color component */
 			ColorComponent colorComponent;
+
+			/*! shift direction for shf instruction */
+			ShiftDirection shiftDirection;
 			
 		};
 		
@@ -498,7 +516,10 @@ namespace ir {
 			
 			/*! cache level */
 			CacheLevel cacheLevel;
-			
+
+			/*! shift mode for shf instruction */
+			ShiftMode shiftMode;
+
 		};
 		
 		union {
