@@ -994,6 +994,105 @@ test::TestPTXAssembly::TypeVector testMov_INOUT(
 
 ////////////////////////////////////////////////////////////////////////////////
 // TEST LOGICAL OPs
+std::string testShf_PTX(
+    ir::PTXInstruction::ShiftDirection direction,
+    ir::PTXInstruction::ShiftMode mode)
+{
+    std::stringstream ptx;
+
+    std::string typeString = "." + ir::PTXOperand::toString(ir::PTXOperand::b32);
+    std::string directionString = (direction == ir::PTXInstruction::ShiftLeft) ? ".l" : ".r";
+    std::string modeString = (mode == ir::PTXInstruction::ShiftMode::Clamp) ? ".clamp" : ".wrap";
+
+    ptx << PTX_VERSION_AND_TARGET;
+    ptx << "\n";
+
+    ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+    ptx << "{\t                                            \n";
+    ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+    ptx << "\t.reg " << typeString << " %r0, %r1, %r2, %r3;\n";
+
+    ptx << "\tld.param.u64 %rIn, [in];                     \n";
+    ptx << "\tld.param.u64 %rOut, [out];                   \n";
+
+    ptx << "\tld.global" << typeString << " %r0, [%rIn];   \n";
+    ptx << "\tld.global" << typeString << " %r1, [%rIn + " 
+        << ir::PTXOperand::bytes(ir::PTXOperand::b32) << "];         \n";
+    ptx << "\tld.global.u32 %r2, [%rIn + "
+        << 2 * ir::PTXOperand::bytes(ir::PTXOperand::b32) << "];     \n";
+
+    if (mode == ir::PTXInstruction::ShiftMode::Wrap)
+    {
+        ptx << "\tand.b32 %r2, %r2, 31;                      \n";  // Wrap mode: limit to 5 bits
+    }
+    else if (mode == ir::PTXInstruction::ShiftMode::Clamp)
+    {
+        ptx << "\tmin.u32 %r2, %r2, 32;                      \n";  // Clamp mode: cap at 32
+    }
+
+    ptx << "\tshf" << directionString << modeString << typeString 
+        << " %r3, %r0, %r1, %r2;                       \n";
+
+    ptx << "\tst.global" << typeString << " [%rOut], %r3;    \n";
+    ptx << "\texit;                                        \n";
+    ptx << "}                                              \n";
+    ptx << "                                               \n";
+
+    return ptx.str();
+}
+
+template<bool left, bool clamp>
+void testShf_REF(void* output, void* input)
+{
+    typedef uint32_t U32;
+
+    U32 a = getParameter<U32>(input, 0);
+    U32 b = getParameter<U32>(input, sizeof(U32));
+    U32 c = getParameter<U32>(input, 2 * sizeof(U32));
+
+    ir::PTXInstruction::ShiftMode mode = clamp
+        ? ir::PTXInstruction::ShiftMode::Clamp
+        : ir::PTXInstruction::ShiftMode::Wrap;
+    ir::PTXInstruction::ShiftDirection direction = left
+        ? ir::PTXInstruction::ShiftDirection::ShiftLeft
+        : ir::PTXInstruction::ShiftDirection::ShiftRight;
+
+    if (mode == ir::PTXInstruction::ShiftMode::Wrap)
+    {
+        c = c & 31; // Wrap mode: only lower 5 bits of c are used
+    }
+    else if (mode == ir::PTXInstruction::ShiftMode::Clamp)
+    {
+        c = (c > 32) ? 32 : c; // Clamp mode: limit to 32
+    }
+
+    U32 result;
+    if (direction == ir::PTXInstruction::ShiftLeft)
+    {
+        result = (b << c) | (a >> (32 - c));
+    }
+    else if (direction == ir::PTXInstruction::ShiftRight)
+    {
+        result = (b << (32 - c)) | (a >> c);
+    }
+    else
+    {
+        throw std::runtime_error("Invalid shift direction");
+    }
+
+    setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testShf_IN()
+{
+    return test::TestPTXAssembly::TypeVector(3, test::TestPTXAssembly::I32);
+}
+
+test::TestPTXAssembly::TypeVector testShf_OUT()
+{	
+    return test::TestPTXAssembly::TypeVector(1, test::TestPTXAssembly::I32);
+}
+
 std::string testLops_PTX(ir::PTXInstruction::Opcode opcode,
 	ir::PTXOperand::DataType type)
 {
@@ -6754,6 +6853,23 @@ namespace test
 			testLops_PTX(ir::PTXInstruction::CNot, ir::PTXOperand::b64),
 			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::CNot, I64),
 			uniformRandom<uint64_t, 2>, 1, 1);
+
+		add("TestShf-b32-right-wrap", testShf_REF<false, false>,
+			testShf_PTX(ir::PTXInstruction::ShiftDirection::ShiftRight, ir::PTXInstruction::ShiftMode::Wrap),
+			testShf_OUT(), testShf_IN(),
+			uniformRandom<uint32_t, 3>, 1, 1);
+		add("TestShf-b32-left-wrap", testShf_REF<true, false>,
+			testShf_PTX(ir::PTXInstruction::ShiftDirection::ShiftLeft, ir::PTXInstruction::ShiftMode::Wrap),
+			testShf_OUT(), testShf_IN(),
+			uniformRandom<uint32_t, 3>, 1, 1);
+		add("TestShf-b32-left-clamp", testShf_REF<true, true>,
+			testShf_PTX(ir::PTXInstruction::ShiftDirection::ShiftLeft, ir::PTXInstruction::ShiftMode::Clamp),
+			testShf_OUT(), testShf_IN(),
+			uniformRandom<uint32_t, 3>, 1, 1);
+		add("TestShf-b32-right-clamp", testShf_REF<false, true>,
+			testShf_PTX(ir::PTXInstruction::ShiftDirection::ShiftRight, ir::PTXInstruction::ShiftMode::Clamp),
+			testShf_OUT(), testShf_IN(),
+			uniformRandom<uint32_t, 3>, 1, 1);
 
 		add("TestShl-b16",
 			testLops_REF<ir::PTXInstruction::Shl, uint16_t>,

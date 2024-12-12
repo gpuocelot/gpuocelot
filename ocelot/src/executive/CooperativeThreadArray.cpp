@@ -567,6 +567,8 @@ void executive::CooperativeThreadArray::execute(int PC) {
 				eval_Set(context, instr); break;
 			case ir::PTXInstruction::SetP:
 				eval_SetP(context, instr); break;
+			case ir::PTXInstruction::Shf:
+				eval_Shf(context, instr); break;
 			case ir::PTXInstruction::Shr:
 				eval_Shr(context, instr); break;
 			case ir::PTXInstruction::Shl:
@@ -7769,6 +7771,62 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context,
 		default:
 			throw RuntimeException("unsupported data type", context.PC, instr);
 	}
+}
+
+void executive::CooperativeThreadArray::eval_Shf(CTAContext &context, const ir::PTXInstruction &instr) {
+    trace();
+    if (instr.type != ir::PTXOperand::b32) {
+        throw RuntimeException("unsupported data type", context.PC, instr);
+    }
+
+    for (int threadID = 0; threadID < threadCount; threadID++) {
+        if (!context.predicated(threadID, instr)) continue;
+
+        ir::PTXB32 d, a, b;
+        unsigned int n;
+
+        if (instr.a.addressMode == ir::PTXOperand::Immediate) {
+            a = instr.a.imm_uint;
+        } else if (instr.a.addressMode == ir::PTXOperand::Register) {
+            a = getRegAsB32(threadID, instr.a.reg);
+        } else {
+            throw RuntimeException("unsupported address mode for a", context.PC, instr);
+        }
+
+        if (instr.b.addressMode == ir::PTXOperand::Immediate) {
+            b = instr.b.imm_uint;
+        } else if (instr.b.addressMode == ir::PTXOperand::Register) {
+            b = getRegAsB32(threadID, instr.b.reg);
+        } else {
+            throw RuntimeException("unsupported address mode for b", context.PC, instr);
+        }
+
+        if (instr.c.addressMode == ir::PTXOperand::Immediate) {
+            n = instr.c.imm_uint;
+        } else if (instr.c.addressMode == ir::PTXOperand::Register) {
+            n = getRegAsU32(threadID, instr.c.reg);
+        } else {
+            throw RuntimeException("unsupported address mode for c", context.PC, instr);
+        }
+
+        if (instr.shiftMode == ir::PTXInstruction::ShiftMode::Wrap) {
+            n &= 31;  // Wrap to lower 5 bits
+        } else if (instr.shiftMode == ir::PTXInstruction::ShiftMode::Clamp) {
+            n = min(n, 32U);  // Clamp to 32
+        } else {
+            throw RuntimeException("unsupported shift mode", context.PC, instr);
+        }
+
+        if (instr.shiftDirection == ir::PTXInstruction::ShiftLeft) {
+            d = (b << n) | (a >> (32 - n));
+        } else if (instr.shiftDirection == ir::PTXInstruction::ShiftRight) {
+            d = (b << (32 - n)) | (a >> n);
+        } else {
+            throw RuntimeException("unsupported shift direction", context.PC, instr);
+        }
+
+        setRegAsB32(threadID, instr.d.reg, d);
+    }
 }
 
 /*!
