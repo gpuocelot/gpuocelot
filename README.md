@@ -29,11 +29,27 @@ sudo apt-get install -y g++ cmake ninja-build llvm-15-dev libz-dev libglew-dev f
 ```
 git submodule init
 git submodule update
-git apply hydrazine.patch res_embed.patch
 cd ocelot
 mkdir build
 cd build
 cmake ..
+make -j12
+```
+
+- installing dependencies (osx)
+
+```
+brew install cmake ninja llvm@15 zlib glew flex bison boost zstd ncurses
+```
+
+```
+git submodule init
+git submodule update
+git apply hydrazine.patch res_embed.patch
+cd ocelot
+mkdir build
+cd build
+cmake .. -DBUILD_LLVM=OFF -DBUILD_TOOLS=OFF -DBUILD_TESTS=ON -DBUILD_TESTS_CUDA=OFF
 make -j12
 ```
 
