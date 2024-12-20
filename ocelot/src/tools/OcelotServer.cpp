@@ -37,11 +37,11 @@ void remote::OcelotServer::start() {
 	std::cout << "OcelotServer::start()" << std::endl;
 	
 	try {
-		boost::asio::io_service io_service;
-		boost::asio::ip::tcp::acceptor acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), _port));
+		boost::asio::io_context io_context;
+		boost::asio::ip::tcp::acceptor acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), _port));
 
 		while (true) {
-			boost::asio::ip::tcp::socket socket(io_service);
+			boost::asio::ip::tcp::socket socket(io_context);
 			acceptor.accept(socket);
 			
 			// construct connection thread and push into list of connections
@@ -50,7 +50,7 @@ void remote::OcelotServer::start() {
 			// right now, single threaded
 		}
 
-		io_service.run();
+		io_context.run();
 	}
 	catch (std::exception& e) {
 		std::cerr << "OcelotServer error:\n" << e.what() << std::endl;	
