@@ -256,6 +256,7 @@ namespace translator
 			case ir::PTXInstruction::Set:    _translateSet(i);    break;
 			case ir::PTXInstruction::SetP:   _translateSetP(i);   break;
 			case ir::PTXInstruction::Sin:    _translateSin(i);    break;
+			case ir::PTXInstruction::Shf:    _translateShf(i);    break;
 			case ir::PTXInstruction::Shl:    _translateShl(i);    break;
 			case ir::PTXInstruction::Shr:    _translateShr(i);    break;
 			case ir::PTXInstruction::SlCt:   _translateSlct(i);   break;
@@ -3361,6 +3362,103 @@ namespace translator
 		sin_vec.d = _translate(i.d);
 		sin_vec.a = _translate(i.a);
 		_add(sin_vec);
+	}
+
+	void PTXToILTranslator::_translateShf(const ir::PTXInstruction &i)
+	{
+		assertM(i.type == ir::PTXOperand::b32, "Only b32 supported");
+		ir::ILOperand a = _translate(i.a);
+		ir::ILOperand b = _translate(i.b);
+		ir::ILOperand c = _translate(i.c);
+
+		bool leftShift = (i.shiftDirection == ir::PTXInstruction::ShiftLeft);
+		bool clampMode = (i.shiftMode == ir::PTXInstruction::ShiftMode::Clamp);
+		bool wrapMode = (i.shiftMode == ir::PTXInstruction::ShiftMode::Wrap);
+
+		ir::ILOperand n = c;
+		if (wrapMode)
+		{
+			ir::ILOperand nTemp = _tempRegister();
+			ir::ILIand iand;
+			iand.d = nTemp;
+			iand.a = c;
+			iand.b = _translateLiteral(31);
+			_add(iand);
+			n = nTemp;
+		}
+		else if (clampMode)
+		{
+			ir::ILOperand cmpRes = _tempRegister();
+			ir::ILIlt ilt;
+			ilt.a = c;
+			ilt.b = _translateLiteral(32);
+			ilt.d = cmpRes;
+			_add(ilt);
+
+			ir::ILCmov_Logical cmov_logical;
+			ir::ILOperand selN = _tempRegister();
+			cmov_logical.d = selN;
+			cmov_logical.a = cmpRes;
+			cmov_logical.b = c;
+			cmov_logical.c = _translateLiteral(32);
+			_add(cmov_logical);
+			n = selN;
+		}
+
+		// 32 - n
+		ir::ILOperand invN = _tempRegister();
+		ir::ILOperand temp = _tempRegister();
+		ir::ILInegate inegate;
+		inegate.d = temp;
+		inegate.a = n;
+		_add(inegate);
+
+		ir::ILIadd iadd;
+		iadd.d = invN;
+		iadd.a = _translateLiteral(32);
+		iadd.b = temp;
+		_add(iadd);
+
+		ir::ILOperand bShift = _tempRegister();
+		ir::ILOperand aShift = _tempRegister();
+
+		if (leftShift)
+		{
+			// left: (b << n) | (a >> (32-n))
+			ir::ILIshl ishl;
+			ishl.d = bShift;
+			ishl.a = b;
+			ishl.b = n;
+			_add(ishl);
+
+			ir::ILUshr ushr;
+			ushr.d = aShift;
+			ushr.a = a;
+			ushr.b = invN;
+			_add(ushr);
+		}
+		else
+		{
+			// right: (b << (32-n)) | (a >> n)
+			ir::ILIshl ishl;
+			ishl.d = bShift;
+			ishl.a = b;
+			ishl.b = invN;
+			_add(ishl);
+
+			ir::ILUshr ushr;
+			ushr.d = aShift;
+			ushr.a = a;
+			ushr.b = n;
+			_add(ushr);
+		}
+
+		ir::ILOperand finalD = _translate(i.d);
+		ir::ILIor ior;
+		ior.d = finalD;
+		ior.a = bShift;
+		ior.b = aShift;
+		_add(ior);
 	}
 
 	void PTXToILTranslator::_translateShl(const ir::PTXInstruction &i)

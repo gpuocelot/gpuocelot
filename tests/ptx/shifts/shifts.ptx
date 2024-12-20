@@ -1,0 +1,155 @@
+.version 2.3
+.target sm_20
+.address_size 64
+
+// Test kernel for shf.l.wrap.b32
+.entry shf_test_l_wrap_kernel(
+    .param .u64 param_0,
+    .param .u64 param_1
+)
+{
+    .reg .u32 %r<4>;
+    .reg .u64 %rd<8>;
+
+    ld.param.u64  %rd1, [param_0];
+    ld.param.u64  %rd2, [param_1];
+    cvta.to.global.u64  %rd3, %rd1;
+    cvta.to.global.u64  %rd4, %rd2;
+    mov.u32  %r1, %tid.x;
+    mul.wide.s32  %rd5, %r1, 4;
+    add.s64  %rd6, %rd4, %rd5;
+    ld.global.u32  %r2, [%rd6];
+
+    // Test edge cases
+    shf.l.wrap.b32  %r3, %r2, %r2, 0;   // c = 0: No shift
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7], %r3;
+
+    shf.l.wrap.b32  %r3, %r2, %r2, 31;  // c = 31: Max shift for wrap mode
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 4], %r3;
+
+    shf.l.wrap.b32  %r3, %r2, %r2, 32;  // c = 32: Wrap to 0
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 8], %r3;
+
+    shf.l.wrap.b32  %r3, %r2, %r2, 33;  // c > 32: Wrap works (% 32)
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 12], %r3;
+
+    ret;
+}
+
+// Test kernel for shf.l.clamp.b32
+.entry shf_test_l_clamp_kernel(
+    .param .u64 param_0,
+    .param .u64 param_1
+)
+{
+    .reg .u32 %r<4>;
+    .reg .u64 %rd<8>;
+
+    ld.param.u64  %rd1, [param_0];
+    ld.param.u64  %rd2, [param_1];
+    cvta.to.global.u64  %rd3, %rd1;
+    cvta.to.global.u64  %rd4, %rd2;
+    mov.u32  %r1, %tid.x;
+    mul.wide.s32  %rd5, %r1, 4;
+    add.s64  %rd6, %rd4, %rd5;
+    ld.global.u32  %r2, [%rd6];
+
+    // Test edge cases
+    shf.l.clamp.b32  %r3, %r2, %r2, 0;   // c = 0: No shift
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7], %r3;
+
+    shf.l.clamp.b32  %r3, %r2, %r2, 31;  // c = 31: Max valid shift
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 4], %r3;
+
+    shf.l.clamp.b32  %r3, %r2, %r2, 32;  // c = 32: Clamp to 32
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 8], %r3;
+
+    shf.l.clamp.b32  %r3, %r2, %r2, 33;  // c > 32: Clamp to 32
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 12], %r3;
+
+    ret;
+}
+
+// Test kernel for shf.r.wrap.b32
+.entry shf_test_r_wrap_kernel(
+    .param .u64 param_0,
+    .param .u64 param_1
+)
+{
+    .reg .u32 %r<4>;
+    .reg .u64 %rd<8>;
+
+    ld.param.u64  %rd1, [param_0];
+    ld.param.u64  %rd2, [param_1];
+    cvta.to.global.u64  %rd3, %rd1;
+    cvta.to.global.u64  %rd4, %rd2;
+    mov.u32  %r1, %tid.x;
+    mul.wide.s32  %rd5, %r1, 4;
+    add.s64  %rd6, %rd4, %rd5;
+    ld.global.u32  %r2, [%rd6];
+
+    // Test edge cases
+    shf.r.wrap.b32  %r3, %r2, %r2, 0;   // c = 0: No shift
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7], %r3;
+
+    shf.r.wrap.b32  %r3, %r2, %r2, 31;  // c = 31: Max shift for wrap mode
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 4], %r3;
+
+    shf.r.wrap.b32  %r3, %r2, %r2, 32;  // c = 32: Wrap to 0
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 8], %r3;
+
+    shf.r.wrap.b32  %r3, %r2, %r2, 33;  // c > 32: Wrap works (% 32)
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 12], %r3;
+
+    ret;
+}
+
+// Test kernel for shf.r.clamp.b32
+.entry shf_test_r_clamp_kernel(
+    .param .u64 param_0,
+    .param .u64 param_1
+)
+{
+    .reg .u32 %r<4>;
+    .reg .u64 %rd<8>;
+
+    ld.param.u64  %rd1, [param_0];
+    ld.param.u64  %rd2, [param_1];
+    cvta.to.global.u64  %rd3, %rd1;
+    cvta.to.global.u64  %rd4, %rd2;
+    mov.u32  %r1, %tid.x;
+    mul.wide.s32  %rd5, %r1, 4;
+    add.s64  %rd6, %rd4, %rd5;
+    ld.global.u32  %r2, [%rd6];
+
+    // Test edge cases
+    shf.r.clamp.b32  %r3, %r2, %r2, 0;   // c = 0: No shift
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7], %r3;
+
+    shf.r.clamp.b32  %r3, %r2, %r2, 31;  // c = 31: Max valid shift
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 4], %r3;
+
+    shf.r.clamp.b32  %r3, %r2, %r2, 32;  // c = 32: Clamp to 32
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 8], %r3;
+
+    shf.r.clamp.b32  %r3, %r2, %r2, 33;  // c > 32: Clamp to 32
+    add.s64  %rd7, %rd3, %rd5;
+    st.global.u32  [%rd7 + 12], %r3;
+
+    ret;
+}
