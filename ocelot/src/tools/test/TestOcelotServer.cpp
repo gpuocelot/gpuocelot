@@ -107,12 +107,12 @@ int main(int argc, char *argv[]) {
 	
 	try {
 		//using boost::asio::ip::tcp;
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_context;
     boost::system::error_code error;
     
     boost::asio::ip::tcp::endpoint hostAddress(boost::asio::ip::address::from_string(host), port);
 
-    boost::asio::ip::tcp::socket socket(io_service);
+    boost::asio::ip::tcp::socket socket(io_context);
     socket.connect(hostAddress);
     
     if (verbose) {
