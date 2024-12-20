@@ -162,11 +162,11 @@ std::string ir::PTXInstruction::toString( FormatMode mode ) {
 
 std::string ir::PTXInstruction::toString( ClampOperation clamp ) {
 	switch (clamp) {
-		case TrapOOB:                return ".trap";
-		case Clamp:                  return ".clamp";
-		case Zero:                   return ".zero";
-		case Mirror:                 return ".mirror";
-		case ClampOperation_Invalid: break;
+		case ClampOperation::TrapOOB:                return ".trap";
+		case ClampOperation::Clamp:                  return ".clamp";
+		case ClampOperation::Zero:                   return ".zero";
+		case ClampOperation::Mirror:                 return ".mirror";
+		case ClampOperation::ClampOperation_Invalid: break;
 		default:                     break;
 	}
 	return "";
@@ -322,6 +322,24 @@ std::string ir::PTXInstruction::toString( ShuffleMode mode ) {
 	return "";
 }
 
+std::string ir::PTXInstruction::toString( ShiftMode mode ) {
+	switch( mode ) {
+		case ShiftMode::Clamp:	return "clamp"; break;
+		case ShiftMode::Wrap:	return "wrap";	break;
+		default: break;
+	}
+	return "";
+}
+
+std::string ir::PTXInstruction::toString( ShiftDirection direction ) {
+	switch( direction ) {
+		case ShiftDirection::ShiftLeft:  return "l"; break;
+		case ShiftDirection::ShiftRight: return "r"; break;
+		default: break;
+	}
+	return "";
+}
+
 std::string ir::PTXInstruction::toString( ColorComponent color ) {
 	switch( color ) {
 		case red:   return "r"; break;
@@ -388,6 +406,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case SelP:       return "selp";       break;
 		case Set:        return "set";        break;
 		case SetP:       return "setp";       break;
+		case Shf:        return "shf";        break;
 		case Shfl:       return "shfl";       break;
 		case Shl:        return "shl";        break;
 		case Shr:        return "shr";        break;
@@ -1642,6 +1661,32 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Shf: {
+			if ( type != PTXOperand::b32 ) {
+				return "shf instruction only supports .b32 type";
+			}
+			if ( d.bytes() != 4 ) {
+				std::stringstream stream;
+				stream << "destination operand must be 32-bit, got " << d.bytes() << " bytes";
+				return stream.str();
+			}
+			if ( a.bytes() != 4 && a.addressMode != PTXOperand::Immediate ) {
+				std::stringstream stream;
+				stream << "first source operand must be 32-bit, got " << a.bytes() << " bytes";
+				return stream.str();
+			}
+			if ( b.bytes() != 4 && b.addressMode != PTXOperand::Immediate ) {
+				std::stringstream stream;
+				stream << "second source operand must be 32-bit, got " << b.bytes() << " bytes";
+				return stream.str();
+			}
+			if ( c.bytes() != 4 && c.addressMode != PTXOperand::Immediate ) {
+				std::stringstream stream;
+				stream << "shift amount must be 32-bit, got " << c.bytes() << " bytes";
+				return stream.str();
+			}
+			break;
+		}
 		case Shl: {
 			if( type != PTXOperand::b16 && type != PTXOperand::b32 
 				&& type != PTXOperand::b64 ) {
@@ -2466,6 +2511,12 @@ std::string ir::PTXInstruction::toString() const {
 			}
 			return result;
 		}
+		case Shf: {
+			return guard() + "shf." + toString( shiftDirection ) + '.'
+				+ toString( shiftMode ) + '.' + PTXOperand::toString( type ) + " "
+				+ d.toString() + ", " + a.toString() + ", " + b.toString()
+				+ ',' + c.toString();
+		}
 		case Shfl: {
 			std::string result = guard() + "shl." + toString( shuffleMode )
 				+ "." +	PTXOperand::toString( type ) + " " + d.toString();
@@ -2558,7 +2609,7 @@ std::string ir::PTXInstruction::toString() const {
 				+  toString(clamp) + " [" + d.toString() + ", " + a.toString()
 				+ "], " + b.toString();
 		}
-		case Sust: {			
+		case Sust: {
 			return guard() + "sust" + toString(formatMode) + "." 
 				+ toString(geometry) + "." 
 				+ ((vec != Vec::v1)?toString(vec) + ".":"") + PTXOperand::toString(type) 
@@ -2681,5 +2732,3 @@ bool ir::PTXInstruction::isMemoryInstruction() const {
 bool ir::PTXInstruction::isExit() const {
 	return opcode == Exit || opcode == Ret;
 }
-
-

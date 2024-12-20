@@ -1246,6 +1246,7 @@ void PTXToLLVMTranslator::_translate( const ir::PTXInstruction& i,
 	case ir::PTXInstruction::SelP:     _translateSelP( i );        break;
 	case ir::PTXInstruction::Set:      _translateSet( i );         break;
 	case ir::PTXInstruction::SetP:     _translateSetP( i );        break;
+	case ir::PTXInstruction::Shf:      _translateShf( i );         break;
 	case ir::PTXInstruction::Shl:      _translateShl( i );         break;
 	case ir::PTXInstruction::Shr:      _translateShr( i );         break;
 	case ir::PTXInstruction::Sin:      _translateSin( i );         break;
@@ -5309,6 +5310,101 @@ void PTXToLLVMTranslator::_translateSetP( const ir::PTXInstruction& i )
 			}
 		}
 	}
+}
+
+void PTXToLLVMTranslator::_translateShf(const ir::PTXInstruction& i)
+{
+    ir::LLVMInstruction::Operand a = _translate(i.a);
+    ir::LLVMInstruction::Operand b = _translate(i.b);
+    ir::LLVMInstruction::Operand c = _translate(i.c);
+
+    bool leftShift = (i.shiftDirection == ir::PTXInstruction::ShiftLeft);
+    bool clampMode = (i.shiftMode == ir::PTXInstruction::ShiftMode::Clamp);
+    bool wrapMode = (i.shiftMode == ir::PTXInstruction::ShiftMode::Wrap);
+
+    ir::LLVMInstruction::Operand n = c;
+
+    if (wrapMode) {
+        ir::LLVMAnd andInst;
+        andInst.d.name = _tempRegister();
+        andInst.d.type.type = ir::LLVMInstruction::I32;
+        andInst.a = c;
+        andInst.b.type.type = ir::LLVMInstruction::I32;
+        andInst.b.type.category = ir::LLVMInstruction::Type::Element;
+        andInst.b.constant = true;
+        andInst.b.i32 = 31; // Wrap to 5 bits
+        _add(andInst);
+        n = andInst.d;
+    }
+    else if (clampMode) {
+        ir::LLVMIcmp cmp;
+        cmp.d.name = _tempRegister();
+        cmp.d.type.type = ir::LLVMInstruction::I1;
+        cmp.d.type.category = ir::LLVMInstruction::Type::Element;
+        cmp.comparison = ir::LLVMInstruction::Ult; 
+        cmp.a = c;
+        cmp.b.type.type = ir::LLVMInstruction::I32;
+        cmp.b.type.category = ir::LLVMInstruction::Type::Element;
+        cmp.b.constant = true;
+        cmp.b.i32 = 32;
+        _add(cmp);
+
+        ir::LLVMSelect sel;
+        sel.d.name = _tempRegister();
+        sel.d.type.type = ir::LLVMInstruction::I32;
+        sel.condition = cmp.d;
+        sel.a = c;
+        sel.b.type.type = ir::LLVMInstruction::I32;
+        sel.b.type.category = ir::LLVMInstruction::Type::Element;
+        sel.b.constant = true;
+        sel.b.i32 = 32;
+        _add(sel);
+        n = sel.d;
+    }
+
+    ir::LLVMInstruction::Operand thirtyTwo;
+    thirtyTwo.type.type = ir::LLVMInstruction::I32;
+    thirtyTwo.type.category = ir::LLVMInstruction::Type::Element;
+    thirtyTwo.constant = true;
+    thirtyTwo.i32 = 32;
+
+    ir::LLVMSub subInst;
+    subInst.d.name = _tempRegister();
+    subInst.d.type = ir::LLVMInstruction::I32;
+    subInst.a = thirtyTwo;
+    subInst.b = n;
+    _add(subInst);
+    ir::LLVMInstruction::Operand invN = subInst.d;
+
+    ir::LLVMInstruction::Operand shiftA, shiftB;
+
+    // Left or right shift on `b`
+    {
+        ir::LLVMShl shl;
+        shl.d.name = _tempRegister();
+        shl.d.type = b.type;
+        shl.a = b;
+        shl.b = leftShift ? n : invN;
+        _add(shl);
+        shiftA = shl.d;
+    }
+
+    // Left or right shift on `a`
+    {
+        ir::LLVMLshr lshr;
+        lshr.d.name = _tempRegister();
+        lshr.d.type = a.type;
+        lshr.a = a;
+        lshr.b = leftShift ? invN : n;
+        _add(lshr);
+        shiftB = lshr.d;
+    }
+
+    ir::LLVMOr orInst;
+    orInst.d = _destination(i);
+    orInst.a = shiftA;
+    orInst.b = shiftB;
+    _add(orInst);
 }
 
 void PTXToLLVMTranslator::_translateShl( const ir::PTXInstruction& i )

@@ -286,6 +286,8 @@ namespace parser
 					void formatMode(int token);
 					void surfaceQuery(int token);
 					void colorComponent(int token);
+					void shiftMode(int token);
+					void shiftDirection(int token);
 					
 					void returnType( int token );
 					void argumentType( int token );
@@ -346,6 +348,8 @@ namespace parser
 			static ir::PTXInstruction::PermuteMode tokenToPermuteMode( int );
 			static ir::PTXInstruction::FloatingPointMode
 				tokenToFloatingPointMode( int);
+			static ir::PTXInstruction::ShiftDirection tokenToShiftDirection( int );
+			static ir::PTXInstruction::ShiftMode tokenToShiftMode( int );
 			static ir::PTXStatement::TextureSpace tokenToTextureSpace( int );
 			static ir::PTXOperand::DataType smallestType( long long int );
 			static ir::PTXOperand::DataType 

@@ -507,6 +507,7 @@ namespace executive {
 		void eval_SelP(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_SetP(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Set(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Shf(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_Shl(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_Shr(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_Sin(CTAContext &context, const ir::PTXInstruction &instr);		

@@ -226,6 +226,7 @@ add_library(llvm INTERFACE)
 add_dependencies(llvm llvm-project)
 endif()
 
+set(BUILD_SHARED_LIBS OFF)  # ThirdParty/res_embed option
 add_subdirectory(ThirdParty/hydrazine)
 add_subdirectory(ThirdParty/res_embed EXCLUDE_FROM_ALL)
 

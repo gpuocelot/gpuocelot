@@ -104,6 +104,7 @@ namespace translator
 			void _translateSelP  (const ir::PTXInstruction& i);
 			void _translateSet   (const ir::PTXInstruction& i);
 			void _translateSetP  (const ir::PTXInstruction& i);
+			void _translateShf   (const ir::PTXInstruction& i);
 			void _translateShl   (const ir::PTXInstruction& i);
 			void _translateShr   (const ir::PTXInstruction& i);
 			void _translateSlct  (const ir::PTXInstruction& i);
