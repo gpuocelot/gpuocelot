@@ -106,8 +106,8 @@ namespace executive
 				void _connect();
 			
 			private:				
-				//! \brief IO service for RemoteDevice instance
-				boost::asio::io_service _io_service;
+				//! \brief IO context for RemoteDevice instance
+				boost::asio::io_context _io_context;
 			
 				//! \brief socket for connecting to remote device
 				boost::asio::ip::tcp::socket _socket;

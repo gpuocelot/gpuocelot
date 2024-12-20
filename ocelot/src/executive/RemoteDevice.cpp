@@ -12,6 +12,7 @@
 #include <ocelot/executive/RemoteDevice.h>
 #include <ocelot/cuda/cuda_runtime.h>
 
+
 // hydrazine includes
 #include <hydrazine/debug.h>
 #include <hydrazine/Exception.h>
@@ -40,7 +41,7 @@ typedef api::OcelotConfiguration config;
 typedef remote::RemoteDeviceMessage M;
 
 executive::RemoteDevice::ConnectionManager::ConnectionManager()
-	: _socket(_io_service), _connected(false) {
+	: _socket(_io_context), _connected(false) {
 
 }
 
@@ -56,7 +57,7 @@ void executive::RemoteDevice::ConnectionManager::_connect() {
 		boost::system::error_code error;
 
 		boost::asio::ip::tcp::endpoint hostAddress(
-			boost::asio::ip::address::from_string(config::get().executive.host),
+			boost::asio::ip::make_address(config::get().executive.host),
 			config::get().executive.port);
 
 		_socket.connect(hostAddress);
