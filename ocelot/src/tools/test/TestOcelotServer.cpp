@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
     boost::asio::io_context io_context;
     boost::system::error_code error;
     
-    boost::asio::ip::tcp::endpoint hostAddress(boost::asio::ip::address::from_string(host), port);
+    boost::asio::ip::tcp::endpoint hostAddress(boost::asio::ip::make_address(host), port);
 
     boost::asio::ip::tcp::socket socket(io_context);
     socket.connect(hostAddress);
