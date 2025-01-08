@@ -58,13 +58,31 @@ Building on other distros (currently only fedora 37 was tested) requires rebuild
 
 ## Testing
 
+The preferred way of testing Ocelot is with a [Docker container](ocelot/Dockerfile):
+
 ```
-cd build
-cmake .. -DBUILD_TESTS=ON
+docker build -t gpuocelot .
+docker run -it --rm --gpus=all gpuocelot
+cd /ocelot/build
 ctest
 ```
 
-The new version of Ocelot passes 100% of the original test suite:
+Only this way we can be absolutely sure the supported versions of CUDA and LLVM are used:
+
+ * CUDA 11.8.0
+ * LLVM 15.0.7
+ * NVIDIA GeForce GTX 1070
+
+You can also compile and test Ocelot on your system natively:
+
+```
+cd build
+cmake .. -DBUILD_TESTS=ON
+make -j12
+ctest
+```
+
+The expected Ocelot testing result is 100% pass of the original test suite:
 
 ```
 Test project /home/marcusmae/gpuocelot/gpuocelot/ocelot/build
@@ -137,6 +155,8 @@ Test project /home/marcusmae/gpuocelot/gpuocelot/ocelot/build
 
 Total Test time (real) =  12.08 sec
 ```
+
+If any test is failing in a native build, kindly check the [Docker container](ocelot/Dockerfile) build. If it fails in the same way, please file a bug. If conainter test passes, please check the differences between your system and container carefully.
 
 ## Debugging
 
