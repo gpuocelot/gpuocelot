@@ -46,7 +46,6 @@ brew install cmake ninja llvm@15 zlib glew flex bison boost zstd ncurses
 git checkout mac
 git submodule init
 git submodule update
-git apply hydrazine.patch res_embed.patch
 cd ocelot
 mkdir build
 cd build
