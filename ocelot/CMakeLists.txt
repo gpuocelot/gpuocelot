@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
-project(gpuocelot C CXX ASM)
+if (APPLE)
+	project(gpuocelot C CXX ASM)
+else()
+	project(gpuocelot C CXX CUDA ASM)
+endif()
 
 option(BUILD_LLVM "Use LLVM compiled from sources: default OFF" OFF)
 option(BUILD_TESTS "Build tests: default OFF" OFF)
@@ -20,25 +24,23 @@ list(APPEND CUDA_NVCC_FLAGS "-Wno-deprecated-gpu-targets -Wno-deprecated-declara
 
 set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
 
-
-set(BISON_EXECUTABLE /opt/homebrew/opt/bison/bin/bison)  # native version is outdated
+if (APPLE)
+	set(CMAKE_PREFIX_PATH
+		"/opt/homebrew"
+		# keg-only:
+		"/opt/homebrew/opt/llvm@15"
+		"/opt/homebrew/opt/bison")
+endif()
 
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 find_package(FLEX 2.5 REQUIRED)
 find_package(BISON 2.5 REQUIRED)
 find_package(GLEW REQUIRED)
-find_library(GLEW_LIBRARY libGLEW.dylib)
 find_package(ZLIB REQUIRED)
 find_library(ZSTD_LIB NAMES zstd libzstd)
-
-find_library(LIBEDIT_LIB edit REQUIRED)
-find_library(LIBFFI_LIB ffi REQUIRED)
-find_library(LIBNCURSES_LIB ncurses REQUIRED)
-find_library(LIBXAR_LIB xar REQUIRED)
-find_library(LIBXML2_LIB xml2 REQUIRED)
+find_package(Curses REQUIRED) # TODO check if it is default in Ubuntu/Container
 
 if ("x${BUILD_LLVM}" STREQUAL "xOFF")
-set(LLVM_DIR "/opt/homebrew/opt/llvm@15/lib/cmake/llvm")
 find_package(LLVM REQUIRED CONFIG)
 
 file(GLOB LLVM_LIBRARIES ${LLVM_LIBRARY_DIR}/*.a)
@@ -242,11 +244,12 @@ set(${PROJECT_NAME}_INCLUDE_DIRS
 	${CMAKE_CURRENT_BINARY_DIR})
 
 set(${PROJECT_NAME}_LINK_LIBRARIES
-	${GLEW_LIBRARY}
+	GLEW::GLEW
 	hydrazine
 	Boost::system
 	Boost::filesystem
 	ZLIB::ZLIB
+	${CURSES_LIBRARIES}
 	${ZSTD_LIB}
 	${CMAKE_DL_LIBS})
 
@@ -538,43 +541,47 @@ target_link_directories(${PROJECT_NAME}_util PUBLIC ${${PROJECT_NAME}_LIBRARY_DI
 
 add_library(${PROJECT_NAME} SHARED src/ocelot.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE
-	"-Wl,-force_load"
+set(${PROJECT_NAME}_static_libs
 	${PROJECT_NAME}_analysis
-	"-Wl,-force_load"
 	${PROJECT_NAME}_api
-	"-Wl,-force_load"
 	${PROJECT_NAME}_cal
-	"-Wl,-force_load"
 	${PROJECT_NAME}_cuda
-	"-Wl,-force_load"
 	${PROJECT_NAME}_executive
-	"-Wl,-force_load"
 	${PROJECT_NAME}_ir
-	"-Wl,-force_load"
 	${PROJECT_NAME}_parser
-	"-Wl,-force_load"
 	${PROJECT_NAME}_trace
-	"-Wl,-force_load"
 	${PROJECT_NAME}_transforms
-	"-Wl,-force_load"
 	${PROJECT_NAME}_translator
-	"-Wl,-force_load"
-	${PROJECT_NAME}_util)
+	${PROJECT_NAME}_util
+)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBEDIT_LIB})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBFFI_LIB})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBNCURSES_LIB})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBXAR_LIB})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBXML2_LIB})
-target_link_libraries(${PROJECT_NAME} PUBLIC "-framework CoreFoundation")
-target_link_libraries(${PROJECT_NAME} PUBLIC "-framework CoreServices")
+# ensure all symbols are included
+if (APPLE)
+	foreach(lib ${${PROJECT_NAME}_static_libs})
+		target_link_libraries(${PROJECT_NAME} PRIVATE
+			"-Wl,-force_load" ${lib}
+		)
+	endforeach(lib ${${PROJECT_NAME}_static_libs})
+else()
+	target_link_libraries(${PROJECT_NAME} PRIVATE
+		"-Wl,--whole-archive"
+		${${PROJECT_NAME}_static_libs}
+		"-Wl,--no-whole-archive"
+	)
+endif()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LINK_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PRIVATE -Wl,-dead_strip ${LLVM_LIBRARIES})
+
+# link llvm and remove unused sections
+if(APPLE)
+	target_link_libraries(${PROJECT_NAME} PRIVATE -Wl,-dead_strip ${LLVM_LIBRARIES})
+else()
+	target_link_libraries(${PROJECT_NAME} PRIVATE -Wl,--gc-sections -Wl,--start-group ${LLVM_LIBRARIES} -Wl,--end-group)
+endif()
+
 target_link_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${ZLIB_LIBRARIES})
-install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION /usr/local/lib)
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION $<IF:$<PLATFORM_ID:Darwin>,/usr/local/lib,/usr/lib>)
 install(CODE "execute_process(COMMAND ldconfig)")
 
 if(BUILD_TOOLS)
@@ -601,7 +608,7 @@ endif()
 
 if(BUILD_TESTS)
 	ocelot_add_tests(analysis)
-	#ocelot_add_tests(api)
+	ocelot_add_tests(api)
 	ocelot_add_tests(cal)
 	ocelot_add_tests(executive)
 	ocelot_add_tests(ir)
