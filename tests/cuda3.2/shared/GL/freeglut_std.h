@@ -81,7 +81,7 @@
 /*
  * Always include OpenGL and GLU headers
  */
-#include <OpenGL/gl.h>
+#include <GL/gl.h>
 #include <GL/glu.h>
 
 /*

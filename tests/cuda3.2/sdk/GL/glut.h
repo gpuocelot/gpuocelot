@@ -56,7 +56,7 @@ typedef unsigned short wchar_t;
 
 #endif
 
-#include <OpenGL/gl.h>
+#include <GL/gl.h>
 #include <GL/glu.h>
 
 /* define APIENTRY and CALLBACK to null string if we aren't on Win32 */

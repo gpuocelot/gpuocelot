@@ -164,7 +164,7 @@ AC_MSG_CHECKING(for OpenGL GLUT and GLEW support)
 HAVE_OPENGL=no
 AC_TRY_COMPILE([
  #include <GL/glew.h>
- #include <OpenGL/gl.h>
+ #include <GL/gl.h>
  #include <GL/glut.h>
 ],[
 ],[

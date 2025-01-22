@@ -45,7 +45,7 @@
 
 #else /* __APPLE__ */
 
-#include <OpenGL/gl.h>
+#include <GL/gl.h>
 
 #endif /* __APPLE__ */
 
