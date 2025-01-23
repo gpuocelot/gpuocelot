@@ -38,7 +38,7 @@ find_package(BISON 2.5 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(ZLIB REQUIRED)
 find_library(ZSTD_LIB NAMES zstd libzstd)
-find_package(Curses REQUIRED) # TODO check if it is default in Ubuntu/Container
+find_package(Curses REQUIRED)
 
 if ("x${BUILD_LLVM}" STREQUAL "xOFF")
 find_package(LLVM REQUIRED CONFIG)
