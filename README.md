@@ -20,6 +20,8 @@ We make Ocelot great again: yes, you can compile it in Ubuntu 22.04 with LLVM 15
 
 ## Building
 
+### Linux
+
 - installing dependencies (ubuntu 22.04)  
 
 ```
@@ -36,6 +38,10 @@ cmake ..
 make -j12
 ```
 
+Building on other distros (currently only fedora 37 was tested) requires rebuilding llvm with `-DBUILD_LLVM=ON` and turning off cuda tests with `-DBUILD_TESTS_CUDA=OFF`, as newer version of nvcc (12.0+) shipped with most distros don't support the old `sm_35` architecture.
+
+### MacOS
+
 - installing dependencies (osx)
 
 ```
@@ -43,7 +49,6 @@ brew install cmake ninja llvm@15 zlib glew flex bison boost zstd ncurses
 ```
 
 ```
-git checkout mac
 git submodule init
 git submodule update
 cd ocelot
@@ -52,8 +57,6 @@ cd build
 cmake .. -DBUILD_LLVM=OFF -DBUILD_TOOLS=OFF -DBUILD_TESTS=ON -DBUILD_TESTS_CUDA=OFF
 make -j12
 ```
-
-Building on other distros (currently only fedora 37 was tested) requires rebuilding llvm with `-DBUILD_LLVM=ON` and turning off cuda tests with `-DBUILD_TESTS_CUDA=OFF`, as newer version of nvcc (12.0+) shipped with most distros don't support the old `sm_35` architecture.
 
 ## Testing
 
