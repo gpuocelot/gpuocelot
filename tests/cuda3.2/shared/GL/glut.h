@@ -56,13 +56,13 @@ typedef unsigned short wchar_t;
 
 #endif
 
-#ifdef MAC
+#if defined(MAC) || defined(__APPLE__)
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
-#else
+#else /* MAC || __APPLE__ */
 #include <GL/gl.h>
 #include <GL/glu.h>
-#endif
+#endif /* MAC || __APPLE__ */
 
 /* define APIENTRY and CALLBACK to null string if we aren't on Win32 */
 #if !defined(_WIN32)

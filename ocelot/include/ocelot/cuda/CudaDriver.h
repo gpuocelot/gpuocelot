@@ -15,7 +15,11 @@
 #endif
 
 // OpenGL Includes
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 
 // Standard Library Includes
 #include <string>

@@ -19,7 +19,11 @@
 #undef min
 #endif
 
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 
 // Ocelot includes
 #include <ocelot/cuda/cuda_internal.h>
