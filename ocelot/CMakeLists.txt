@@ -580,7 +580,7 @@ else()
 endif()
 
 target_link_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_LIBRARY_DIRS})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${ZLIB_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${ZLIB_LIBRARIES} ${CURSES_LIBRARIES})
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION $<IF:$<PLATFORM_ID:Darwin>,/usr/local/lib,/usr/lib>)
 install(CODE "execute_process(COMMAND ldconfig)")
 
